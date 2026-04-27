@@ -711,11 +711,11 @@ function App() {
     "grid": true,
     "labels": true,
     "spin": true,
-    "classification": "UNCLASSIFIED // LIVE DATA" 
+    "classification": "LIVE DATA",
+    "version": 2
   }/*EDITMODE-END*/;
 
-// NEW:
-const [tweaks, setTweaks] = useState(() => {
+  const [tweaks, setTweaks] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('gd_tweaks'));
       if (!saved || saved.version !== TWEAK_DEFAULTS.version) {
@@ -724,10 +724,8 @@ const [tweaks, setTweaks] = useState(() => {
       return saved;
     }
     catch { return TWEAK_DEFAULTS; }
-});
   });
   const [tweaksOpen, setTweaksOpen] = useState(false);
-  const [active, setActive] = useState(() => {
     const a = {}; LAYERS.forEach(l => a[l.id] = false); return a;
   });
   const [opacity, setOpacity] = useState(() => {
