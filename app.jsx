@@ -711,12 +711,20 @@ function App() {
     "grid": true,
     "labels": true,
     "spin": true,
-    "classification": "UNCLASSIFIED // LIVE DATA"
+    "classification": "UNCLASSIFIED // LIVE DATA" 
   }/*EDITMODE-END*/;
 
-  const [tweaks, setTweaks] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('gd_tweaks')) || TWEAK_DEFAULTS; }
+// NEW:
+const [tweaks, setTweaks] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('gd_tweaks'));
+      if (!saved || saved.version !== TWEAK_DEFAULTS.version) {
+        return TWEAK_DEFAULTS;
+      }
+      return saved;
+    }
     catch { return TWEAK_DEFAULTS; }
+});
   });
   const [tweaksOpen, setTweaksOpen] = useState(false);
   const [active, setActive] = useState(() => {
