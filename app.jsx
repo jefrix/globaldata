@@ -214,7 +214,7 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
         </div>
       </div>
       <div className="tb-center">
-        <div className="class-banner" style={{ borderColor: '#ff3040', color: '#ff3040', background: 'rgba(255, 48, 64, 0.08)' }}>
+        <div className="class-banner" style={{ borderColor: theme.classification, color: theme.classification }}>
           {classification}
         </div>
       </div>
@@ -713,18 +713,11 @@ function App() {
     "grid": true,
     "labels": true,
     "spin": true,
-    "classification": "LIVE DATA",
-    "version": 2
+    "classification": "UNCLASSIFIED // LIVE DATA"
   }/*EDITMODE-END*/;
 
   const [tweaks, setTweaks] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('gd_tweaks'));
-      if (!saved || saved.version !== TWEAK_DEFAULTS.version) {
-        return TWEAK_DEFAULTS;
-      }
-      return saved;
-    }
+    try { return JSON.parse(localStorage.getItem('gd_tweaks')) || TWEAK_DEFAULTS; }
     catch { return TWEAK_DEFAULTS; }
   });
   const [tweaksOpen, setTweaksOpen] = useState(false);
