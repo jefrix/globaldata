@@ -214,8 +214,10 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
         </div>
       </div>
       <div className="tb-center">
-
-<div className="class-banner" style={{ borderColor: '#ff3040', color: '#ff3040', background: 'rgba(255, 48, 64, 0.08)' }}>
+        <div className="class-banner" style={{ borderColor: '#ff3040', color: '#ff3040', background: 'rgba(255, 48, 64, 0.08)' }}>
+          {classification}
+        </div>
+      </div>
       <div className="tb-right">
         <div className="dtg">
           <div className="dtg-lbl">DTG</div>
@@ -726,6 +728,7 @@ function App() {
     catch { return TWEAK_DEFAULTS; }
   });
   const [tweaksOpen, setTweaksOpen] = useState(false);
+  const [active, setActive] = useState(() => {
     const a = {}; LAYERS.forEach(l => a[l.id] = false); return a;
   });
   const [opacity, setOpacity] = useState(() => {
