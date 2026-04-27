@@ -214,10 +214,8 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
         </div>
       </div>
       <div className="tb-center">
-        <div className="class-banner" style={{ borderColor: theme.classification, color: theme.classification }}>
-          {classification}
-        </div>
-      </div>
+
+<div className="class-banner" style={{ borderColor: '#ff3040', color: '#ff3040', background: 'rgba(255, 48, 64, 0.08)' }}>
       <div className="tb-right">
         <div className="dtg">
           <div className="dtg-lbl">DTG</div>
