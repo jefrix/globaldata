@@ -229,7 +229,7 @@ function stripXml(value = '') {
 }
 
 function xmlTag(block, tag) {
-  const match = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\/${tag}>`, 'i'));
+  const match = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i'));
   return match ? stripXml(match[1]) : '';
 }
 

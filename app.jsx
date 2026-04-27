@@ -3,6 +3,14 @@
 
 const { useState, useEffect, useRef, useMemo } = React;
 
+function isTodayUtc(ts) {
+  const d = new Date(Number(ts) || Date.now());
+  const now = new Date();
+  return d.getUTCFullYear() === now.getUTCFullYear()
+    && d.getUTCMonth() === now.getUTCMonth()
+    && d.getUTCDate() === now.getUTCDate();
+}
+
 // ============ THEMES ============
 window.THEMES = {
   tactical: {
@@ -12,7 +20,7 @@ window.THEMES = {
     classification: "#f5b142",
     // Globe
     glow: "#1a4d8f", core: "#061528", grid: "#1e4f86", gridStrong: "#3b8df5",
-    land: "#5ea9ff",
+    land: "#5ea9ff", landFill: "#10283a",
     river: "#4bc6e8", mountain: "#d4b16a",
     city: "#ffffff",
     storm: "#a38bff", stormHi: "#d85cff", wind: "#6cc1d8",
@@ -26,7 +34,7 @@ window.THEMES = {
     text: "#ffe8c7", textDim: "#a08766", accent: "#f59431", accentWarm: "#f59431",
     classification: "#f59431",
     glow: "#7a3e10", core: "#0a0804", grid: "#4a3420", gridStrong: "#8a5a28",
-    land: "#e6a964",
+    land: "#e6a964", landFill: "#2d2014",
     river: "#8cb8c8", mountain: "#d88836",
     city: "#ffe6b8",
     storm: "#ff7a3a", stormHi: "#ff3a3a", wind: "#a8a290",
@@ -40,7 +48,7 @@ window.THEMES = {
     text: "#d4fbff", textDim: "#5d8a95", accent: "#1de8f0", accentWarm: "#f5e342",
     classification: "#1de8f0",
     glow: "#0a9fb8", core: "#021418", grid: "#1b6b7a", gridStrong: "#1de8f0",
-    land: "#4fe8f0",
+    land: "#4fe8f0", landFill: "#07313a",
     river: "#70e8d4", mountain: "#b8f0a0",
     city: "#ffffff",
     storm: "#f058ff", stormHi: "#ff4080", wind: "#6cd8b8",
@@ -51,8 +59,32 @@ window.THEMES = {
 };
 
 // ============ LAYER DEFINITIONS ============
+const DIPLOMACY_COUNTRIES = [
+  { code: 'USA', name: 'United States', lat: 39.8, lon: -98.6, allies: ['CAN','GBR','FRA','DEU','JPN','KOR','AUS','POL','ITA','NLD'], adversaries: ['RUS','CHN','IRN','PRK'] },
+  { code: 'CAN', name: 'Canada', lat: 56.1, lon: -106.3, allies: ['USA','GBR','FRA','DEU','AUS'], adversaries: ['RUS'] },
+  { code: 'GBR', name: 'United Kingdom', lat: 54.2, lon: -2.5, allies: ['USA','CAN','FRA','DEU','AUS','JPN','POL'], adversaries: ['RUS','IRN'] },
+  { code: 'FRA', name: 'France', lat: 46.2, lon: 2.2, allies: ['USA','GBR','DEU','ITA','ESP','POL'], adversaries: ['RUS'] },
+  { code: 'DEU', name: 'Germany', lat: 51.2, lon: 10.4, allies: ['USA','GBR','FRA','ITA','POL','NLD'], adversaries: ['RUS'] },
+  { code: 'POL', name: 'Poland', lat: 52.0, lon: 19.1, allies: ['USA','GBR','FRA','DEU','UKR'], adversaries: ['RUS','BLR'] },
+  { code: 'UKR', name: 'Ukraine', lat: 49.0, lon: 31.4, allies: ['USA','GBR','FRA','DEU','POL'], adversaries: ['RUS','BLR'] },
+  { code: 'RUS', name: 'Russia', lat: 61.5, lon: 105.3, allies: ['CHN','IRN','BLR'], adversaries: ['USA','GBR','FRA','DEU','POL','UKR','JPN'] },
+  { code: 'CHN', name: 'China', lat: 35.9, lon: 104.2, allies: ['RUS','IRN','PRK'], adversaries: ['USA','JPN','IND','TWN'] },
+  { code: 'JPN', name: 'Japan', lat: 36.2, lon: 138.3, allies: ['USA','GBR','AUS','KOR'], adversaries: ['CHN','RUS','PRK'] },
+  { code: 'KOR', name: 'South Korea', lat: 36.5, lon: 127.8, allies: ['USA','JPN','AUS'], adversaries: ['PRK'] },
+  { code: 'PRK', name: 'North Korea', lat: 40.3, lon: 127.5, allies: ['CHN','RUS'], adversaries: ['USA','KOR','JPN'] },
+  { code: 'IND', name: 'India', lat: 20.6, lon: 78.9, allies: ['USA','FRA','JPN','AUS'], adversaries: ['CHN','PAK'] },
+  { code: 'PAK', name: 'Pakistan', lat: 30.4, lon: 69.3, allies: ['CHN'], adversaries: ['IND'] },
+  { code: 'IRN', name: 'Iran', lat: 32.4, lon: 53.7, allies: ['RUS','CHN'], adversaries: ['USA','ISR','SAU','GBR'] },
+  { code: 'ISR', name: 'Israel', lat: 31.0, lon: 35.0, allies: ['USA','GBR','DEU'], adversaries: ['IRN'] },
+  { code: 'SAU', name: 'Saudi Arabia', lat: 23.9, lon: 45.1, allies: ['USA','GBR'], adversaries: ['IRN'] },
+  { code: 'AUS', name: 'Australia', lat: -25.3, lon: 133.8, allies: ['USA','GBR','JPN','KOR','IND'], adversaries: ['CHN'] },
+  { code: 'BRA', name: 'Brazil', lat: -14.2, lon: -51.9, allies: ['USA','ARG'], adversaries: [] },
+  { code: 'ZAF', name: 'South Africa', lat: -30.6, lon: 22.9, allies: ['BRA','IND'], adversaries: [] },
+];
+window.DIPLOMACY_DATA = DIPLOMACY_COUNTRIES;
+
 const LAYERS = [
-  { id: 'geologic',   label: 'GEOLOGIC',    sub: 'TOPO · HYDRO · OROGRAPHY',     hotkey: '1' },
+  { id: 'diplomacy',  label: 'DIPLOMACY',   sub: 'ALLIES · ADVERSARIES',         hotkey: '1' },
   { id: 'geographic', label: 'GEOGRAPHIC',  sub: 'BORDERS · CITIES · POI',        hotkey: '2' },
   { id: 'climate',    label: 'CLIMATE',     sub: 'WIND · RADAR · STORMS',         hotkey: '3' },
   { id: 'news',       label: 'NEWS',        sub: 'EVENTS · SOURCE CONFIDENCE',    hotkey: '4' },
@@ -119,6 +151,26 @@ function LayerRow({ layer, active, opacity, onToggle, onOpacity, color }) {
   );
 }
 
+function DensityControl({ value, onChange, color }) {
+  return (
+    <div className="layer-row active">
+      <div className="layer-head">
+        <div className="layer-idx">D</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="layer-label">DENSITY</div>
+          <div className="layer-sub">TRACKED OBJECT LIMIT</div>
+        </div>
+        <span className="sl-val">{String(Math.round(value * 100)).padStart(3, '0')}</span>
+      </div>
+      <div className="layer-slider">
+        <span className="sl-lbl">OBJ</span>
+        <Slider value={value} onChange={onChange} color={color} />
+        <span className="sl-val">{objectLimitFromDensity(value)}</span>
+      </div>
+    </div>
+  );
+}
+
 // ============ DTG CLOCK ============
 function useDTG() {
   const [dtg, setDtg] = useState('');
@@ -142,7 +194,7 @@ function useDTG() {
 }
 
 // ============ TOP BAR ============
-function TopBar({ theme, classification, layerCount, onResetView }) {
+function TopBar({ theme, classification, layerCount, onResetView, rotating, onToggleRotate }) {
   const dtg = useDTG();
   return (
     <div className="top-bar">
@@ -177,6 +229,15 @@ function TopBar({ theme, classification, layerCount, onResetView }) {
           </svg>
           RESET
         </button>
+        <button className={`iconbtn ${rotating ? 'on' : ''}`} onClick={onToggleRotate} title="Toggle globe rotation">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.2">
+            <path d="M2.2 5.5A4.8 4.8 0 0 1 10.5 3" />
+            <path d="M10.5 3H7.7" />
+            <path d="M11.8 8.5A4.8 4.8 0 0 1 3.5 11" />
+            <path d="M3.5 11h2.8" />
+          </svg>
+          ROTATE
+        </button>
         <div className="op-badge">OP <span>SENTINEL</span></div>
       </div>
     </div>
@@ -184,7 +245,8 @@ function TopBar({ theme, classification, layerCount, onResetView }) {
 }
 
 // ============ BOTTOM STATUS ============
-function BottomBar({ theme, stats, lat, lon, zoom }) {
+function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
+  const liveLabel = dataStatus?.mode === 'live' ? 'LIVE DATA' : 'LIVE FALLBACK';
   return (
     <div className="bottom-bar">
       <div className="stat">
@@ -225,48 +287,79 @@ function BottomBar({ theme, stats, lat, lon, zoom }) {
         <span className="st-val">{zoom}×</span>
       </div>
       <div className="stat blink">
-        <span className="live-dot" /> LIVE · SIMULATION
+        <span className="live-dot" /> {liveLabel}
+      </div>
+      <div className="stat">
+        <span className="st-lbl">INGEST</span>
+        <span className="st-val">{dataStatus?.summary || 'BOOT'}</span>
       </div>
     </div>
   );
 }
 
 // ============ RIGHT RAIL — EVENT TICKER ============
-function EventFeed({ active, theme }) {
+function EventFeed({ active, theme, data, onSelect, selectedId }) {
   const items = useMemo(() => {
-    const D = window.MOCK_DATA;
+    const D = data || window.MOCK_DATA;
     const feed = [];
     if (active.news) {
       D.news.slice(0, 30).forEach(n => feed.push({
+        id: n.id || n.url || n.title,
         t: n.ts, kind: 'NEWS', cat: n.category, city: n.city, country: n.country,
-        title: n.title, meta: `${n.sources} SRC`,
-        color: n.sources < 12 ? '#f5d142' : n.sources < 25 ? '#f58a42' : '#e03535',
+        title: n.title, meta: n.source || `${n.sources} SRC`,
+        color: isTodayUtc(n.ts) ? '#e03535' : '#f5d142',
+        data: n,
+      }));
+    }
+    if (active.climate) {
+      (D.earthquakes || []).slice(0, 20).forEach(q => feed.push({
+        id: q.id || q.url || q.title,
+        t: q.ts, kind: 'QUAKE', cat: `M${q.mag || '?'}`,
+        city: q.place || 'USGS', country: '--', title: q.title || q.place, meta: `M${q.mag || '?'}`,
+        color: q.mag >= 5 ? '#ff7050' : '#f5b142',
+      }));
+      (D.weather || []).slice(0, 20).forEach(w => feed.push({
+        id: w.id || w.url || w.title,
+        t: w.ts, kind: 'WX', cat: w.severity,
+        city: w.area || 'NWS', country: 'US', title: w.title, meta: w.severity || 'ALERT',
+        color: '#a38bff',
       }));
     }
     if (active.cyber) {
-      D.cyber.slice(0, 15).forEach(c => feed.push({
+      const cyberFeed = D.kasperskyCyber?.length ? D.kasperskyCyber : D.cyber;
+      cyberFeed.slice(0, 15).forEach(c => feed.push({
+        id: c.id || c.title,
         t: Date.now() - Math.random() * 3600000, kind: 'CYB', cat: c.severity,
-        city: c.target.label, country: '--', title: `${c.type} → ${c.target.label}`, meta: c.severity,
-        color: c.severity === 'CRIT' ? '#ff3370' : c.severity === 'HIGH' ? '#ff5c2e' : '#f5a742',
+        city: c.target.label, country: c.target.country || '--', title: `${c.type} -> ${c.target.label}`, meta: c.sourceName || c.severity,
+        color: c.color || (c.severity === 'CRIT' ? '#ff3370' : c.severity === 'HIGH' ? '#ff5c2e' : '#f5a742'),
       }));
     }
     if (active.conflicts) {
+      (D.conflictEvents || []).slice(0, 20).forEach(c => feed.push({
+        id: c.id || c.title,
+        t: c.ts || Date.now(), kind: 'UCDP', cat: 'GED',
+        city: c.country || '--', country: '--', title: c.title || 'Conflict event', meta: c.fatalities !== undefined ? `${c.fatalities} fatal` : 'GED',
+        color: '#ff3040',
+      }));
       D.conflicts.slice(0, 14).forEach(c => feed.push({
+        id: c.id || c.note,
         t: Date.now() - Math.random() * 7200000, kind: 'CFL', cat: c.level > 0.7 ? 'KIN' : 'GRAY',
         city: c.country, country: '--', title: c.note, meta: `L${Math.round(c.level * 10)}`,
         color: c.level > 0.7 ? '#ff3040' : c.level > 0.4 ? '#ff7050' : '#f5a742',
       }));
     }
     if (active.flights) {
-      D.flights.slice(0, 6).forEach(f => feed.push({
+      D.flights.slice(0, 12).forEach(f => feed.push({
+        id: f.id || f.callsign,
         t: Date.now() - Math.random() * 600000, kind: 'AVN', cat: 'RTE',
-        city: f.dest.name, country: f.dest.country, title: `${f.id} ${f.origin.country}→${f.dest.country}`, meta: `FL${Math.floor(f.alt/100)}`,
+        city: f.country || f.dest?.name || 'ADS-B', country: f.country || f.dest?.country || '--',
+        title: f.callsign || f.id, meta: f.alt ? `FL${Math.floor(f.alt/100)}` : 'ADS-B',
         color: theme.flight,
       }));
     }
     feed.sort((a, b) => b.t - a.t);
     return feed.slice(0, 60);
-  }, [active, theme]);
+  }, [active, theme, data]);
 
   const fmtT = (t) => {
     const diff = Math.floor((Date.now() - t) / 60000);
@@ -286,7 +379,13 @@ function EventFeed({ active, theme }) {
           <div className="feed-empty">NO ACTIVE LAYERS<br/><span>TOGGLE A LAYER TO INGEST EVENTS</span></div>
         )}
         {items.map((it, i) => (
-          <div key={i} className="feed-item">
+          <button
+            key={`${it.kind}-${it.id || i}`}
+            className={`feed-item ${it.kind === 'NEWS' ? 'clickable' : ''} ${selectedId === it.id ? 'selected' : ''}`}
+            onClick={() => it.kind === 'NEWS' && onSelect?.({ kind: 'news', data: it.data })}
+            disabled={it.kind !== 'NEWS'}
+            title={it.kind === 'NEWS' ? 'Open news feed' : undefined}
+          >
             <div className="feed-tag" style={{ color: it.color, borderColor: it.color }}>{it.kind}</div>
             <div className="feed-body">
               <div className="feed-title">{it.title}</div>
@@ -298,7 +397,7 @@ function EventFeed({ active, theme }) {
                 <span>{fmtT(it.t)}</span>
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
@@ -336,8 +435,12 @@ function Inspector({ pick, onClose, theme }) {
         {kind === 'news' && <NewsDetail d={data} />}
         {kind === 'city' && <CityDetail d={data} />}
         {kind === 'flight' && <FlightDetail d={data} />}
+        {kind === 'earthquake' && <EarthquakeDetail d={data} />}
+        {kind === 'weather' && <WeatherDetail d={data} />}
         {kind === 'vessel' && <VesselDetail d={data} />}
+        {kind === 'port' && <PortDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
+        {kind === 'diplomacy' && <DiplomacyDetail d={data} />}
         {kind === 'satellite' && <SatDetail d={data} />}
         {kind === 'storm' && <StormDetail d={data} />}
         {kind === 'conflict' && <ConflictDetail d={data} />}
@@ -351,19 +454,23 @@ const Row = ({ k, v, color }) => (
 );
 
 function NewsDetail({ d }) {
-  const color = d.sources < 12 ? '#f5d142' : d.sources < 25 ? '#f58a42' : '#e03535';
-  const confidence = d.sources < 12 ? 'EMERGING' : d.sources < 25 ? 'CONFIRMED' : 'HIGH CONFIDENCE';
+  const color = isTodayUtc(d.ts) ? '#e03535' : '#f5d142';
+  const freshness = isTodayUtc(d.ts) ? 'TODAY' : 'YESTERDAY';
   return (
     <>
       <div className="insp-title" style={{ color }}>{d.title}</div>
-      <div className="heat-bar"><div className="heat-fill" style={{ width: `${(d.sources / 50) * 100}%`, background: color }} /></div>
+      <div className="heat-bar"><div className="heat-fill" style={{ width: '100%', background: color }} /></div>
       <Row k="EVENT ID" v={d.id} />
       <Row k="CATEGORY" v={d.category} />
       <Row k="LOCATION" v={`${d.city}, ${d.country}`} />
       <Row k="COORD" v={`${d.lat.toFixed(2)}, ${d.lon.toFixed(2)}`} />
-      <Row k="SOURCES" v={d.sources} color={color} />
-      <Row k="CONFIDENCE" v={confidence} color={color} />
+      <Row k="FRESHNESS" v={freshness} color={color} />
+      <Row k="SOURCE" v={d.sourceName || d.source || '--'} color={color} />
+      <Row k="MEDIA" v={d.officialSource ? 'OFFICIAL' : 'UNVERIFIED'} color={d.officialSource ? color : null} />
       <Row k="FIRST RPT" v={new Date(d.ts).toUTCString().replace('GMT', 'Z')} />
+      <div className="news-actions">
+        {d.url && <a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN ARTICLE</a>}
+      </div>
     </>
   );
 }
@@ -374,6 +481,15 @@ function CityDetail({ d }) {
   </>);
 }
 function FlightDetail({ d }) {
+  if (!d.origin || !d.dest) {
+    return (<>
+      <div className="insp-title">{d.callsign || d.id}</div>
+      <Row k="COUNTRY" v={d.country || '--'} />
+      <Row k="ALT" v={d.alt ? `FL${Math.floor(d.alt/100)}` : '--'} />
+      <Row k="SPEED" v={d.velocity ? `${Math.round(d.velocity)} M/S` : '--'} />
+      <Row k="COORD" v={`${Number(d.lat).toFixed(2)}, ${Number(d.lon).toFixed(2)}`} />
+    </>);
+  }
   return (<>
     <div className="insp-title">{d.id}</div>
     <Row k="ORIGIN" v={`${d.origin.name} (${d.origin.country})`} />
@@ -382,21 +498,59 @@ function FlightDetail({ d }) {
     <Row k="PROGRESS" v={`${Math.round(d.progress * 100)}%`} />
   </>);
 }
+function EarthquakeDetail({ d }) {
+  const mag = Number(d.mag || 0);
+  const color = mag >= 5 ? '#ff7050' : '#f5b142';
+  return (<>
+    <div className="insp-title" style={{ color }}>{d.title || d.place}</div>
+    <Row k="MAG" v={mag ? mag.toFixed(1) : '--'} color={color} />
+    <Row k="PLACE" v={d.place || '--'} />
+    <Row k="DEPTH" v={Number.isFinite(d.depth) ? `${Math.round(d.depth)} KM` : '--'} />
+    <Row k="TIME" v={d.ts ? new Date(d.ts).toUTCString().replace('GMT', 'Z') : '--'} />
+  </>);
+}
+function WeatherDetail({ d }) {
+  return (<>
+    <div className="insp-title">{d.title}</div>
+    <Row k="SEVERITY" v={d.severity || '--'} />
+    <Row k="URGENCY" v={d.urgency || '--'} />
+    <Row k="CERTAINTY" v={d.certainty || '--'} />
+    <Row k="AREA" v={d.area || '--'} />
+  </>);
+}
 function VesselDetail({ d }) {
   return (<>
     <div className="insp-title">{d.id} · {d.type.toUpperCase()}</div>
     <Row k="TYPE" v={d.type} /><Row k="LANE" v={d.lane} /><Row k="HDG" v={d.dir > 0 ? 'EB' : 'WB'} />
   </>);
 }
-function CyberDetail({ d }) {
-  const color = d.severity === 'CRIT' ? '#ff3370' : d.severity === 'HIGH' ? '#ff5c2e' : '#f5a742';
+function PortDetail({ d }) {
   return (<>
-    <div className="insp-title" style={{ color }}>{d.type} / {d.severity}</div>
+    <div className="insp-title">{d.name}</div>
+    <Row k="COUNTRY" v={d.country || '--'} />
+    <Row k="REGION" v={d.state || '--'} />
+    <Row k="COORD" v={`${Number(d.lat).toFixed(2)}, ${Number(d.lon).toFixed(2)}`} />
+    <Row k="SOURCE" v={d.source || 'ports'} />
+  </>);
+}
+function CyberDetail({ d }) {
+  const color = d.color || (d.severity === 'CRIT' ? '#ff3370' : d.severity === 'HIGH' ? '#ff5c2e' : '#f5a742');
+  return (<>
+    <div className="insp-title" style={{ color }}>{d.type} / {d.severity || d.sourceName || 'TRACE'}</div>
     <Row k="EVENT ID" v={d.id} />
     <Row k="ORIGIN" v={d.origin.label} />
     <Row k="TARGET" v={d.target.label} />
     <Row k="VECTOR" v={d.type} />
-    <Row k="SEVERITY" v={d.severity} color={color} />
+    <Row k="COUNT" v={d.count || '--'} color={color} />
+    <Row k="SOURCE" v={d.sourceName || 'Mock cyber feed'} />
+  </>);
+}
+function DiplomacyDetail({ d }) {
+  return (<>
+    <div className="insp-title">{d.name}</div>
+    <Row k="COUNTRY" v={d.code} />
+    <Row k="KNOWN ALLIES" v={(d.allies || []).join(', ') || '--'} color="#7bd6a8" />
+    <Row k="ADVERSARIES" v={(d.adversaries || []).join(', ') || '--'} color="#ff3040" />
   </>);
 }
 function SatDetail({ d }) {
@@ -418,9 +572,10 @@ function StormDetail({ d }) {
 function ConflictDetail({ d }) {
   const color = d.level > 0.7 ? '#ff3040' : d.level > 0.4 ? '#ff7050' : '#f5a742';
   return (<>
-    <div className="insp-title" style={{ color }}>{d.country}</div>
+    <div className="insp-title" style={{ color }}>{d.title || d.country}</div>
     <Row k="THREAT LVL" v={`${Math.round(d.level * 10)}/10`} color={color} />
-    <Row k="STATUS" v={d.note} />
+    <Row k="STATUS" v={d.note || '--'} />
+    {d.fatalities !== undefined && <Row k="FATALITIES" v={d.fatalities} />}
   </>);
 }
 
@@ -471,7 +626,84 @@ function TweaksPanel({ tweaks, setTweaks, theme }) {
     </div>
   );
 }
+function mergeLiveData(live) {
+  const D = window.MOCK_DATA;
+  if (!live) return D;
+  const liveSources = live.sources || [];
+  const hasLiveNewsSource = liveSources.some(source => source.name === 'news');
 
+  return {
+    ...D,
+    flights: live.flights?.length ? live.flights : D.flights,
+    news: hasLiveNewsSource ? (live.news || []) : D.news,
+    SHIPPING: live.shippingLanes?.length ? live.shippingLanes.map(l => l.pts) : D.SHIPPING,
+    shippingLanes: live.shippingLanes || [],
+    ports: live.ports || [],
+    vessels: live.vessels?.length ? live.vessels : D.vessels,
+    diplomacy: window.DIPLOMACY_DATA || [],
+    satellites: live.satellites?.length ? live.satellites : D.satellites,
+    conflictEvents: live.conflictEvents || [],
+    aisstream: live.aisstream || [],
+    kasperskyCyber: live.kasperskyCyber || [],
+    earthquakes: live.earthquakes || [],
+    weather: live.weather || [],
+  };
+}
+
+function objectLimitFromDensity(value) {
+  const t = Math.max(0, Math.min(1, Number(value) || 0));
+  return Math.round(250 + t * 4750);
+}
+
+const LIVE_FLIGHT_LIMITS = {
+  sparse: 750,
+  normal: 2500,
+  dense: 5000,
+};
+
+function useLiveData(density = 'normal', densityValue = 0.5) {
+  const [state, setState] = React.useState({
+    data: { ...window.MOCK_DATA, diplomacy: window.DIPLOMACY_DATA || [] },
+    status: { mode: 'fallback', summary: 'BOOT' },
+  });
+
+  React.useEffect(() => {
+    const objectLimit = objectLimitFromDensity(densityValue);
+    const flightLimit = Math.min(objectLimit, LIVE_FLIGHT_LIMITS[density] || LIVE_FLIGHT_LIMITS.normal);
+    const load = async () => {
+      try {
+        const base = window.GLOBALDATA_API_BASE
+          || (window.location.hostname === 'localhost' ? window.location.origin : 'http://localhost:3000');
+        const live = await fetch(`${base}/api/live?limit=${flightLimit}&objects=${objectLimit}`).then(r => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        });
+        const data = mergeLiveData(live);
+        const ok = (live.sources || []).filter(s => s.ok);
+        setState({
+          data,
+          status: {
+            mode: ok.length ? 'live' : 'fallback',
+            summary: (live.sources || []).map(s => `${s.name}:${s.count}`).join(' '),
+            sources: live.sources || [],
+          },
+        });
+      } catch (error) {
+        setState({
+          data: { ...window.MOCK_DATA, diplomacy: window.DIPLOMACY_DATA || [] },
+          status: { mode: 'fallback', summary: 'API OFFLINE', error: error.message },
+        });
+      }
+    };
+
+    load();
+    const interval = setInterval(load, 30000);
+
+    return () => clearInterval(interval);
+  }, [density, densityValue]);
+
+  return state;
+}
 // ============ MAIN APP ============
 function App() {
   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -481,7 +713,7 @@ function App() {
     "grid": true,
     "labels": true,
     "spin": true,
-    "classification": "UNCLASSIFIED // SIMULATION"
+    "classification": "UNCLASSIFIED // LIVE DATA"
   }/*EDITMODE-END*/;
 
   const [tweaks, setTweaks] = useState(() => {
@@ -495,20 +727,32 @@ function App() {
   const [opacity, setOpacity] = useState(() => {
     const a = {}; LAYERS.forEach(l => a[l.id] = 1); return a;
   });
+  const [densityValue, setDensityValue] = useState(() => {
+    const saved = Number(localStorage.getItem('gd_density_limit'));
+    return Number.isFinite(saved) ? saved : 0.5;
+  });
   const [pick, setPick] = useState(null);
+  const [railPick, setRailPick] = useState(null);
+  const [rotating, setRotating] = useState(() => Boolean(tweaks.spin));
   const [camInfo, setCamInfo] = useState({ lat: 0, lon: 0, zoom: '1.0' });
   const globeRef = useRef(null);
   const engineRef = useRef(null);
   const theme = window.THEMES[tweaks.theme];
-
+  const { data, status: dataStatus } = useLiveData(tweaks.density, densityValue);
   useEffect(() => { localStorage.setItem('gd_tweaks', JSON.stringify(tweaks)); }, [tweaks]);
+  useEffect(() => { localStorage.setItem('gd_density_limit', String(densityValue)); }, [densityValue]);
 
   // Init engine once
   useEffect(() => {
-    if (!globeRef.current || engineRef.current) return;
-    const e = window.GlobeEngine.create(globeRef.current, theme);
-    e.buildAll();
-    e.onPick(p => setPick(p));
+   const e = window.GlobeEngine.create(globeRef.current, theme);
+
+e.buildAll?.();
+e.onPick?.(p => {
+  setPick(p);
+  if (p.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
+});
+
+engineRef.current = e;
     engineRef.current = e;
 
     // Camera info updater
@@ -521,23 +765,35 @@ function App() {
     }, 250);
     return () => clearInterval(id);
   }, []);
-
+  React.useEffect(() => {
+    if (!engineRef.current) return;
+    const objectLimit = objectLimitFromDensity(densityValue);
+    engineRef.current.maxTrackedObjects = objectLimit;
+    engineRef.current.maxFlightMarkers = Math.min(objectLimit, LIVE_FLIGHT_LIMITS[tweaks.density] || LIVE_FLIGHT_LIMITS.normal);
+    engineRef.current.updateLiveData?.(data);
+    engineRef.current.updateFlights?.(data.flights || []);
+  }, [data, tweaks.density, densityValue]);
   // Apply layer visibility / opacity
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
     LAYERS.forEach(l => {
-      e.setLayerVisible(l.id, active[l.id]);
-      e.setLayerOpacity(l.id, opacity[l.id]);
-    });
+  if (e.setLayerVisible) {
+    e.setLayerVisible(l.id, active[l.id]);
+  }
+
+  if (e.setLayerOpacity) {
+    e.setLayerOpacity(l.id, opacity[l.id]);
+  }
+});
   }, [active, opacity]);
 
   // Grid / labels / projection / spin
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
-    e.setGridVisible(tweaks.grid);
+    e.setGridVisible?.(tweaks.grid);
     if (e.landmasses) e.landmasses.visible = tweaks.projection !== 'wireframe';
-    e.autoSpin = tweaks.spin;
-  }, [tweaks]);
+    e.autoSpin = rotating;
+  }, [tweaks, rotating]);
 
   // Hotkeys
   useEffect(() => {
@@ -575,21 +831,21 @@ function App() {
 
   // Stats
   const stats = useMemo(() => {
-    const D = window.MOCK_DATA;
+    const D = data || window.MOCK_DATA;
     return {
       activeLayers: Object.values(active).filter(Boolean).length,
       flights: active.flights ? D.flights.length : 0,
       vessels: active.logistics ? D.vessels.length : 0,
       sats: active.satellites ? D.satellites.length : 0,
       news: active.news ? D.news.length : 0,
-      cyber: active.cyber ? D.cyber.length : 0,
-      conflicts: active.conflicts ? D.conflicts.length : 0,
+      cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
+      conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
     };
-  }, [active]);
+  }, [active, data]);
 
   const colorFor = (id) => {
     const m = {
-      geologic: theme.mountain, geographic: theme.city, climate: theme.storm,
+      diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
       cyber: '#ff5c2e', satellites: theme.satLeo, conflicts: '#ff3040',
     };
@@ -620,16 +876,18 @@ function App() {
     e.root.remove(e.grid);
     e.root.remove(e.landmasses);
     e.scene.remove(e.glowMesh);
+    e.root.remove(e.depthMaskMesh);
     e.root.remove(e.coreMesh);
-    e._buildGlow();
-    e._buildGrid();
-    e._buildLandmasses();
-    e.setGridVisible(tweaks.grid);
+    e._buildGlow?.();
+    e._buildCore?.();
+    e._buildGrid?.();
+    e._buildLandmasses?.();
+    // e.setGridVisible(tweaks.grid);
     if (e.landmasses) e.landmasses.visible = tweaks.projection !== 'wireframe';
-    e.buildAll();
+    // e.buildAll();
     LAYERS.forEach(l => {
-      e.setLayerVisible(l.id, active[l.id]);
-      e.setLayerOpacity(l.id, opacity[l.id]);
+      if (e.setLayerVisible) e.setLayerVisible(l.id, active[l.id]);
+      if (e.setLayerOpacity) e.setLayerOpacity(l.id, opacity[l.id]);
     });
   }, [tweaks.theme]);
 
@@ -640,6 +898,13 @@ function App() {
         classification={tweaks.classification}
         layerCount={stats.activeLayers}
         onResetView={() => engineRef.current?.resetView()}
+        rotating={rotating}
+        onToggleRotate={() => setRotating(on => {
+          const next = !on;
+          if (engineRef.current) engineRef.current.autoSpin = next;
+          setTweaks(t => ({ ...t, spin: next }));
+          return next;
+        })}
       />
       <div className="main">
         {/* LEFT RAIL */}
@@ -649,6 +914,11 @@ function App() {
             <span className="rail-hd-count">{stats.activeLayers} ON</span>
           </div>
           <div className="layers">
+            <DensityControl
+              value={densityValue}
+              onChange={setDensityValue}
+              color={theme.accent}
+            />
             {LAYERS.map(l => (
               <LayerRow
                 key={l.id}
@@ -722,11 +992,17 @@ function App() {
 
         {/* RIGHT RAIL — FEED + EMPTY INSPECTOR */}
         <aside className="rail-right">
-          <Inspector pick={null} theme={theme} />
-          <EventFeed active={active} theme={theme} />
+          <Inspector pick={railPick} onClose={() => setRailPick(null)} theme={theme} />
+          <EventFeed
+            active={active}
+            theme={theme}
+            data={data}
+            selectedId={railPick?.kind === 'news' ? (railPick.data.id || railPick.data.url || railPick.data.title) : null}
+            onSelect={setRailPick}
+          />
         </aside>
       </div>
-      <BottomBar theme={theme} stats={stats} lat={camInfo.lat} lon={camInfo.lon} zoom={camInfo.zoom} />
+      <BottomBar theme={theme} stats={stats} lat={camInfo.lat} lon={camInfo.lon} zoom={camInfo.zoom} dataStatus={dataStatus} />
 
       {tweaksOpen && (
         <div className="tweaks-overlay" onClick={() => setTweaksOpen(false)}>
@@ -739,4 +1015,4 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
