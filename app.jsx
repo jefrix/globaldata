@@ -744,6 +744,52 @@ function objectLimitFromDensity(value) {
   return Math.round(250 + t * 4750);
 }
 
+function interpolateFeedPath(path, progress = 0) {
+  if (!Array.isArray(path) || path.length < 2) return null;
+  const t = ((Number(progress) || 0) % 1 + 1) % 1;
+  const segmentCount = path.length - 1;
+  const raw = t * segmentCount;
+  const idx = Math.min(segmentCount - 1, Math.floor(raw));
+  const local = raw - idx;
+  const a = path[idx];
+  const b = path[idx + 1];
+  return {
+    lat: Number(a[0]) + (Number(b[0]) - Number(a[0])) * local,
+    lon: Number(a[1]) + (Number(b[1]) - Number(a[1])) * local,
+  };
+}
+
+function focusPointForEvent(pick, data) {
+  const d = pick?.data || {};
+  if (Number.isFinite(Number(d.lat)) && Number.isFinite(Number(d.lon))) {
+    return { lat: Number(d.lat), lon: Number(d.lon) };
+  }
+  if (pick?.kind === 'cyber') {
+    const target = d.target || d.destination;
+    if (Number.isFinite(Number(target?.lat)) && Number.isFinite(Number(target?.lon))) {
+      return { lat: Number(target.lat), lon: Number(target.lon) };
+    }
+  }
+  if (pick?.kind === 'conflict' && Array.isArray(d.bbox)) {
+    const [south, west, north, east] = d.bbox.map(Number);
+    if ([south, west, north, east].every(Number.isFinite)) {
+      return { lat: (south + north) / 2, lon: (west + east) / 2 };
+    }
+  }
+  if (pick?.kind === 'flight' && Number.isFinite(Number(d.origin?.lat)) && Number.isFinite(Number(d.dest?.lat))) {
+    const progress = Number(d.progress) || 0;
+    return {
+      lat: Number(d.origin.lat) + (Number(d.dest.lat) - Number(d.origin.lat)) * progress,
+      lon: Number(d.origin.lon) + (Number(d.dest.lon) - Number(d.origin.lon)) * progress,
+    };
+  }
+  if (pick?.kind === 'vessel' && Number.isFinite(Number(d.lane))) {
+    const path = (data?.SHIPPING || window.MOCK_DATA?.SHIPPING || [])[Number(d.lane)];
+    return interpolateFeedPath(path, d.progress);
+  }
+  return null;
+}
+
 function normalizeTweaks(tweaks, defaults) {
   const next = { ...defaults, ...(tweaks || {}) };
   if (String(next.classification || '').toUpperCase().includes('SIMULATION')) {
@@ -972,6 +1018,16 @@ engineRef.current = e;
     return m[id] || theme.accent;
   };
 
+  const selectFeedEvent = React.useCallback((eventPick) => {
+    setRailPick(eventPick);
+    const focus = focusPointForEvent(eventPick, data);
+    if (focus && engineRef.current?.focusOn) {
+      engineRef.current.focusOn(focus.lat, focus.lon, 185);
+      setRotating(false);
+      setTweaks(t => ({ ...t, spin: false }));
+    }
+  }, [data]);
+
   // Theme CSS vars
   useEffect(() => {
     const r = document.documentElement.style;
@@ -1118,7 +1174,7 @@ engineRef.current = e;
             theme={theme}
             data={data}
             selectedId={railPick?.eventId || null}
-            onSelect={setRailPick}
+            onSelect={selectFeedEvent}
           />
         </aside>
       </div>

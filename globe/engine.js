@@ -439,6 +439,7 @@ window.GlobeEngine = (function () {
     this.markerTextures = {};
     this.surfaceTexture = null;
     this.selectedDiplomacyCode = null;
+    this.focusAnim = null;
     this.pickHandler = null;
     this.lastLiveData = window.MOCK_DATA || {};
     this.mapLandRings = localCoastlineRings();
@@ -1116,11 +1117,32 @@ window.GlobeEngine = (function () {
     this.camera.position.z = this.currentZ;
   };
 
+  GlobeEngine.prototype.focusOn = function (lat, lon, zoom = 190) {
+    const targetLat = Math.max(-78, Math.min(78, Number(lat)));
+    const targetLon = Number(lon);
+    if (!Number.isFinite(targetLat) || !Number.isFinite(targetLon)) return;
+    const targetX = Math.max(-1.25, Math.min(1.25, -targetLat * DEG));
+    const desiredY = -targetLon * DEG;
+    const deltaY = Math.atan2(Math.sin(desiredY - this.rotationY), Math.cos(desiredY - this.rotationY));
+    this.focusAnim = {
+      sx: this.rotationX,
+      sy: this.rotationY,
+      sz: this.currentZ,
+      tx: targetX,
+      ty: this.rotationY + deltaY,
+      tz: Math.max(175, Math.min(360, Number(zoom) || 190)),
+      start: performance.now(),
+      duration: 720,
+    };
+    this.autoSpin = false;
+  };
+
   GlobeEngine.prototype.resetView = function () {
     this.rotationY = 0.3;
     this.rotationX = 0.15;
     this.currentZ = 320;
     this.camera.position.z = this.currentZ;
+    this.focusAnim = null;
   };
 
   GlobeEngine.prototype.onPick = function (handler) {
@@ -1195,7 +1217,16 @@ window.GlobeEngine = (function () {
     const tick = () => {
       const dt = clock.getDelta();
 
-      if (this.autoSpin) this.rotationY += dt * 0.05;
+      if (this.autoSpin && !this.focusAnim) this.rotationY += dt * 0.05;
+      if (this.focusAnim) {
+        const t = Math.min(1, (performance.now() - this.focusAnim.start) / this.focusAnim.duration);
+        const eased = t * t * (3 - 2 * t);
+        this.rotationX = this.focusAnim.sx + (this.focusAnim.tx - this.focusAnim.sx) * eased;
+        this.rotationY = this.focusAnim.sy + (this.focusAnim.ty - this.focusAnim.sy) * eased;
+        this.currentZ = this.focusAnim.sz + (this.focusAnim.tz - this.focusAnim.sz) * eased;
+        this.camera.position.z = this.currentZ;
+        if (t >= 1) this.focusAnim = null;
+      }
       this.root.rotation.y = this.rotationY;
       this.root.rotation.x = this.rotationX;
 
