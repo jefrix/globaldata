@@ -59,13 +59,42 @@ window.THEMES = {
 };
 
 // ============ LAYER DEFINITIONS ============
-const DIPLOMACY_COUNTRIES = [
-  { code: 'USA', name: 'United States', lat: 39.8, lon: -98.6, allies: ['CAN','GBR','FRA','DEU','JPN','KOR','AUS','POL','ITA','NLD'], adversaries: ['RUS','CHN','IRN','PRK'] },
+const NATO_MEMBER_CODES = ['ALB','BEL','BGR','CAN','HRV','CZE','DNK','EST','FIN','FRA','DEU','GRC','HUN','ISL','ITA','LVA','LTU','LUX','MNE','MKD','NOR','POL','PRT','ROU','SVK','SVN','ESP','SWE','NLD','TUR','GBR','USA'];
+const BRICS_MEMBER_CODES = ['BRA','RUS','IND','CHN','ZAF','EGY','ETH','IRN','ARE','IDN','SAU'];
+
+const RAW_DIPLOMACY_COUNTRIES = [
+  { code: 'ALB', name: 'Albania', lat: 41.2, lon: 20.2 },
+  { code: 'BEL', name: 'Belgium', lat: 50.5, lon: 4.5 },
+  { code: 'BGR', name: 'Bulgaria', lat: 42.7, lon: 25.5 },
   { code: 'CAN', name: 'Canada', lat: 56.1, lon: -106.3, allies: ['USA','GBR','FRA','DEU','AUS'], adversaries: ['RUS'] },
-  { code: 'GBR', name: 'United Kingdom', lat: 54.2, lon: -2.5, allies: ['USA','CAN','FRA','DEU','AUS','JPN','POL'], adversaries: ['RUS','IRN'] },
+  { code: 'HRV', name: 'Croatia', lat: 45.1, lon: 15.2 },
+  { code: 'CZE', name: 'Czechia', lat: 49.8, lon: 15.5 },
+  { code: 'DNK', name: 'Denmark', lat: 56.0, lon: 10.0 },
+  { code: 'EST', name: 'Estonia', lat: 58.6, lon: 25.0, adversaries: ['RUS'] },
+  { code: 'FIN', name: 'Finland', lat: 61.9, lon: 25.7, adversaries: ['RUS'] },
   { code: 'FRA', name: 'France', lat: 46.2, lon: 2.2, allies: ['USA','GBR','DEU','ITA','ESP','POL'], adversaries: ['RUS'] },
   { code: 'DEU', name: 'Germany', lat: 51.2, lon: 10.4, allies: ['USA','GBR','FRA','ITA','POL','NLD'], adversaries: ['RUS'] },
+  { code: 'GRC', name: 'Greece', lat: 39.1, lon: 22.9 },
+  { code: 'HUN', name: 'Hungary', lat: 47.2, lon: 19.5 },
+  { code: 'ISL', name: 'Iceland', lat: 64.9, lon: -18.6 },
+  { code: 'ITA', name: 'Italy', lat: 42.8, lon: 12.6 },
+  { code: 'LVA', name: 'Latvia', lat: 56.9, lon: 24.6, adversaries: ['RUS'] },
+  { code: 'LTU', name: 'Lithuania', lat: 55.2, lon: 23.9, adversaries: ['RUS'] },
+  { code: 'LUX', name: 'Luxembourg', lat: 49.8, lon: 6.1 },
+  { code: 'MNE', name: 'Montenegro', lat: 42.7, lon: 19.3 },
+  { code: 'MKD', name: 'North Macedonia', lat: 41.6, lon: 21.7 },
+  { code: 'NOR', name: 'Norway', lat: 60.5, lon: 8.5, adversaries: ['RUS'] },
   { code: 'POL', name: 'Poland', lat: 52.0, lon: 19.1, allies: ['USA','GBR','FRA','DEU','UKR'], adversaries: ['RUS','BLR'] },
+  { code: 'PRT', name: 'Portugal', lat: 39.4, lon: -8.2 },
+  { code: 'ROU', name: 'Romania', lat: 45.9, lon: 24.9, adversaries: ['RUS'] },
+  { code: 'SVK', name: 'Slovakia', lat: 48.7, lon: 19.7 },
+  { code: 'SVN', name: 'Slovenia', lat: 46.1, lon: 14.8 },
+  { code: 'ESP', name: 'Spain', lat: 40.5, lon: -3.7 },
+  { code: 'SWE', name: 'Sweden', lat: 60.1, lon: 18.6, adversaries: ['RUS'] },
+  { code: 'NLD', name: 'Netherlands', lat: 52.1, lon: 5.3 },
+  { code: 'TUR', name: 'Turkey', lat: 39.0, lon: 35.2 },
+  { code: 'GBR', name: 'United Kingdom', lat: 54.2, lon: -2.5, allies: ['USA','CAN','FRA','DEU','AUS','JPN','POL'], adversaries: ['RUS','IRN'] },
+  { code: 'USA', name: 'United States', lat: 39.8, lon: -98.6, allies: ['CAN','GBR','FRA','DEU','JPN','KOR','AUS','POL','ITA','NLD'], adversaries: ['RUS','CHN','IRN','PRK'] },
   { code: 'UKR', name: 'Ukraine', lat: 49.0, lon: 31.4, allies: ['USA','GBR','FRA','DEU','POL'], adversaries: ['RUS','BLR'] },
   { code: 'RUS', name: 'Russia', lat: 61.5, lon: 105.3, allies: ['CHN','IRN','BLR'], adversaries: ['USA','GBR','FRA','DEU','POL','UKR','JPN'] },
   { code: 'CHN', name: 'China', lat: 35.9, lon: 104.2, allies: ['RUS','IRN','PRK'], adversaries: ['USA','JPN','IND','TWN'] },
@@ -80,11 +109,33 @@ const DIPLOMACY_COUNTRIES = [
   { code: 'AUS', name: 'Australia', lat: -25.3, lon: 133.8, allies: ['USA','GBR','JPN','KOR','IND'], adversaries: ['CHN'] },
   { code: 'BRA', name: 'Brazil', lat: -14.2, lon: -51.9, allies: ['USA','ARG'], adversaries: [] },
   { code: 'ZAF', name: 'South Africa', lat: -30.6, lon: 22.9, allies: ['BRA','IND'], adversaries: [] },
+  { code: 'EGY', name: 'Egypt', lat: 26.8, lon: 30.8 },
+  { code: 'ETH', name: 'Ethiopia', lat: 9.1, lon: 40.5 },
+  { code: 'ARE', name: 'United Arab Emirates', lat: 24.3, lon: 54.4 },
+  { code: 'IDN', name: 'Indonesia', lat: -2.5, lon: 118.0 },
 ];
+
+const uniqueCodes = list => [...new Set((list || []).filter(Boolean))];
+const DIPLOMACY_COUNTRIES = RAW_DIPLOMACY_COUNTRIES.map(country => {
+  const blocs = [];
+  if (NATO_MEMBER_CODES.includes(country.code)) blocs.push('NATO');
+  if (BRICS_MEMBER_CODES.includes(country.code)) blocs.push('BRICS');
+  const allies = country.code && NATO_MEMBER_CODES.includes(country.code)
+    ? uniqueCodes([...(country.allies || []), ...NATO_MEMBER_CODES.filter(code => code !== country.code)])
+    : uniqueCodes(country.allies || []);
+  return {
+    ...country,
+    blocs,
+    allies,
+    bricsPartners: BRICS_MEMBER_CODES.includes(country.code)
+      ? BRICS_MEMBER_CODES.filter(code => code !== country.code)
+      : [],
+  };
+});
 window.DIPLOMACY_DATA = DIPLOMACY_COUNTRIES;
 
 const LAYERS = [
-  { id: 'diplomacy',  label: 'DIPLOMACY',   sub: 'ALLIES · ADVERSARIES',         hotkey: '1' },
+  { id: 'diplomacy',  label: 'DIPLOMACY',   sub: 'NATO · BRICS · ALLIES',        hotkey: '1' },
   { id: 'geographic', label: 'GEOGRAPHIC',  sub: 'BORDERS · CITIES · POI',        hotkey: '2' },
   { id: 'climate',    label: 'CLIMATE',     sub: 'WIND · RADAR · STORMS',         hotkey: '3' },
   { id: 'news',       label: 'NEWS',        sub: 'EVENTS · SOURCE CONFIDENCE',    hotkey: '4' },
@@ -583,7 +634,9 @@ function DiplomacyDetail({ d }) {
   return (<>
     <div className="insp-title">{d.name}</div>
     <Row k="COUNTRY" v={d.code} />
+    <Row k="BLOCS" v={(d.blocs || []).join(', ') || '--'} color={(d.blocs || []).includes('BRICS') ? '#f5b142' : '#5aa8ff'} />
     <Row k="KNOWN ALLIES" v={(d.allies || []).join(', ') || '--'} color="#7bd6a8" />
+    <Row k="BRICS PARTNERS" v={(d.bricsPartners || []).join(', ') || '--'} color="#f5b142" />
     <Row k="ADVERSARIES" v={(d.adversaries || []).join(', ') || '--'} color="#ff3040" />
   </>);
 }

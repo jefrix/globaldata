@@ -758,6 +758,26 @@ window.GlobeEngine = (function () {
     const selected = countries.find(c => c.code === this.selectedDiplomacyCode);
     const allies = new Set(selected?.allies || []);
     const adversaries = new Set(selected?.adversaries || []);
+    const selectedBlocs = new Set(selected?.blocs || []);
+    const natoHub = { lat: 50.88, lon: 4.42, name: 'NATO HQ' };
+    const bricsHub = { lat: 28.61, lon: 77.21, name: 'BRICS 2026 Presidency' };
+    const shouldShowNato = !selected || selectedBlocs.has('NATO');
+    const shouldShowBrics = !selected || selectedBlocs.has('BRICS');
+    const natoMembers = (countries || []).filter(c => (c.blocs || []).includes('NATO'));
+    const bricsMembers = (countries || []).filter(c => (c.blocs || []).includes('BRICS'));
+
+    if (shouldShowNato) {
+      natoMembers.forEach(country => {
+        const origin = selected && selectedBlocs.has('NATO') ? selected : natoHub;
+        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#5aa8ff', selected ? 0.24 : 0.14);
+      });
+    }
+    if (shouldShowBrics) {
+      bricsMembers.forEach(country => {
+        const origin = selected && selectedBlocs.has('BRICS') ? selected : bricsHub;
+        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#f5b142', selected ? 0.28 : 0.16);
+      });
+    }
 
     (countries || []).forEach(country => {
       const rings = (this.mapCountryRings || []).filter(ring => ring.iso === country.code);
@@ -785,11 +805,19 @@ window.GlobeEngine = (function () {
         color = '#ff3040';
         fillColor = '#ff3040';
         size = 0.85;
+      } else if (!selected && (country.blocs || []).includes('NATO')) {
+        color = '#5aa8ff';
+        fillColor = '#1f74bf';
+        size = 0.72;
+      } else if (!selected && (country.blocs || []).includes('BRICS')) {
+        color = '#f5b142';
+        fillColor = '#b36b18';
+        size = 0.72;
       }
 
       if (fillColor) {
         rings.forEach(ring => {
-          const fill = buildFilledRingMesh(ring, fillColor, country.code === selected?.code ? 0.5 : 0.36, 'diplomacy', country, R * 1.021);
+          const fill = buildFilledRingMesh(ring, fillColor, country.code === selected?.code ? 0.5 : selected ? 0.36 : 0.22, 'diplomacy', country, R * 1.021);
           if (fill) this.layerGroups.diplomacy.add(fill);
         });
       }
