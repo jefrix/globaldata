@@ -22,10 +22,12 @@ window.GlobeEngine = (function () {
   }
 
   function routePosition(flight) {
+    const explicitHeading = Number(flight.heading);
     if (Number.isFinite(Number(flight.lat)) && Number.isFinite(Number(flight.lon))) {
       return {
         lat: Number(flight.lat),
         lon: Number(flight.lon),
+        heading: Number.isFinite(explicitHeading) ? explicitHeading : null,
         live: true,
       };
     }
@@ -34,12 +36,27 @@ window.GlobeEngine = (function () {
 
     const progress = Number.isFinite(Number(flight.progress)) ? Number(flight.progress) : 0;
     const t = ((progress % 1) + 1) % 1;
+    const dLat = Number(flight.dest.lat) - Number(flight.origin.lat);
+    const dLon = Number(flight.dest.lon) - Number(flight.origin.lon);
+    const heading = (Math.atan2(dLon, dLat) / DEG + 360) % 360;
     return {
       lat: Number(flight.origin.lat) + (Number(flight.dest.lat) - Number(flight.origin.lat)) * t,
       lon: Number(flight.origin.lon) + (Number(flight.dest.lon) - Number(flight.origin.lon)) * t,
+      heading,
       live: false,
       progress: t,
     };
+  }
+
+  function offsetLatLonByHeading(lat, lon, headingDeg, distanceDeg = 0.42) {
+    const heading = Number(headingDeg) * DEG;
+    if (!Number.isFinite(heading)) return { lat, lon };
+    const nextLat = Math.max(-89.5, Math.min(89.5, Number(lat) + Math.cos(heading) * distanceDeg));
+    const lonScale = Math.max(0.25, Math.cos(Number(lat) * DEG));
+    let nextLon = Number(lon) + (Math.sin(heading) * distanceDeg) / lonScale;
+    if (nextLon > 180) nextLon -= 360;
+    if (nextLon < -180) nextLon += 360;
+    return { lat: nextLat, lon: nextLon };
   }
 
   function normalizePolygonForFill(poly) {
@@ -270,18 +287,27 @@ window.GlobeEngine = (function () {
       ctx.arc(32, 32, 3, 0, Math.PI * 2);
       ctx.fill();
     } else if (kind === 'flight') {
-      ctx.lineWidth = 9;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 9;
       ctx.beginPath();
-      ctx.moveTo(12, 32);
-      ctx.lineTo(52, 32);
-      ctx.moveTo(32, 12);
-      ctx.lineTo(32, 52);
+      ctx.moveTo(32, 6);
+      ctx.lineTo(47, 32);
+      ctx.lineTo(38, 30);
+      ctx.lineTo(38, 55);
+      ctx.lineTo(26, 55);
+      ctx.lineTo(26, 30);
+      ctx.lineTo(17, 32);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(255,255,255,0.78)';
+      ctx.lineWidth = 2.5;
       ctx.stroke();
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+      ctx.strokeStyle = 'rgba(2,10,18,0.75)';
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(18, 32);
-      ctx.lineTo(46, 32);
+      ctx.moveTo(32, 13);
+      ctx.lineTo(32, 48);
       ctx.stroke();
     } else if (kind === 'vessel') {
       ctx.beginPath();
@@ -410,6 +436,7 @@ window.GlobeEngine = (function () {
     this.maxFlightMarkers = 5000;
     this.maxTrackedObjects = 5000;
     this.markerMaterials = {};
+    this.markerTextures = {};
     this.surfaceTexture = null;
     this.selectedDiplomacyCode = null;
     this.pickHandler = null;
@@ -638,6 +665,20 @@ window.GlobeEngine = (function () {
       this.markerMaterials[key].opacity = opacity;
     }
     return this.markerMaterials[key];
+  };
+
+  GlobeEngine.prototype._makeFlightMaterial = function (color, opacity = 1, heading = 0) {
+    const key = `flight:${color}`;
+    if (!this.markerTextures[key]) this.markerTextures[key] = makeMarkerTexture('flight', color);
+    return new THREE.SpriteMaterial({
+      map: this.markerTextures[key],
+      color: 0xffffff,
+      transparent: true,
+      opacity,
+      depthTest: true,
+      depthWrite: false,
+      rotation: -Number(heading || 0) * DEG,
+    });
   };
 
   GlobeEngine.prototype._getQuakeMaterial = function (color, rings, opacity = 1) {
@@ -994,21 +1035,41 @@ window.GlobeEngine = (function () {
   GlobeEngine.prototype.updateFlights = function (flights) {
     this._clearGroup('flights');
     this.flightObjects = [];
-    const markerMaterial = this._getMarkerMaterial('flight', this.theme.flight || '#ffd96e', this.layerOpacity.flights ?? 1);
+    const color = this.theme.flight || '#ffd96e';
 
     (flights || []).slice(0, Math.min(this.maxFlightMarkers, this.maxTrackedObjects)).forEach(f => {
       const initial = routePosition(f);
       if (!initial) return;
       const size = initial.live ? 1.75 : 1.5;
+      const heading = Number.isFinite(Number(initial.heading)) ? Number(initial.heading)
+        : Number.isFinite(Number(f.heading)) ? Number(f.heading)
+        : Math.random() * 360;
+      const markerMaterial = this._makeFlightMaterial(color, this.layerOpacity.flights ?? 1, heading);
       const mesh = new THREE.Sprite(markerMaterial);
       mesh.position.copy(latLonToVec3(Number(initial.lat), Number(initial.lon), R + 1.4));
       mesh.scale.set(size, size, 1);
       mesh.renderOrder = 2;
-      mesh.userData = { layer: 'flights', kind: 'flight', data: f, preserveResources: true };
+      mesh.userData = { layer: 'flights', kind: 'flight-marker', data: f };
       this.layerGroups.flights.add(mesh);
-      this.pickables.push(mesh);
+      const head = offsetLatLonByHeading(initial.lat, initial.lon, heading, initial.live ? 0.52 : 0.46);
+      const pickHead = new THREE.Mesh(
+        new THREE.SphereGeometry(0.62, 8, 8),
+        new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.01,
+          colorWrite: false,
+          depthTest: true,
+          depthWrite: false,
+        })
+      );
+      pickHead.position.copy(latLonToVec3(head.lat, head.lon, R + 1.72));
+      pickHead.userData = { layer: 'flights', kind: 'flight', data: f, pickHead: true };
+      this.layerGroups.flights.add(pickHead);
+      this.pickables.push(pickHead);
       this.flightObjects.push({
         mesh,
+        pickHead,
         data: f,
         lat: initial.lat,
         lon: initial.lon,
@@ -1016,7 +1077,7 @@ window.GlobeEngine = (function () {
         hasRoute: !initial.live && !!(f.origin && f.dest),
         routeSpeed: Number(f.speed || 0.0008),
         velocity: Number(f.velocity || 200),
-        heading: Number.isFinite(Number(f.heading)) ? Number(f.heading) : Math.random() * 360,
+        heading,
         trail: [{ lat: initial.lat, lon: initial.lon }],
         trailGroup: null,
         trailElapsed: 0,
@@ -1166,6 +1227,7 @@ window.GlobeEngine = (function () {
           if (!next) return;
           f.lat = next.lat;
           f.lon = next.lon;
+          if (Number.isFinite(Number(next.heading))) f.heading = Number(next.heading);
         } else {
           const speed = f.velocity * dt * 0.00005;
           f.lat += Math.cos(f.heading * DEG) * speed;
@@ -1174,6 +1236,11 @@ window.GlobeEngine = (function () {
           if (f.lon < -180) f.lon += 360;
         }
         f.mesh.position.copy(latLonToVec3(f.lat, f.lon, R + 1.4));
+        if (f.mesh.material) f.mesh.material.rotation = -Number(f.heading || 0) * DEG;
+        if (f.pickHead) {
+          const head = offsetLatLonByHeading(f.lat, f.lon, f.heading, 0.5);
+          f.pickHead.position.copy(latLonToVec3(head.lat, head.lon, R + 1.72));
+        }
         f.trailElapsed += dt;
         if (f.trailElapsed > 0.18) {
           f.trailElapsed = 0;
