@@ -967,7 +967,7 @@ window.GlobeEngine = (function () {
     });
 
     (data.conflicts || []).forEach(c => {
-      const patch = buildLatLonPatchMesh(c.bbox, '#ff4d3d', 0.28 + Math.min(0.3, Number(c.level || 0.4) * 0.22), 'conflict', c);
+      const patch = buildLatLonPatchMesh(c.bbox, '#ff4d3d', 0.5, 'conflict', c);
       if (patch) {
         this.layerGroups.conflicts.add(patch);
         this.pickables.push(patch);
@@ -980,7 +980,7 @@ window.GlobeEngine = (function () {
       const patch = buildLatLonPatchMesh(
         [Number(c.lat) - span, Number(c.lon) - span, Number(c.lat) + span, Number(c.lon) + span],
         '#ff4d3d',
-        0.26 + Math.min(0.28, level * 0.24),
+        0.5,
         'conflict',
         c
       );
