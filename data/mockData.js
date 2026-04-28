@@ -234,7 +234,7 @@ window.MOCK_DATA = (() => {
     { country: "Kashmir", bbox: [32, 73, 35, 78], level: 0.30, note: "Skirmishes" },
   ];
 
-  // Storms (climate)
+  // Storms (nature)
   const storms = [
     { id: "ST-01", type: "hurricane", lat: 22, lon: -72, radius: 8, cat: 3 },
     { id: "ST-02", type: "typhoon",   lat: 18, lon: 130, radius: 10, cat: 4 },
@@ -243,23 +243,6 @@ window.MOCK_DATA = (() => {
     { id: "ST-05", type: "storm",     lat: -45, lon: 30, radius: 9, cat: 2 },
     { id: "ST-06", type: "typhoon",   lat: 12, lon: 145, radius: 7, cat: 3 },
   ];
-
-  // Wind streams (climate) — jet stream / trade winds
-  const winds = [];
-  // Subtropical jets (~30° and -30°)
-  for (let i = 0; i < 40; i++) {
-    winds.push({ lat: 30 + rand(-5,5), lon: -180 + (i * 9), vec: [2, 0] });
-    winds.push({ lat: -30 + rand(-5,5), lon: -180 + (i * 9), vec: [2, 0] });
-  }
-  // Polar jets
-  for (let i = 0; i < 30; i++) {
-    winds.push({ lat: 60 + rand(-5,5), lon: -180 + (i * 12), vec: [3, 0] });
-  }
-  // Trade winds
-  for (let i = 0; i < 30; i++) {
-    winds.push({ lat: 15 + rand(-5,5), lon: -180 + (i * 12), vec: [-2, 0] });
-    winds.push({ lat: -15 + rand(-5,5), lon: -180 + (i * 12), vec: [-2, 0] });
-  }
 
   // Topography (geologic) — mountain ranges as polylines
   const mountains = [
@@ -302,6 +285,6 @@ window.MOCK_DATA = (() => {
 
   return {
     CITIES, news, flights, SHIPPING, vessels, militaryBases, militaryShips, cyber, satellites,
-    conflicts, storms, winds, mountains, rivers, trucking
+    conflicts, storms, mountains, rivers, trucking
   };
 })();
