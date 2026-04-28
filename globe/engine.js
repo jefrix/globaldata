@@ -187,6 +187,49 @@ window.GlobeEngine = (function () {
     return mesh;
   }
 
+  function buildLatLonPatchMesh(bounds, color, opacity, kind, data, radius = R * 1.021) {
+    const [southRaw, westRaw, northRaw, eastRaw] = bounds || [];
+    const south = Number(southRaw);
+    const west = Number(westRaw);
+    const north = Number(northRaw);
+    const east = Number(eastRaw);
+    if (![south, west, north, east].every(Number.isFinite)) return null;
+
+    const latSpan = Math.max(0.4, Math.abs(north - south));
+    const lonSpan = Math.max(0.4, Math.abs(east - west));
+    const step = Math.max(0.6, Math.min(3, Math.max(latSpan, lonSpan) / 6));
+    const vertices = [];
+
+    for (let lat = Math.min(south, north); lat < Math.max(south, north); lat += step) {
+      for (let lon = Math.min(west, east); lon < Math.max(west, east); lon += step) {
+        const lat2 = Math.min(lat + step, Math.max(south, north));
+        const lon2 = Math.min(lon + step, Math.max(west, east));
+        const corners = [
+          latLonToVec3(lat, lon, radius),
+          latLonToVec3(lat, lon2, radius),
+          latLonToVec3(lat2, lon2, radius),
+          latLonToVec3(lat2, lon, radius),
+        ];
+        [0, 1, 2, 0, 2, 3].forEach(i => vertices.push(corners[i].x, corners[i].y, corners[i].z));
+      }
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    const material = new THREE.MeshBasicMaterial({
+      color,
+      transparent: true,
+      opacity,
+      depthTest: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.renderOrder = 2;
+    mesh.userData = { layer: 'conflicts', kind, data };
+    return mesh;
+  }
+
   function makeMarkerTexture(kind, color, options = {}) {
     const canvas = document.createElement('canvas');
     canvas.width = 64;
@@ -819,14 +862,27 @@ window.GlobeEngine = (function () {
     });
 
     (data.conflicts || []).forEach(c => {
-      const [s, w, n, e] = c.bbox;
-      const lat = (s + n) / 2;
-      const lon = (w + e) / 2;
-      this._addPoint('conflicts', lat, lon, '#ff3040', 1 + c.level * 1.8, 'conflict', c);
+      const patch = buildLatLonPatchMesh(c.bbox, '#ff4d3d', 0.28 + Math.min(0.3, Number(c.level || 0.4) * 0.22), 'conflict', c);
+      if (patch) {
+        this.layerGroups.conflicts.add(patch);
+        this.pickables.push(patch);
+      }
     });
 
     (data.conflictEvents || []).forEach(c => {
-      this._addPoint('conflicts', c.lat, c.lon, '#ff3040', 0.8 + (c.level || 0.3), 'conflict', c);
+      const level = Math.max(0.25, Number(c.level || 0.35));
+      const span = Math.max(0.8, Math.min(2.2, 0.7 + level * 1.6));
+      const patch = buildLatLonPatchMesh(
+        [Number(c.lat) - span, Number(c.lon) - span, Number(c.lat) + span, Number(c.lon) + span],
+        '#ff4d3d',
+        0.26 + Math.min(0.28, level * 0.24),
+        'conflict',
+        c
+      );
+      if (patch) {
+        this.layerGroups.conflicts.add(patch);
+        this.pickables.push(patch);
+      }
     });
   };
 

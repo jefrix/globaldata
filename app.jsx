@@ -655,6 +655,42 @@ function objectLimitFromDensity(value) {
   return Math.round(250 + t * 4750);
 }
 
+function normalizeTweaks(tweaks, defaults) {
+  const next = { ...defaults, ...(tweaks || {}) };
+  if (String(next.classification || '').toUpperCase().includes('SIMULATION')) {
+    next.classification = defaults.classification;
+  }
+  return next;
+}
+
+async function fetchLiveData(flightLimit, objectLimit) {
+  const currentOrigin = window.location.origin && window.location.origin !== 'null'
+    ? window.location.origin
+    : null;
+  const candidates = [
+    window.GLOBALDATA_API_BASE,
+    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? currentOrigin : null,
+    'http://localhost:3009',
+    'http://localhost:3001',
+    'http://localhost:3000',
+  ].filter(Boolean);
+  const uniqueCandidates = [...new Set(candidates.map(base => base.replace(/\/$/, '')))];
+  let lastError = null;
+
+  for (const base of uniqueCandidates) {
+    try {
+      const response = await fetch(`${base}/api/live?limit=${flightLimit}&objects=${objectLimit}`);
+      if (!response.ok) throw new Error(`${base} HTTP ${response.status}`);
+      const live = await response.json();
+      return { live, base };
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw lastError || new Error('No live API endpoint available');
+}
+
 const LIVE_FLIGHT_LIMITS = {
   sparse: 750,
   normal: 2500,
@@ -672,19 +708,14 @@ function useLiveData(density = 'normal', densityValue = 0.5) {
     const flightLimit = Math.min(objectLimit, LIVE_FLIGHT_LIMITS[density] || LIVE_FLIGHT_LIMITS.normal);
     const load = async () => {
       try {
-        const base = window.GLOBALDATA_API_BASE
-          || (window.location.hostname === 'localhost' ? window.location.origin : 'http://localhost:3000');
-        const live = await fetch(`${base}/api/live?limit=${flightLimit}&objects=${objectLimit}`).then(r => {
-          if (!r.ok) throw new Error(`HTTP ${r.status}`);
-          return r.json();
-        });
+        const { live, base } = await fetchLiveData(flightLimit, objectLimit);
         const data = mergeLiveData(live);
         const ok = (live.sources || []).filter(s => s.ok);
         setState({
           data,
           status: {
             mode: ok.length ? 'live' : 'fallback',
-            summary: (live.sources || []).map(s => `${s.name}:${s.count}`).join(' '),
+            summary: `${base.replace(/^https?:\/\//, '')} ${(live.sources || []).map(s => `${s.name}:${s.count}`).join(' ')}`,
             sources: live.sources || [],
           },
         });
@@ -717,8 +748,8 @@ function App() {
   }/*EDITMODE-END*/;
 
   const [tweaks, setTweaks] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('gd_tweaks')) || TWEAK_DEFAULTS; }
-    catch { return TWEAK_DEFAULTS; }
+    try { return normalizeTweaks(JSON.parse(localStorage.getItem('gd_tweaks')), TWEAK_DEFAULTS); }
+    catch { return normalizeTweaks(null, TWEAK_DEFAULTS); }
   });
   const [tweaksOpen, setTweaksOpen] = useState(false);
   const [active, setActive] = useState(() => {
@@ -749,7 +780,7 @@ function App() {
 e.buildAll?.();
 e.onPick?.(p => {
   setPick(p);
-  if (p.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
+  if (p?.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
 });
 
 engineRef.current = e;
