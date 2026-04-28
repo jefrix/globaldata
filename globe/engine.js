@@ -297,6 +297,26 @@ window.GlobeEngine = (function () {
       ctx.moveTo(32, 12);
       ctx.lineTo(32, 49);
       ctx.stroke();
+    } else if (kind === 'news' || kind === 'diplomacy') {
+      ctx.globalAlpha = 0.24;
+      ctx.beginPath();
+      ctx.arc(32, 32, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 0.92;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(32, 32, 25, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = color;
+      ctx.font = 'bold 36px Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 10;
+      ctx.fillText(kind === 'news' ? 'N' : 'D', 32, 34);
+      ctx.shadowBlur = 0;
     }
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -669,16 +689,17 @@ window.GlobeEngine = (function () {
       ? new THREE.LineDashedMaterial({
         color,
         transparent: true,
-        opacity,
+        opacity: Math.max(opacity, 0.58),
         depthTest: true,
         depthWrite: false,
-        dashSize: 5,
-        gapSize: 7,
+        dashSize: 2.4,
+        gapSize: 9.5,
       })
       : new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthTest: true, depthWrite: false });
     const line = new THREE.Line(geometry, material);
     if (layer === 'cyber') {
       line.computeLineDistances();
+      line.userData.flowSpeed = 16 + Math.random() * 7;
       this.pulseLines.push(line);
     }
     line.renderOrder = 3;
@@ -725,7 +746,8 @@ window.GlobeEngine = (function () {
         });
       }
 
-      const point = this._addPoint('diplomacy', country.lat, country.lon, color, size, 'diplomacy', country);
+      const material = this._getMarkerMaterial('diplomacy', color, this.layerOpacity.diplomacy ?? 1);
+      const point = this._addSpritePoint('diplomacy', country.lat, country.lon, material, size * 2.2, size * 2.2, 'diplomacy', country);
       if (point && selected && (allies.has(country.code) || adversaries.has(country.code))) {
         this._addArc('diplomacy', selected, country, color, 0.3);
       }
@@ -797,7 +819,9 @@ window.GlobeEngine = (function () {
 
     (data.news || []).slice(0, 120).forEach(n => {
       const color = isTodayUtc(n.ts) ? '#e03535' : '#f5d142';
-      this._addPoint('news', n.lat, n.lon, color, 0.85, 'news', n);
+      const material = this._getMarkerMaterial('news', color, this.layerOpacity.news ?? 1);
+      const marker = this._addSpritePoint('news', n.lat, n.lon, material, 3.2, 3.2, 'news', n);
+      if (marker) marker.userData.pulse = 0.18 + Math.random() * Math.PI * 2;
     });
 
     (data.earthquakes || []).forEach(q => {
@@ -1033,9 +1057,25 @@ window.GlobeEngine = (function () {
       this.root.rotation.y = this.rotationY;
       this.root.rotation.x = this.rotationX;
 
-      this.pulseLines.forEach((line, i) => {
-        if (line.material) line.material.dashOffset = -((performance.now() * 0.012) + i * 0.8);
+      this.pulseLines.forEach(line => {
+        if (line.material) line.material.dashOffset = (line.material.dashOffset || 0) - dt * (line.userData.flowSpeed || 18);
       });
+
+      if (this.layerGroups.news?.visible) {
+        this.layerGroups.news.children.forEach(marker => {
+          if (marker.userData?.kind !== 'news') return;
+          marker.userData.pulse = (marker.userData.pulse || 0) + dt * 3.4;
+          const scale = 1 + Math.sin(marker.userData.pulse) * 0.16;
+          marker.scale.set(3.2 * scale, 3.2 * scale, 1);
+        });
+      }
+
+      if (this.layerGroups.diplomacy?.visible) {
+        this.layerGroups.diplomacy.children.forEach(marker => {
+          if (marker.userData?.kind !== 'diplomacy' || !marker.isSprite) return;
+          marker.material.rotation = -this.root.rotation.y * 0.12;
+        });
+      }
 
       this.flightObjects.forEach(f => {
         if (f.hasRoute) {
