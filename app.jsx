@@ -91,7 +91,7 @@ const LAYERS = [
   { id: 'logistics',  label: 'LOGISTICS',   sub: 'CONTAINER · OIL · LNG · TRUCK', hotkey: '5' },
   { id: 'flights',    label: 'FLIGHTS',     sub: 'ADS-B · ROUTES',                hotkey: '6' },
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '7' },
-  { id: 'satellites', label: 'SATELLITES',  sub: 'LEO · MEO · GEO',               hotkey: '8' },
+  { id: 'military',   label: 'MILITARY',    sub: 'BASES · NAVAL ASSETS',          hotkey: '8' },
   { id: 'conflicts',  label: 'CONFLICTS',   sub: 'KINETIC · GRAY ZONE',           hotkey: '9' },
 ];
 
@@ -262,8 +262,8 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
         <span className="st-val">{stats.vessels}</span>
       </div>
       <div className="stat">
-        <span className="st-lbl">SATS</span>
-        <span className="st-val">{stats.sats}</span>
+        <span className="st-lbl">MIL</span>
+        <span className="st-val">{stats.military}</span>
       </div>
       <div className="stat">
         <span className="st-lbl">NEWS EVT</span>
@@ -346,6 +346,20 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: Date.now() - Math.random() * 7200000, kind: 'CFL', cat: c.level > 0.7 ? 'KIN' : 'GRAY',
         city: c.country, country: '--', title: c.note, meta: `L${Math.round(c.level * 10)}`,
         color: c.level > 0.7 ? '#ff3040' : c.level > 0.4 ? '#ff7050' : '#f5a742',
+      }));
+    }
+    if (active.military) {
+      (D.militaryBases || []).slice(0, 25).forEach(b => feed.push({
+        id: b.id || b.name,
+        t: Date.now() - Math.random() * 3600000, kind: 'MIL', cat: b.function,
+        city: b.country || '--', country: b.country || '--', title: b.name, meta: b.function || 'BASE',
+        color: '#7bd6a8',
+      }));
+      (D.militaryShips || []).slice(0, 15).forEach(s => feed.push({
+        id: s.id || s.name,
+        t: Date.now() - Math.random() * 3600000, kind: 'NAV', cat: s.function,
+        city: s.country || '--', country: s.country || '--', title: s.name, meta: s.function || 'NAVAL',
+        color: '#9ad4ff',
       }));
     }
     if (active.flights) {
@@ -441,7 +455,7 @@ function Inspector({ pick, onClose, theme }) {
         {kind === 'port' && <PortDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
         {kind === 'diplomacy' && <DiplomacyDetail d={data} />}
-        {kind === 'satellite' && <SatDetail d={data} />}
+        {kind === 'military' && <MilitaryDetail d={data} />}
         {kind === 'storm' && <StormDetail d={data} />}
         {kind === 'conflict' && <ConflictDetail d={data} />}
       </div>
@@ -553,12 +567,13 @@ function DiplomacyDetail({ d }) {
     <Row k="ADVERSARIES" v={(d.adversaries || []).join(', ') || '--'} color="#ff3040" />
   </>);
 }
-function SatDetail({ d }) {
+function MilitaryDetail({ d }) {
   return (<>
-    <div className="insp-title">{d.id} / {d.type}</div>
-    <Row k="ALTITUDE" v={`${Math.round(d.alt)} KM`} />
-    <Row k="INCLIN" v={`${d.inclination.toFixed(1)}°`} />
-    <Row k="ORBIT" v={d.type} />
+    <div className="insp-title">{d.name || d.id}</div>
+    <Row k="COUNTRY" v={d.country || '--'} />
+    <Row k="FUNCTION" v={d.function || d.type || '--'} />
+    <Row k="REGION" v={d.region || '--'} />
+    <Row k="COORD" v={`${Number(d.lat).toFixed(2)}, ${Number(d.lon).toFixed(2)}`} />
   </>);
 }
 function StormDetail({ d }) {
@@ -641,7 +656,8 @@ function mergeLiveData(live) {
     ports: live.ports || [],
     vessels: live.vessels?.length ? live.vessels : D.vessels,
     diplomacy: window.DIPLOMACY_DATA || [],
-    satellites: live.satellites?.length ? live.satellites : D.satellites,
+    militaryBases: live.militaryBases?.length ? live.militaryBases : D.militaryBases,
+    militaryShips: live.militaryShips?.length ? live.militaryShips : D.militaryShips,
     conflictEvents: live.conflictEvents || [],
     aisstream: live.aisstream || [],
     kasperskyCyber: live.kasperskyCyber || [],
@@ -867,7 +883,7 @@ engineRef.current = e;
       activeLayers: Object.values(active).filter(Boolean).length,
       flights: active.flights ? D.flights.length : 0,
       vessels: active.logistics ? D.vessels.length : 0,
-      sats: active.satellites ? D.satellites.length : 0,
+      military: active.military ? (D.militaryBases?.length || 0) + (D.militaryShips?.length || 0) : 0,
       news: active.news ? D.news.length : 0,
       cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
@@ -878,7 +894,7 @@ engineRef.current = e;
     const m = {
       diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
-      cyber: '#ff5c2e', satellites: theme.satLeo, conflicts: '#ff3040',
+      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040',
     };
     return m[id] || theme.accent;
   };

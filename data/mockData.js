@@ -135,6 +135,33 @@ window.MOCK_DATA = (() => {
     }
   });
 
+  const militaryBases = [
+    { id: 'MIL-RAMSTEIN', name: 'Ramstein Air Base', country: 'Germany', function: 'Air Base', region: 'Europe', lat: 49.44, lon: 7.60 },
+    { id: 'MIL-ROTA', name: 'Naval Station Rota', country: 'Spain', function: 'Naval Base', region: 'Europe', lat: 36.62, lon: -6.35 },
+    { id: 'MIL-NORFOLK', name: 'Naval Station Norfolk', country: 'United States', function: 'Naval Base', region: 'North America', lat: 36.95, lon: -76.33 },
+    { id: 'MIL-SAN-DIEGO', name: 'Naval Base San Diego', country: 'United States', function: 'Naval Base', region: 'North America', lat: 32.68, lon: -117.12 },
+    { id: 'MIL-PEARL', name: 'Joint Base Pearl Harbor-Hickam', country: 'United States', function: 'Joint Naval/Air Base', region: 'Pacific', lat: 21.35, lon: -157.95 },
+    { id: 'MIL-YOKOSUKA', name: 'Fleet Activities Yokosuka', country: 'Japan', function: 'Naval Base', region: 'Pacific', lat: 35.29, lon: 139.67 },
+    { id: 'MIL-OSAN', name: 'Osan Air Base', country: 'South Korea', function: 'Air Base', region: 'Pacific', lat: 37.09, lon: 127.03 },
+    { id: 'MIL-GUAM', name: 'Naval Base Guam', country: 'United States', function: 'Naval Base', region: 'Pacific', lat: 13.44, lon: 144.66 },
+    { id: 'MIL-DIEGO-GARCIA', name: 'Diego Garcia', country: 'United Kingdom', function: 'Joint Support Facility', region: 'Indian Ocean', lat: -7.31, lon: 72.41 },
+    { id: 'MIL-BAHRAIN', name: 'Naval Support Activity Bahrain', country: 'Bahrain', function: 'Naval Base', region: 'Middle East', lat: 26.20, lon: 50.61 },
+    { id: 'MIL-INCIRLIK', name: 'Incirlik Air Base', country: 'Turkey', function: 'Air Base', region: 'Middle East', lat: 37.00, lon: 35.43 },
+    { id: 'MIL-DJIBOUTI', name: 'Camp Lemonnier', country: 'Djibouti', function: 'Expeditionary Base', region: 'Horn of Africa', lat: 11.55, lon: 43.15 },
+    { id: 'MIL-AKROTIRI', name: 'RAF Akrotiri', country: 'United Kingdom', function: 'Air Base', region: 'Eastern Mediterranean', lat: 34.59, lon: 32.99 },
+    { id: 'MIL-DARWIN', name: 'Robertson Barracks', country: 'Australia', function: 'Army Base', region: 'Pacific', lat: -12.44, lon: 130.97 },
+  ];
+
+  const militaryShips = [
+    { id: 'NAV-ATL-01', name: 'Atlantic Surface Group', country: 'United States', function: 'Naval Ship', region: 'North Atlantic', lat: 36.2, lon: -45.0, type: 'military' },
+    { id: 'NAV-MED-01', name: 'Mediterranean Task Group', country: 'NATO', function: 'Naval Ship', region: 'Mediterranean', lat: 34.7, lon: 18.4, type: 'military' },
+    { id: 'NAV-GULF-01', name: 'Gulf Patrol Group', country: 'United States', function: 'Naval Ship', region: 'Persian Gulf', lat: 25.9, lon: 54.5, type: 'military' },
+    { id: 'NAV-IO-01', name: 'Indian Ocean Surface Group', country: 'United Kingdom', function: 'Naval Ship', region: 'Indian Ocean', lat: -4.5, lon: 68.0, type: 'military' },
+    { id: 'NAV-SCS-01', name: 'South China Sea Patrol', country: 'United States', function: 'Naval Ship', region: 'South China Sea', lat: 12.2, lon: 114.5, type: 'military' },
+    { id: 'NAV-PAC-01', name: 'Western Pacific Carrier Group', country: 'United States', function: 'Naval Ship', region: 'Western Pacific', lat: 24.5, lon: 138.0, type: 'military' },
+    { id: 'NAV-BALTIC-01', name: 'Baltic Maritime Patrol', country: 'NATO', function: 'Naval Ship', region: 'Baltic Sea', lat: 56.1, lon: 19.3, type: 'military' },
+  ];
+
   // Cyber attacks — origin → target flows
   const CYBER_ORIGINS = [
     {lat:55.76,lon:37.62,label:"MOW"},
@@ -274,7 +301,7 @@ window.MOCK_DATA = (() => {
   ];
 
   return {
-    CITIES, news, flights, SHIPPING, vessels, cyber, satellites,
+    CITIES, news, flights, SHIPPING, vessels, militaryBases, militaryShips, cyber, satellites,
     conflicts, storms, winds, mountains, rivers, trucking
   };
 })();

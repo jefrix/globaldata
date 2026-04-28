@@ -6,7 +6,6 @@ const router = express.Router();
 const CACHE_TTL_MS = Number(process.env.LIVE_CACHE_TTL_MS || 30000);
 const SHIPPING_LANES_URL = 'https://raw.githubusercontent.com/newzealandpaul/Shipping-Lanes/main/data/Shipping_Lanes_v1.geojson';
 const PORTS_URL = 'https://raw.githubusercontent.com/tayljordan/ports/main/ports.json';
-const CELESTRAK_ACTIVE_URL = 'https://celestrak.org/NORAD/elements/gp.php?GROUP=active&FORMAT=json';
 const ADSB_LOL_URL = 'https://api.adsb.lol/v2/lat/0/lon/0/dist/10000';
 const KASPERSKY_COUNTRIES_URL = 'https://cybermap.kaspersky.com/map/data/countries.json';
 const KASPERSKY_EVENTS_BASE = 'https://sm-cybermap-mediaprod.smweb.tech/data/events/default';
@@ -143,6 +142,33 @@ const KASPERSKY_HUBS = [
   { lat: 52.52, lon: 13.4, label: 'Berlin exchange' },
   { lat: 1.35, lon: 103.82, label: 'Singapore exchange' },
   { lat: 35.68, lon: 139.69, label: 'Tokyo exchange' },
+];
+
+const MILITARY_BASES = [
+  { id: 'MIL-RAMSTEIN', name: 'Ramstein Air Base', country: 'Germany', function: 'Air Base', region: 'Europe', lat: 49.44, lon: 7.60 },
+  { id: 'MIL-ROTA', name: 'Naval Station Rota', country: 'Spain', function: 'Naval Base', region: 'Europe', lat: 36.62, lon: -6.35 },
+  { id: 'MIL-NORFOLK', name: 'Naval Station Norfolk', country: 'United States', function: 'Naval Base', region: 'North America', lat: 36.95, lon: -76.33 },
+  { id: 'MIL-SAN-DIEGO', name: 'Naval Base San Diego', country: 'United States', function: 'Naval Base', region: 'North America', lat: 32.68, lon: -117.12 },
+  { id: 'MIL-PEARL', name: 'Joint Base Pearl Harbor-Hickam', country: 'United States', function: 'Joint Naval/Air Base', region: 'Pacific', lat: 21.35, lon: -157.95 },
+  { id: 'MIL-YOKOSUKA', name: 'Fleet Activities Yokosuka', country: 'Japan', function: 'Naval Base', region: 'Pacific', lat: 35.29, lon: 139.67 },
+  { id: 'MIL-OSAN', name: 'Osan Air Base', country: 'South Korea', function: 'Air Base', region: 'Pacific', lat: 37.09, lon: 127.03 },
+  { id: 'MIL-GUAM', name: 'Naval Base Guam', country: 'United States', function: 'Naval Base', region: 'Pacific', lat: 13.44, lon: 144.66 },
+  { id: 'MIL-DIEGO-GARCIA', name: 'Diego Garcia', country: 'United Kingdom', function: 'Joint Support Facility', region: 'Indian Ocean', lat: -7.31, lon: 72.41 },
+  { id: 'MIL-BAHRAIN', name: 'Naval Support Activity Bahrain', country: 'Bahrain', function: 'Naval Base', region: 'Middle East', lat: 26.20, lon: 50.61 },
+  { id: 'MIL-INCIRLIK', name: 'Incirlik Air Base', country: 'Turkey', function: 'Air Base', region: 'Middle East', lat: 37.00, lon: 35.43 },
+  { id: 'MIL-DJIBOUTI', name: 'Camp Lemonnier', country: 'Djibouti', function: 'Expeditionary Base', region: 'Horn of Africa', lat: 11.55, lon: 43.15 },
+  { id: 'MIL-AKROTIRI', name: 'RAF Akrotiri', country: 'United Kingdom', function: 'Air Base', region: 'Eastern Mediterranean', lat: 34.59, lon: 32.99 },
+  { id: 'MIL-DARWIN', name: 'Robertson Barracks', country: 'Australia', function: 'Army Base', region: 'Pacific', lat: -12.44, lon: 130.97 },
+];
+
+const MILITARY_SHIPS = [
+  { id: 'NAV-ATL-01', name: 'Atlantic Surface Group', country: 'United States', function: 'Naval Ship', region: 'North Atlantic', lat: 36.2, lon: -45.0, type: 'military' },
+  { id: 'NAV-MED-01', name: 'Mediterranean Task Group', country: 'NATO', function: 'Naval Ship', region: 'Mediterranean', lat: 34.7, lon: 18.4, type: 'military' },
+  { id: 'NAV-GULF-01', name: 'Gulf Patrol Group', country: 'United States', function: 'Naval Ship', region: 'Persian Gulf', lat: 25.9, lon: 54.5, type: 'military' },
+  { id: 'NAV-IO-01', name: 'Indian Ocean Surface Group', country: 'United Kingdom', function: 'Naval Ship', region: 'Indian Ocean', lat: -4.5, lon: 68.0, type: 'military' },
+  { id: 'NAV-SCS-01', name: 'South China Sea Patrol', country: 'United States', function: 'Naval Ship', region: 'South China Sea', lat: 12.2, lon: 114.5, type: 'military' },
+  { id: 'NAV-PAC-01', name: 'Western Pacific Carrier Group', country: 'United States', function: 'Naval Ship', region: 'Western Pacific', lat: 24.5, lon: 138.0, type: 'military' },
+  { id: 'NAV-BALTIC-01', name: 'Baltic Maritime Patrol', country: 'NATO', function: 'Naval Ship', region: 'Baltic Sea', lat: 56.1, lon: 19.3, type: 'military' },
 ];
 
 async function fetchJson(url, options = {}) {
@@ -435,26 +461,6 @@ function makeVesselsFromLanes(lanes) {
   return vessels;
 }
 
-async function getSatellites() {
-  const data = await fetchJson(CELESTRAK_ACTIVE_URL);
-  return (Array.isArray(data) ? data : [])
-    .slice(0, 420)
-    .map((sat, index) => {
-      const meanMotion = finiteNumber(sat.MEAN_MOTION) || 14;
-      const alt = Math.max(350, Math.min(36000, ((86400 / meanMotion) / 90) * 450));
-      return {
-        id: sat.OBJECT_NAME || sat.OBJECT_ID || `SAT-${index}`,
-        norad: sat.NORAD_CAT_ID,
-        alt,
-        inclination: finiteNumber(sat.INCLINATION) || 0,
-        phase: ((finiteNumber(sat.MEAN_ANOMALY) || index * 19) * Math.PI) / 180,
-        speed: meanMotion / 14,
-        type: alt < 2000 ? 'LEO' : alt < 30000 ? 'MEO' : 'GEO',
-        source: 'CelesTrak',
-      };
-    });
-}
-
 async function getUcdpConflicts() {
   const token = process.env.UCDP_TOKEN;
   if (!token) {
@@ -671,7 +677,7 @@ router.get('/', async (req, res) => {
     settle('flights', () => getFlights(flightLimit)),
     settle('shippingLanes', getShippingLanes),
     settle('ports', getPorts),
-    settle('satellites', getSatellites),
+    settle('military', async () => MILITARY_BASES),
     settle('ucdpConflicts', getUcdpConflicts),
     settle('aisstream', getAisStreamStatus),
     settle('earthquakes', getEarthquakes),
@@ -693,7 +699,8 @@ router.get('/', async (req, res) => {
     flights: results.find(r => r.name === 'flights').data,
     shippingLanes,
     ports: results.find(r => r.name === 'ports').data,
-    satellites: results.find(r => r.name === 'satellites').data,
+    militaryBases: results.find(r => r.name === 'military').data,
+    militaryShips: MILITARY_SHIPS,
     conflictEvents: results.find(r => r.name === 'ucdpConflicts').data,
     aisstream: results.find(r => r.name === 'aisstream').data,
     vessels: makeVesselsFromLanes(shippingLanes),

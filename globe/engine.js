@@ -297,7 +297,7 @@ window.GlobeEngine = (function () {
       ctx.moveTo(32, 12);
       ctx.lineTo(32, 49);
       ctx.stroke();
-    } else if (kind === 'news' || kind === 'diplomacy') {
+    } else if (kind === 'news' || kind === 'diplomacy' || kind === 'militaryBase' || kind === 'militaryShip') {
       ctx.globalAlpha = 0.24;
       ctx.beginPath();
       ctx.arc(32, 32, 26, 0, Math.PI * 2);
@@ -315,10 +315,38 @@ window.GlobeEngine = (function () {
       ctx.textBaseline = 'middle';
       ctx.shadowColor = color;
       ctx.shadowBlur = 10;
-      ctx.fillText(kind === 'news' ? 'N' : 'D', 32, 34);
+      const label = kind === 'news' ? 'N' : kind === 'diplomacy' ? 'D' : kind === 'militaryShip' ? 'm' : 'M';
+      ctx.fillText(label, 32, 34);
       ctx.shadowBlur = 0;
     }
 
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  function makeTextTexture(lines, color = '#cfe2ff') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 96;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = 'bold 18px Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(2, 10, 18, 0.62)';
+    ctx.fillRect(0, 9, canvas.width, 78);
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = 0.55;
+    ctx.strokeRect(1, 10, canvas.width - 2, 76);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 7;
+    ctx.fillText(String(lines[0] || '').toUpperCase(), 14, 34);
+    ctx.font = '15px Arial, sans-serif';
+    ctx.shadowBlur = 4;
+    ctx.fillText(String(lines[1] || '').toUpperCase(), 14, 62);
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
     return texture;
@@ -419,7 +447,7 @@ window.GlobeEngine = (function () {
   };
 
   GlobeEngine.prototype._ensureLayerGroups = function () {
-    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'flights', 'cyber', 'satellites', 'conflicts']
+    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'flights', 'cyber', 'military', 'conflicts']
       .forEach(id => {
         if (!this.layerGroups[id]) {
           const group = new THREE.Group();
@@ -641,6 +669,26 @@ window.GlobeEngine = (function () {
     return mesh;
   };
 
+  GlobeEngine.prototype._addTextLabel = function (layer, lat, lon, lines, color, width = 12, height = 4.5) {
+    if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return null;
+    const texture = makeTextTexture(lines, color);
+    const material = new THREE.SpriteMaterial({
+      map: texture,
+      color: 0xffffff,
+      transparent: true,
+      opacity: this.layerOpacity[layer] ?? 1,
+      depthTest: true,
+      depthWrite: false,
+    });
+    const mesh = new THREE.Sprite(material);
+    mesh.position.copy(latLonToVec3(Number(lat) + 1.1, Number(lon) + 1.6, R + 2.6));
+    mesh.scale.set(width, height, 1);
+    mesh.renderOrder = 4;
+    mesh.userData = { layer, kind: 'label' };
+    this.layerGroups[layer].add(mesh);
+    return mesh;
+  };
+
   GlobeEngine.prototype._addPoint = function (layer, lat, lon, color, size, kind, data) {
     if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return null;
     const mesh = new THREE.Mesh(
@@ -800,7 +848,7 @@ window.GlobeEngine = (function () {
     this.lastLiveData = data || {};
     this._ensureLayerGroups();
     this.vesselObjects = [];
-    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'cyber', 'satellites', 'conflicts'].forEach(id => this._clearGroup(id));
+    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'cyber', 'military', 'conflicts'].forEach(id => this._clearGroup(id));
 
     (this.mapCountryRings || []).forEach(country => {
       this._addLine('geographic', country.points, this.theme.gridStrong || this.theme.land || '#5ea9ff', 0.18);
@@ -878,11 +926,16 @@ window.GlobeEngine = (function () {
       this._addPoint('cyber', target.lat, target.lon, c.color || '#ff5c2e', 0.62, 'cyber', c);
     });
 
-    (data.satellites || []).slice(0, Math.min(220, this.maxTrackedObjects)).forEach((s, i) => {
-      const lon = ((s.phase || 0) / (Math.PI * 2)) * 360 - 180;
-      const lat = Math.sin((s.phase || i) + i) * (s.inclination || 45);
-      const color = s.type === 'GEO' ? this.theme.satGeo : s.type === 'MEO' ? this.theme.satMeo : this.theme.satLeo;
-      this._addPoint('satellites', lat, lon, color || '#6ee7f5', 0.45, 'satellite', s);
+    (data.militaryBases || []).slice(0, this.maxTrackedObjects).forEach(base => {
+      const material = this._getMarkerMaterial('militaryBase', '#7bd6a8', this.layerOpacity.military ?? 1);
+      this._addSpritePoint('military', base.lat, base.lon, material, 3.0, 3.0, 'military', base);
+      this._addTextLabel('military', base.lat, base.lon, [base.country, base.function], '#7bd6a8', 13.5, 5);
+    });
+
+    (data.militaryShips || []).slice(0, this.maxTrackedObjects).forEach(ship => {
+      const material = this._getMarkerMaterial('militaryShip', '#9ad4ff', this.layerOpacity.military ?? 1);
+      this._addSpritePoint('military', ship.lat, ship.lon, material, 2.25, 2.25, 'military', ship);
+      this._addTextLabel('military', ship.lat, ship.lon, [ship.country, ship.function], '#9ad4ff', 11, 4.2);
     });
 
     (data.conflicts || []).forEach(c => {
