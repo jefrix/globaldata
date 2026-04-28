@@ -177,14 +177,18 @@ function useDTG() {
   useEffect(() => {
     const fmt = () => {
       const d = new Date();
-      const p2 = n => String(n).padStart(2, '0');
-      const dd = p2(d.getUTCDate());
-      const hh = p2(d.getUTCHours());
-      const mm = p2(d.getUTCMinutes());
-      const ss = p2(d.getUTCSeconds());
-      const mon = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getUTCMonth()];
-      const yy = String(d.getUTCFullYear()).slice(2);
-      setDtg(`${dd}${hh}${mm}${ss}Z ${mon}${yy}`);
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/New_York',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        month: 'short',
+        year: '2-digit',
+        hour12: false,
+        timeZoneName: 'short',
+      }).formatToParts(d).map(part => [part.type, part.value]));
+      setDtg(`${parts.day}${parts.hour}${parts.minute}${parts.second}${parts.timeZoneName} ${parts.month.toUpperCase()}${parts.year}`);
     };
     fmt();
     const id = setInterval(fmt, 1000);
@@ -308,6 +312,7 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: n.ts, kind: 'NEWS', cat: n.category, city: n.city, country: n.country,
         title: n.title, meta: n.source || `${n.sources} SRC`,
         color: isTodayUtc(n.ts) ? '#e03535' : '#f5d142',
+        inspectorKind: 'news',
         data: n,
       }));
     }
@@ -317,12 +322,16 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: q.ts, kind: 'QUAKE', cat: `M${q.mag || '?'}`,
         city: q.place || 'USGS', country: '--', title: q.title || q.place, meta: `M${q.mag || '?'}`,
         color: q.mag >= 5 ? '#ff7050' : '#f5b142',
+        inspectorKind: 'earthquake',
+        data: q,
       }));
       (D.weather || []).slice(0, 20).forEach(w => feed.push({
         id: w.id || w.url || w.title,
         t: w.ts, kind: 'WX', cat: w.severity,
         city: w.area || 'NWS', country: 'US', title: w.title, meta: w.severity || 'ALERT',
         color: '#a38bff',
+        inspectorKind: 'weather',
+        data: w,
       }));
     }
     if (active.cyber) {
@@ -332,6 +341,8 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: Date.now() - Math.random() * 3600000, kind: 'CYB', cat: c.severity,
         city: c.target.label, country: c.target.country || '--', title: `${c.type} -> ${c.target.label}`, meta: c.sourceName || c.severity,
         color: c.color || (c.severity === 'CRIT' ? '#ff3370' : c.severity === 'HIGH' ? '#ff5c2e' : '#f5a742'),
+        inspectorKind: 'cyber',
+        data: c,
       }));
     }
     if (active.conflicts) {
@@ -340,12 +351,16 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: c.ts || Date.now(), kind: 'UCDP', cat: 'GED',
         city: c.country || '--', country: '--', title: c.title || 'Conflict event', meta: c.fatalities !== undefined ? `${c.fatalities} fatal` : 'GED',
         color: '#ff3040',
+        inspectorKind: 'conflict',
+        data: c,
       }));
       D.conflicts.slice(0, 14).forEach(c => feed.push({
         id: c.id || c.note,
         t: Date.now() - Math.random() * 7200000, kind: 'CFL', cat: c.level > 0.7 ? 'KIN' : 'GRAY',
         city: c.country, country: '--', title: c.note, meta: `L${Math.round(c.level * 10)}`,
         color: c.level > 0.7 ? '#ff3040' : c.level > 0.4 ? '#ff7050' : '#f5a742',
+        inspectorKind: 'conflict',
+        data: c,
       }));
     }
     if (active.military) {
@@ -354,12 +369,16 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         t: Date.now() - Math.random() * 3600000, kind: 'MIL', cat: b.function,
         city: b.country || '--', country: b.country || '--', title: b.name, meta: b.function || 'BASE',
         color: '#7bd6a8',
+        inspectorKind: 'military',
+        data: b,
       }));
       (D.militaryShips || []).slice(0, 15).forEach(s => feed.push({
         id: s.id || s.name,
         t: Date.now() - Math.random() * 3600000, kind: 'NAV', cat: s.function,
         city: s.country || '--', country: s.country || '--', title: s.name, meta: s.function || 'NAVAL',
         color: '#9ad4ff',
+        inspectorKind: 'military',
+        data: s,
       }));
     }
     if (active.flights) {
@@ -369,6 +388,8 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         city: f.country || f.dest?.name || 'ADS-B', country: f.country || f.dest?.country || '--',
         title: f.callsign || f.id, meta: f.alt ? `FL${Math.floor(f.alt/100)}` : 'ADS-B',
         color: theme.flight,
+        inspectorKind: 'flight',
+        data: f,
       }));
     }
     feed.sort((a, b) => b.t - a.t);
@@ -395,10 +416,9 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         {items.map((it, i) => (
           <button
             key={`${it.kind}-${it.id || i}`}
-            className={`feed-item ${it.kind === 'NEWS' ? 'clickable' : ''} ${selectedId === it.id ? 'selected' : ''}`}
-            onClick={() => it.kind === 'NEWS' && onSelect?.({ kind: 'news', data: it.data })}
-            disabled={it.kind !== 'NEWS'}
-            title={it.kind === 'NEWS' ? 'Open news feed' : undefined}
+            className={`feed-item clickable ${selectedId === it.id ? 'selected' : ''}`}
+            onClick={() => onSelect?.({ kind: it.inspectorKind, data: it.data, eventId: it.id })}
+            title="Show details in inspector"
           >
             <div className="feed-tag" style={{ color: it.color, borderColor: it.color }}>{it.kind}</div>
             <div className="feed-body">
@@ -1044,7 +1064,7 @@ engineRef.current = e;
             active={active}
             theme={theme}
             data={data}
-            selectedId={railPick?.kind === 'news' ? (railPick.data.id || railPick.data.url || railPick.data.title) : null}
+            selectedId={railPick?.eventId || null}
             onSelect={setRailPick}
           />
         </aside>
