@@ -1122,7 +1122,7 @@ window.GlobeEngine = (function () {
     const targetLon = Number(lon);
     if (!Number.isFinite(targetLat) || !Number.isFinite(targetLon)) return;
     const targetX = Math.max(-1.25, Math.min(1.25, -targetLat * DEG));
-    const desiredY = -targetLon * DEG;
+    const desiredY = (-90 - targetLon) * DEG;
     const deltaY = Math.atan2(Math.sin(desiredY - this.rotationY), Math.cos(desiredY - this.rotationY));
     this.focusAnim = {
       sx: this.rotationX,

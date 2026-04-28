@@ -926,7 +926,7 @@ engineRef.current = e;
       if (!engineRef.current) return;
       const eng = engineRef.current;
       const lat = Math.round(-eng.rotationX * 180 / Math.PI * 100) / 100;
-      const lon = Math.round(((-eng.rotationY * 180 / Math.PI) % 360 + 540) % 360 - 180);
+      const lon = Math.round(((-90 - eng.rotationY * 180 / Math.PI) % 360 + 540) % 360 - 180);
       setCamInfo({ lat, lon, zoom: (320 / eng.currentZ).toFixed(2) });
     }, 250);
     return () => clearInterval(id);
