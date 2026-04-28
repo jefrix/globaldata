@@ -478,8 +478,7 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
                 <span>{it.city}</span>
                 <span className="feed-dot">·</span>
                 <span>{it.meta}</span>
-                <span className="feed-dot">·</span>
-                <span>{fmtT(it.t)}</span>
+                <span className="feed-time">{fmtT(it.t)}</span>
               </div>
             </div>
           </button>
@@ -489,74 +488,38 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
   );
 }
 
-// ============ DETAIL INSPECTOR ============
+// ============ INSPECTOR ============
+function Row({ k, v, color }) {
+  return <div className="insp-row"><span>{k}</span><b style={color ? { color } : null}>{v}</b></div>;
+}
 function Inspector({ pick, onClose, theme }) {
   if (!pick) return (
     <div className="inspector empty">
       <div className="insp-hd">INSPECTOR</div>
-      <div className="insp-empty">
-        <div className="reticle">
-          <svg width="60" height="60" viewBox="0 0 60 60">
-            <circle cx="30" cy="30" r="20" fill="none" stroke={theme.textDim} strokeWidth="0.8" />
-            <circle cx="30" cy="30" r="12" fill="none" stroke={theme.textDim} strokeWidth="0.6" strokeDasharray="2 3" />
-            <line x1="30" y1="5" x2="30" y2="15" stroke={theme.textDim} /><line x1="30" y1="45" x2="30" y2="55" stroke={theme.textDim} />
-            <line x1="5" y1="30" x2="15" y2="30" stroke={theme.textDim} /><line x1="45" y1="30" x2="55" y2="30" stroke={theme.textDim} />
-          </svg>
-        </div>
-        <div>CLICK A DATA POINT ON GLOBE</div>
-        <div className="sub">TO OPEN INSPECTOR</div>
-      </div>
+      <div className="insp-empty">SELECT A GLOBE OBJECT<br/><span>OR CLICK AN EVENT FEED ITEM</span></div>
     </div>
   );
-
   const { kind, data } = pick;
   return (
-    <div className="inspector">
+    <div className="inspector active">
       <div className="insp-hd">
-        <span>INSPECTOR / {kind.toUpperCase()}</span>
-        <button className="insp-close" onClick={onClose}>✕</button>
+        <span>{kind?.toUpperCase?.() || 'OBJECT'}</span>
+        <button onClick={onClose}>×</button>
       </div>
       <div className="insp-body">
-        {kind === 'news' && <NewsDetail d={data} />}
         {kind === 'city' && <CityDetail d={data} />}
         {kind === 'flight' && <FlightDetail d={data} />}
-        {kind === 'earthquake' && <EarthquakeDetail d={data} />}
-        {kind === 'weather' && <WeatherDetail d={data} />}
         {kind === 'vessel' && <VesselDetail d={data} />}
-        {kind === 'port' && <PortDetail d={data} />}
+        {kind === 'news' && <NewsDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
         {kind === 'diplomacy' && <DiplomacyDetail d={data} />}
         {kind === 'military' && <MilitaryDetail d={data} />}
         {kind === 'storm' && <StormDetail d={data} />}
         {kind === 'conflict' && <ConflictDetail d={data} />}
+        {kind === 'earthquake' && <EarthquakeDetail d={data} />}
+        {kind === 'weather' && <WeatherDetail d={data} />}
       </div>
     </div>
-  );
-}
-
-const Row = ({ k, v, color }) => (
-  <div className="kv"><span className="k">{k}</span><span className="v" style={color ? { color } : null}>{v}</span></div>
-);
-
-function NewsDetail({ d }) {
-  const color = isTodayUtc(d.ts) ? '#e03535' : '#f5d142';
-  const freshness = isTodayUtc(d.ts) ? 'TODAY' : 'YESTERDAY';
-  return (
-    <>
-      <div className="insp-title" style={{ color }}>{d.title}</div>
-      <div className="heat-bar"><div className="heat-fill" style={{ width: '100%', background: color }} /></div>
-      <Row k="EVENT ID" v={d.id} />
-      <Row k="CATEGORY" v={d.category} />
-      <Row k="LOCATION" v={`${d.city}, ${d.country}`} />
-      <Row k="COORD" v={`${d.lat.toFixed(2)}, ${d.lon.toFixed(2)}`} />
-      <Row k="FRESHNESS" v={freshness} color={color} />
-      <Row k="SOURCE" v={d.sourceName || d.source || '--'} color={color} />
-      <Row k="MEDIA" v={d.officialSource ? 'OFFICIAL' : 'UNVERIFIED'} color={d.officialSource ? color : null} />
-      <Row k="FIRST RPT" v={new Date(d.ts).toUTCString().replace('GMT', 'Z')} />
-      <div className="news-actions">
-        {d.url && <a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN ARTICLE</a>}
-      </div>
-    </>
   );
 }
 function CityDetail({ d }) {
@@ -566,56 +529,57 @@ function CityDetail({ d }) {
   </>);
 }
 function FlightDetail({ d }) {
-  if (!d.origin || !d.dest) {
-    return (<>
-      <div className="insp-title">{d.callsign || d.id}</div>
-      <Row k="COUNTRY" v={d.country || '--'} />
-      <Row k="ALT" v={d.alt ? `FL${Math.floor(d.alt/100)}` : '--'} />
-      <Row k="SPEED" v={d.velocity ? `${Math.round(d.velocity)} M/S` : '--'} />
-      <Row k="COORD" v={`${Number(d.lat).toFixed(2)}, ${Number(d.lon).toFixed(2)}`} />
-    </>);
-  }
+  const live = Number.isFinite(Number(d.lat)) && Number.isFinite(Number(d.lon));
   return (<>
-    <div className="insp-title">{d.id}</div>
-    <Row k="ORIGIN" v={`${d.origin.name} (${d.origin.country})`} />
-    <Row k="DEST" v={`${d.dest.name} (${d.dest.country})`} />
-    <Row k="ALT" v={`FL${Math.floor(d.alt/100)}`} />
-    <Row k="PROGRESS" v={`${Math.round(d.progress * 100)}%`} />
-  </>);
-}
-function EarthquakeDetail({ d }) {
-  const mag = Number(d.mag || 0);
-  const color = mag >= 5 ? '#ff7050' : '#f5b142';
-  return (<>
-    <div className="insp-title" style={{ color }}>{d.title || d.place}</div>
-    <Row k="MAG" v={mag ? mag.toFixed(1) : '--'} color={color} />
-    <Row k="PLACE" v={d.place || '--'} />
-    <Row k="DEPTH" v={Number.isFinite(d.depth) ? `${Math.round(d.depth)} KM` : '--'} />
-    <Row k="TIME" v={d.ts ? new Date(d.ts).toUTCString().replace('GMT', 'Z') : '--'} />
-  </>);
-}
-function WeatherDetail({ d }) {
-  return (<>
-    <div className="insp-title">{d.title}</div>
-    <Row k="SEVERITY" v={d.severity || '--'} />
-    <Row k="URGENCY" v={d.urgency || '--'} />
-    <Row k="CERTAINTY" v={d.certainty || '--'} />
-    <Row k="AREA" v={d.area || '--'} />
+    <div className="insp-title" style={{ color: '#ffd96e' }}>{d.callsign || d.id}</div>
+    <Row k="TYPE" v={live ? 'LIVE ADS-B TRACK' : 'SCHEDULED ARC'} />
+    <Row k="COUNTRY" v={d.country || '--'} />
+    <Row k="ALT" v={d.alt ? `${Math.round(d.alt).toLocaleString()} ft` : '--'} />
+    <Row k="SPEED" v={d.velocity ? `${Math.round(d.velocity)} kt` : '--'} />
+    <Row k="SOURCE" v={d.source || 'Mock route'} />
   </>);
 }
 function VesselDetail({ d }) {
   return (<>
-    <div className="insp-title">{d.id} · {d.type.toUpperCase()}</div>
-    <Row k="TYPE" v={d.type} /><Row k="LANE" v={d.lane} /><Row k="HDG" v={d.dir > 0 ? 'EB' : 'WB'} />
+    <div className="insp-title" style={{ color: d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8' }}>{d.id}</div>
+    <Row k="TYPE" v={d.type?.toUpperCase()} />
+    <Row k="LANE" v={`#${d.lane}`} />
+    <Row k="SPD" v={`${Math.round((d.speed || 0) * 100000)} kt`} />
+    <Row k="PROG" v={`${Math.round((d.progress || 0) * 100)}%`} />
   </>);
 }
-function PortDetail({ d }) {
+function NewsDetail({ d }) {
+  const hot = isTodayUtc(d.ts);
   return (<>
-    <div className="insp-title">{d.name}</div>
-    <Row k="COUNTRY" v={d.country || '--'} />
-    <Row k="REGION" v={d.state || '--'} />
-    <Row k="COORD" v={`${Number(d.lat).toFixed(2)}, ${Number(d.lon).toFixed(2)}`} />
-    <Row k="SOURCE" v={d.source || 'ports'} />
+    <div className="insp-title" style={{ color: hot ? '#e03535' : '#f5d142' }}>{d.title}</div>
+    <Row k="CATEGORY" v={d.category} />
+    <Row k="LOCATION" v={`${d.city}, ${d.country}`} />
+    <Row k="SOURCE" v={d.sourceName || d.source || `${d.sources} reporting sources`} color={hot ? '#e03535' : '#f5d142'} />
+    <Row k="AGE" v={`${Math.floor((Date.now() - d.ts) / 60000)} min ago`} />
+    {d.url && <div className="news-actions">
+      <a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN ARTICLE</a>
+    </div>}
+  </>);
+}
+function EarthquakeDetail({ d }) {
+  const color = d.mag >= 5 ? '#ff7050' : '#f5b142';
+  return (<>
+    <div className="insp-title" style={{ color }}>{d.title || d.place}</div>
+    <Row k="MAGNITUDE" v={`M${d.mag || '?'}`} color={color} />
+    <Row k="PLACE" v={d.place || '--'} />
+    <Row k="DEPTH" v={d.depth !== undefined ? `${d.depth} km` : '--'} />
+    <Row k="SOURCE" v="USGS" />
+    {d.url && <div className="news-actions"><a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN USGS</a></div>}
+  </>);
+}
+function WeatherDetail({ d }) {
+  return (<>
+    <div className="insp-title" style={{ color: '#a38bff' }}>{d.title}</div>
+    <Row k="AREA" v={d.area || '--'} />
+    <Row k="SEVERITY" v={d.severity || '--'} />
+    <Row k="URGENCY" v={d.urgency || '--'} />
+    <Row k="CERTAINTY" v={d.certainty || '--'} />
+    {d.url && <div className="news-actions"><a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN ALERT</a></div>}
   </>);
 }
 function CyberDetail({ d }) {
@@ -718,7 +682,7 @@ function mergeLiveData(live) {
   const D = window.MOCK_DATA;
   if (!live) return D;
   const liveSources = live.sources || [];
-  const hasLiveNewsSource = liveSources.some(source => source.name === 'news');
+  const hasLiveNewsSource = liveSources.some(source => source.name === 'news' && source.ok);
 
   return {
     ...D,
