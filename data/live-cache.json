@@ -1,0 +1,26 @@
+{
+  "strictLive": true,
+  "cached": true,
+  "staticCache": true,
+  "generatedAt": 0,
+  "sources": [
+    {
+      "name": "cache",
+      "ok": false,
+      "count": 0,
+      "error": "Waiting for the scheduled GitHub Action to build the first live cache"
+    }
+  ],
+  "news": [],
+  "flights": [],
+  "shippingLanes": [],
+  "ports": [],
+  "vessels": [],
+  "militaryBases": [],
+  "militaryShips": [],
+  "conflictEvents": [],
+  "aisstream": [],
+  "earthquakes": [],
+  "weather": [],
+  "kasperskyCyber": []
+}
