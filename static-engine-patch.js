@@ -40,10 +40,24 @@
     ctx.strokeStyle = stroke;
     ctx.lineWidth = 1.35;
     (rings || []).forEach(ring => {
-      ringToSegments(ring.points || [], width, height).forEach(segment => {
+      const points = [];
+      let previousX = null;
+      (ring.points || []).forEach(([lat, lon]) => {
+        const x = ((Number(lon) + 180) / 360) * width;
+        let unwrappedX = x;
+        const y = ((90 - Number(lat)) / 180) * height;
+        if (previousX !== null) {
+          while (unwrappedX - previousX > width * 0.5) unwrappedX -= width;
+          while (previousX - unwrappedX > width * 0.5) unwrappedX += width;
+        }
+        points.push([unwrappedX, y]);
+        previousX = unwrappedX;
+      });
+      if (points.length < 3) return;
+      [-width, 0, width].forEach(offset => {
         ctx.beginPath();
-        ctx.moveTo(segment[0][0], segment[0][1]);
-        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.moveTo(points[0][0] + offset, points[0][1]);
+        points.slice(1).forEach(([x, y]) => ctx.lineTo(x + offset, y));
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
@@ -89,10 +103,10 @@
       ctx.stroke();
     }
 
-    ctx.globalAlpha = 0.9;
+    ctx.globalAlpha = 0.96;
     paintRings(ctx, engine.mapLandRings, width, height, land, coast);
 
-    ctx.globalAlpha = 0.46;
+    ctx.globalAlpha = 0.34;
     ctx.strokeStyle = coast;
     ctx.lineWidth = 2.4;
     (engine.mapLandRings || []).forEach(ring => {

@@ -140,27 +140,25 @@ window.GlobeEngine = (function () {
   function drawRingOnTexture(ctx, ring, width, height, stroke = false) {
     const coords = ring.coordinates?.[0] || [];
     if (coords.length < 3) return;
-    const segments = [];
-    let current = [];
+    const points = [];
     let previousX = null;
 
-    coords.forEach(([lon, lat]) => {
+    coords.forEach(([lon, lat], index) => {
       const x = ((Number(lon) + 180) / 360) * width;
+      let unwrappedX = x;
       const y = ((90 - Number(lat)) / 180) * height;
-      if (previousX !== null && Math.abs(x - previousX) > width * 0.5 && current.length) {
-        segments.push(current);
-        current = [];
+      if (previousX !== null) {
+        while (unwrappedX - previousX > width * 0.5) unwrappedX -= width;
+        while (previousX - unwrappedX > width * 0.5) unwrappedX += width;
       }
-      current.push([x, y]);
-      previousX = x;
+      points.push([unwrappedX, y]);
+      previousX = unwrappedX;
     });
-    if (current.length) segments.push(current);
 
-    segments.forEach(segment => {
-      if (segment.length < 3) return;
+    [-width, 0, width].forEach(offset => {
       ctx.beginPath();
-      ctx.moveTo(segment[0][0], segment[0][1]);
-      segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
+      ctx.moveTo(points[0][0] + offset, points[0][1]);
+      points.slice(1).forEach(([x, y]) => ctx.lineTo(x + offset, y));
       ctx.closePath();
       ctx.fill();
       if (stroke) ctx.stroke();
