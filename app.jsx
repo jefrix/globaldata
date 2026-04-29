@@ -431,6 +431,14 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         inspectorKind: 'military',
         data: s,
       }));
+      (D.vessels || []).filter(isMilitaryVesselRecord).slice(0, 12).forEach(s => feed.push({
+        id: s.id || s.name,
+        t: Date.now() - Math.random() * 3600000, kind: 'NAV', cat: s.function || s.type,
+        city: s.country || '--', country: s.country || '--', title: s.name || s.id, meta: s.function || s.type || 'NAVAL',
+        color: '#9ad4ff',
+        inspectorKind: 'military',
+        data: s,
+      }));
     }
     if (active.flights) {
       D.flights.slice(0, 12).forEach(f => feed.push({
@@ -747,11 +755,30 @@ function focusPointForEvent(pick, data) {
       lon: Number(d.origin.lon) + (Number(d.dest.lon) - Number(d.origin.lon)) * progress,
     };
   }
-  if (pick?.kind === 'vessel' && Number.isFinite(Number(d.lane))) {
+  if (Number.isFinite(Number(d.lane))) {
     const path = (data?.SHIPPING || window.MOCK_DATA?.SHIPPING || [])[Number(d.lane)];
     return interpolateFeedPath(path, d.progress);
   }
   return null;
+}
+
+function isMilitaryVesselRecord(vessel) {
+  const text = [vessel?.type, vessel?.function, vessel?.country, vessel?.name, vessel?.id]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+  return /\b(military|naval|navy|carrier|patrol|surface group|task group)\b/.test(text);
+}
+
+function selectionColorForEvent(pick) {
+  if (pick?.kind === 'news') return isTodayUtc(pick.data?.ts) ? '#e03535' : '#f5d142';
+  if (pick?.kind === 'military') return '#9ad4ff';
+  if (pick?.kind === 'conflict') return '#ff3040';
+  if (pick?.kind === 'earthquake') return Number(pick.data?.mag || 0) >= 5 ? '#ff7050' : '#f5b142';
+  if (pick?.kind === 'weather' || pick?.kind === 'storm') return '#a38bff';
+  if (pick?.kind === 'flight') return '#ffd96e';
+  if (pick?.kind === 'cyber') return '#ff5c2e';
+  return '#ffffff';
 }
 
 function normalizeTweaks(tweaks, defaults) {
@@ -965,8 +992,10 @@ engineRef.current = e;
     return {
       activeLayers: Object.values(active).filter(Boolean).length,
       flights: active.flights ? D.flights.length : 0,
-      vessels: active.logistics ? D.vessels.length : 0,
-      military: active.military ? (D.militaryBases?.length || 0) + (D.militaryShips?.length || 0) : 0,
+      vessels: active.logistics ? (D.vessels || []).filter(v => !isMilitaryVesselRecord(v)).length : 0,
+      military: active.military
+        ? (D.militaryBases?.length || 0) + (D.militaryShips?.length || 0) + (D.vessels || []).filter(isMilitaryVesselRecord).length
+        : 0,
       news: active.news ? D.news.length : 0,
       cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
@@ -984,13 +1013,16 @@ engineRef.current = e;
 
   const selectFeedEvent = React.useCallback((eventPick) => {
     setRailPick(eventPick);
-    const focus = focusPointForEvent(eventPick, data);
-    if (focus && engineRef.current?.focusOn) {
-      engineRef.current.focusOn(focus.lat, focus.lon, 185);
-      setRotating(false);
-      setTweaks(t => ({ ...t, spin: false }));
+    const point = focusPointForEvent(eventPick, data);
+    if (point && engineRef.current?.highlightPoint) {
+      engineRef.current.highlightPoint(point.lat, point.lon, selectionColorForEvent(eventPick));
     }
   }, [data]);
+
+  const clearRailSelection = React.useCallback(() => {
+    setRailPick(null);
+    engineRef.current?.clearSelectionHighlight?.();
+  }, []);
 
   // Theme CSS vars
   useEffect(() => {
@@ -1132,7 +1164,7 @@ engineRef.current = e;
 
         {/* RIGHT RAIL — FEED + EMPTY INSPECTOR */}
         <aside className="rail-right">
-          <Inspector pick={railPick} onClose={() => setRailPick(null)} theme={theme} />
+          <Inspector pick={railPick} onClose={clearRailSelection} theme={theme} />
           <EventFeed
             active={active}
             theme={theme}

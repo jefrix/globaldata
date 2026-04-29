@@ -309,6 +309,26 @@ window.GlobeEngine = (function () {
       ctx.moveTo(32, 13);
       ctx.lineTo(32, 48);
       ctx.stroke();
+    } else if (kind === 'selection') {
+      ctx.strokeStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 12;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(11, 11, 42, 42);
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.62;
+      ctx.beginPath();
+      ctx.moveTo(32, 5);
+      ctx.lineTo(32, 18);
+      ctx.moveTo(32, 46);
+      ctx.lineTo(32, 59);
+      ctx.moveTo(5, 32);
+      ctx.lineTo(18, 32);
+      ctx.moveTo(46, 32);
+      ctx.lineTo(59, 32);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
     } else if (kind === 'vessel') {
       ctx.beginPath();
       ctx.moveTo(32, 7);
@@ -410,6 +430,14 @@ window.GlobeEngine = (function () {
     return { lat: Number(last[0]), lon: Number(last[1]), heading: 0 };
   }
 
+  function isMilitaryVessel(vessel) {
+    const text = [vessel?.type, vessel?.function, vessel?.country, vessel?.name, vessel?.id]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    return /\b(military|naval|navy|carrier|patrol|surface group|task group)\b/.test(text);
+  }
+
   function makeMaterial(color, opacity = 1) {
     return new THREE.MeshBasicMaterial({
       color,
@@ -462,6 +490,8 @@ window.GlobeEngine = (function () {
 
     this.root = new THREE.Group();
     this.scene.add(this.root);
+    this.selectionGroup = new THREE.Group();
+    this.root.add(this.selectionGroup);
 
     this._buildGlow();
     this._buildCore();
@@ -666,6 +696,33 @@ window.GlobeEngine = (function () {
       this.markerMaterials[key].opacity = opacity;
     }
     return this.markerMaterials[key];
+  };
+
+  GlobeEngine.prototype.clearSelectionHighlight = function () {
+    if (!this.selectionGroup) return;
+    this._disposeObjectResources(this.selectionGroup);
+    this.selectionGroup.clear();
+  };
+
+  GlobeEngine.prototype.highlightPoint = function (lat, lon, color = '#ffffff') {
+    if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return;
+    this.clearSelectionHighlight();
+    const key = `selection:${color}`;
+    if (!this.markerTextures[key]) this.markerTextures[key] = makeMarkerTexture('selection', color);
+    const material = new THREE.SpriteMaterial({
+      map: this.markerTextures[key],
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.95,
+      depthTest: true,
+      depthWrite: false,
+    });
+    const marker = new THREE.Sprite(material);
+    marker.position.copy(latLonToVec3(Number(lat), Number(lon), R + 3.2));
+    marker.scale.set(6.4, 6.4, 1);
+    marker.renderOrder = 7;
+    marker.userData = { kind: 'selection-highlight', pulse: 0, baseScale: 6.4 };
+    this.selectionGroup.add(marker);
   };
 
   GlobeEngine.prototype._makeFlightMaterial = function (color, opacity = 1, heading = 0) {
@@ -960,7 +1017,7 @@ window.GlobeEngine = (function () {
       this._addSpritePoint('climate', s.lat, s.lon, material, 3.2, 3.2, 'storm', s);
     });
 
-    (data.vessels || []).slice(0, this.maxTrackedObjects).forEach(v => {
+    (data.vessels || []).filter(v => !isMilitaryVessel(v)).slice(0, this.maxTrackedObjects).forEach(v => {
       const lane = (data.SHIPPING || [])[v.lane];
       const pos = interpolatePath(lane, Number(v.progress || 0), Number(v.dir || 1));
       if (!pos) return;
@@ -1002,10 +1059,22 @@ window.GlobeEngine = (function () {
       this._addTextLabel('military', base.lat, base.lon, [base.country, base.function], '#7bd6a8', 13.5, 5);
     });
 
-    (data.militaryShips || []).slice(0, this.maxTrackedObjects).forEach(ship => {
+    const militaryShips = [
+      ...(data.militaryShips || []),
+      ...(data.vessels || []).filter(isMilitaryVessel),
+    ].slice(0, this.maxTrackedObjects);
+    militaryShips.forEach(ship => {
+      let lat = Number(ship.lat);
+      let lon = Number(ship.lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+        const pos = interpolatePath((data.SHIPPING || [])[ship.lane], Number(ship.progress || 0), Number(ship.dir || 1));
+        if (!pos) return;
+        lat = pos.lat;
+        lon = pos.lon;
+      }
       const material = this._getMarkerMaterial('militaryShip', '#9ad4ff', this.layerOpacity.military ?? 1);
-      this._addSpritePoint('military', ship.lat, ship.lon, material, 2.25, 2.25, 'military', ship);
-      this._addTextLabel('military', ship.lat, ship.lon, [ship.country, ship.function], '#9ad4ff', 11, 4.2);
+      this._addSpritePoint('military', lat, lon, material, 2.25, 2.25, 'military', ship);
+      this._addTextLabel('military', lat, lon, [ship.country, ship.function || ship.type], '#9ad4ff', 11, 4.2);
     });
 
     (data.conflicts || []).forEach(c => {
@@ -1233,6 +1302,16 @@ window.GlobeEngine = (function () {
       this.pulseLines.forEach(line => {
         if (line.material) line.material.dashOffset = (line.material.dashOffset || 0) - dt * (line.userData.flowSpeed || 18);
       });
+
+      if (this.selectionGroup?.children.length) {
+        this.selectionGroup.children.forEach(marker => {
+          marker.userData.pulse = (marker.userData.pulse || 0) + dt * 4.4;
+          const base = marker.userData.baseScale || 6.4;
+          const scale = base * (1 + Math.sin(marker.userData.pulse) * 0.14);
+          marker.scale.set(scale, scale, 1);
+          if (marker.material) marker.material.opacity = 0.78 + Math.max(0, Math.sin(marker.userData.pulse)) * 0.22;
+        });
+      }
 
       if (this.layerGroups.news?.visible) {
         this.layerGroups.news.children.forEach(marker => {
