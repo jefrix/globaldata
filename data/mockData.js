@@ -127,10 +127,13 @@ window.MOCK_DATA = (() => {
       vessels.push({
         id: 'MV-' + li + '-' + i,
         type: pick(['container','oil','lng','container','container']),
+        name: 'Estimated merchant vessel ' + li + '-' + i,
         lane: li,
         progress: Math.random(),
         speed: rand(0.0002, 0.0006),
         dir: Math.random() > 0.5 ? 1 : -1,
+        status: 'Estimated underway',
+        source: 'Mock public shipping lane estimate',
       });
     }
   });

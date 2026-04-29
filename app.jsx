@@ -518,6 +518,7 @@ function Inspector({ pick, onClose, theme }) {
         {kind === 'city' && <CityDetail d={data} />}
         {kind === 'flight' && <FlightDetail d={data} />}
         {kind === 'vessel' && <VesselDetail d={data} />}
+        {kind === 'port' && <PortDetail d={data} />}
         {kind === 'news' && <NewsDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
         {kind === 'diplomacy' && <DiplomacyDetail d={data} />}
@@ -536,6 +537,18 @@ function CityDetail({ d }) {
     <Row k="COUNTRY" v={d.country} /><Row k="POP" v={`${d.pop}M`} /><Row k="COORD" v={`${d.lat}, ${d.lon}`} />
   </>);
 }
+function PortDetail({ d }) {
+  const port = enrichPort(d);
+  return (<>
+    <div className="insp-title" style={{ color: '#9ad4ff' }}>{port.name}</div>
+    <Row k="COUNTRY" v={port.country || '--'} />
+    <Row k="STATUS" v={port.status || '--'} color={String(port.status || '').toLowerCase().includes('closed') ? '#ff3040' : '#7bd6a8'} />
+    <Row k="TRAFFIC" v={port.traffic || '--'} color={String(port.traffic || '').includes('high') ? '#f5b142' : '#7bd6a8'} />
+    <Row k="SHIPS/DAY" v={port.shipsPerDay || '--'} />
+    <Row k="ESTIMATE" v={port.trafficBasis || '--'} />
+    <Row k="SOURCE" v={port.source || 'ports dataset'} />
+  </>);
+}
 function FlightDetail({ d }) {
   const live = Number.isFinite(Number(d.lat)) && Number.isFinite(Number(d.lon));
   return (<>
@@ -549,11 +562,13 @@ function FlightDetail({ d }) {
 }
 function VesselDetail({ d }) {
   return (<>
-    <div className="insp-title" style={{ color: d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8' }}>{d.id}</div>
+    <div className="insp-title" style={{ color: d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8' }}>{d.name || d.id}</div>
     <Row k="TYPE" v={d.type?.toUpperCase()} />
+    <Row k="STATUS" v={d.status || 'Estimated underway'} />
     <Row k="LANE" v={`#${d.lane}`} />
     <Row k="SPD" v={`${Math.round((d.speed || 0) * 100000)} kt`} />
     <Row k="PROG" v={`${Math.round((d.progress || 0) * 100)}%`} />
+    <Row k="SOURCE" v={d.source || 'Estimated from public shipping lanes'} />
   </>);
 }
 function NewsDetail({ d }) {
@@ -698,7 +713,7 @@ function mergeLiveData(live) {
     news: hasLiveNewsSource ? (live.news || []) : D.news,
     SHIPPING: live.shippingLanes?.length ? live.shippingLanes.map(l => l.pts) : D.SHIPPING,
     shippingLanes: live.shippingLanes || [],
-    ports: live.ports || [],
+    ports: (live.ports?.length ? live.ports : D.ports || []).map(enrichPort),
     vessels: live.vessels?.length ? live.vessels : D.vessels,
     diplomacy: window.DIPLOMACY_DATA || [],
     militaryBases: live.militaryBases?.length ? live.militaryBases : D.militaryBases,
@@ -760,6 +775,37 @@ function focusPointForEvent(pick, data) {
     return interpolateFeedPath(path, d.progress);
   }
   return null;
+}
+
+const PORT_TRAFFIC_PROFILES = [
+  { match: /shanghai/i, traffic: 'very high traffic', ships: '>35 ship calls/day', basis: '2024 top global container port; ~51.5M TEU/year reported' },
+  { match: /singapore/i, traffic: 'very high traffic', ships: '>30 ship calls/day', basis: '2024 top global container port; ~41M TEU/year reported' },
+  { match: /ningbo|zhoushan/i, traffic: 'very high traffic', ships: '>30 ship calls/day', basis: '2024 top global container port; ~39M TEU/year reported' },
+  { match: /shenzhen/i, traffic: 'very high traffic', ships: '>25 ship calls/day', basis: '2024 top global container port; ~33M TEU/year reported' },
+  { match: /qingdao/i, traffic: 'very high traffic', ships: '>25 ship calls/day', basis: '2024 top global container port; ~31M TEU/year reported' },
+  { match: /guangzhou|nansha/i, traffic: 'very high traffic', ships: '>20 ship calls/day', basis: '2024 top global container port; ~26M TEU/year reported' },
+  { match: /busan/i, traffic: 'very high traffic', ships: '>20 ship calls/day', basis: '2024 top global container port; ~24M TEU/year reported' },
+  { match: /tianjin/i, traffic: 'very high traffic', ships: '>20 ship calls/day', basis: '2024 top global container port; ~23M TEU/year reported' },
+  { match: /jebel ali|dubai/i, traffic: 'very high traffic', ships: '>12 ship calls/day', basis: '2024 top global container port; ~15.5M TEU/year reported' },
+  { match: /port klang|klang/i, traffic: 'very high traffic', ships: '>10 ship calls/day', basis: '2024 top global container port; ~14.6M TEU/year reported' },
+  { match: /rotterdam/i, traffic: 'very high traffic', ships: '>12 ship calls/day', basis: 'major European gateway; 2024 annual throughput 435.8M tonnes reported by port authority' },
+  { match: /los angeles|long beach|new york|new jersey|antwerp|hamburg|savannah|houston|santos|felixstowe/i, traffic: 'high traffic', ships: '8-20 ship calls/day', basis: 'major regional gateway estimate' },
+  { match: /panama|suez|gibraltar|malacca|colombo|piraeus|valencia|algeciras|durban|tanger/i, traffic: 'high traffic', ships: '6-18 ship calls/day', basis: 'major chokepoint or transshipment estimate' },
+];
+
+function enrichPort(port, index = 0) {
+  const label = `${port?.name || ''} ${port?.city || ''} ${port?.country || ''}`;
+  const profile = PORT_TRAFFIC_PROFILES.find(item => item.match.test(label));
+  const fallbackTraffic = index < 120 ? 'moderate traffic' : 'low traffic';
+  return {
+    ...port,
+    name: port?.name || port?.city || 'Port',
+    country: port?.country || '--',
+    status: port?.status || 'Open / no public closure flag',
+    traffic: port?.traffic || profile?.traffic || fallbackTraffic,
+    shipsPerDay: port?.shipsPerDay || profile?.shipsPerDay || (index < 120 ? '2-8 ship calls/day' : '<2 ship calls/day'),
+    trafficBasis: port?.trafficBasis || profile?.basis || 'estimated from global shipping lane density and port dataset rank',
+  };
 }
 
 function isMilitaryVesselRecord(vessel) {
