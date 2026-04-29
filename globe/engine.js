@@ -404,6 +404,30 @@ window.GlobeEngine = (function () {
     return texture;
   }
 
+  function makeGlowTexture(color) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 96;
+    canvas.height = 96;
+    const ctx = canvas.getContext('2d');
+    const glow = ctx.createRadialGradient(48, 48, 1, 48, 48, 42);
+    glow.addColorStop(0, '#ffffff');
+    glow.addColorStop(0.16, color);
+    glow.addColorStop(0.48, color);
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, 96, 96);
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  function pointOnVectorPath(points, progress) {
+    if (!points || points.length < 2) return null;
+    const scaled = (((Number(progress) || 0) % 1 + 1) % 1) * (points.length - 1);
+    const index = Math.min(points.length - 2, Math.floor(scaled));
+    return points[index].clone().lerp(points[index + 1], scaled - index);
+  }
+
   function makeTextTexture(lines, color = '#cfe2ff') {
     const canvas = document.createElement('canvas');
     canvas.width = 256;
@@ -494,6 +518,7 @@ window.GlobeEngine = (function () {
     this.flightObjects = [];
     this.vesselObjects = [];
     this.pulseLines = [];
+    this.cyberPackets = [];
     this.maxFlightMarkers = 5000;
     this.maxTrackedObjects = 5000;
     this.markerMaterials = {};
@@ -714,7 +739,10 @@ window.GlobeEngine = (function () {
     if (!group) return;
     this._disposeObjectResources(group);
     group.clear();
-    if (id === 'cyber') this.pulseLines = [];
+    if (id === 'cyber') {
+      this.pulseLines = [];
+      this.cyberPackets = [];
+    }
     this.pickables = this.pickables.filter(p => p.userData.layer !== id);
   };
 
@@ -885,6 +913,31 @@ window.GlobeEngine = (function () {
       line.computeLineDistances();
       line.userData.flowSpeed = 16 + Math.random() * 7;
       this.pulseLines.push(line);
+      const packetTextureKey = `cyber-packet:${color}`;
+      if (!this.markerTextures[packetTextureKey]) this.markerTextures[packetTextureKey] = makeGlowTexture(color);
+      for (let i = 0; i < 3; i++) {
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: this.markerTextures[packetTextureKey],
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.95,
+          depthTest: false,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+        }));
+        sprite.scale.set(7.5, 7.5, 1);
+        sprite.renderOrder = 12;
+        sprite.position.copy(pointOnVectorPath(pts, i / 3) || pts[0]);
+        sprite.userData = { layer: 'cyber', kind: 'cyber-packet' };
+        this.layerGroups.cyber.add(sprite);
+        this.cyberPackets.push({
+          sprite,
+          points: pts,
+          progress: i / 3 + Math.random() * 0.08,
+          speed: 0.14 + Math.random() * 0.08,
+          phase: Math.random() * Math.PI * 2,
+        });
+      }
     }
     line.renderOrder = 3;
     this.layerGroups[layer].add(line);
@@ -1338,6 +1391,15 @@ window.GlobeEngine = (function () {
 
       this.pulseLines.forEach(line => {
         if (line.material) line.material.dashOffset = (line.material.dashOffset || 0) - dt * (line.userData.flowSpeed || 18);
+      });
+
+      this.cyberPackets.forEach(packet => {
+        packet.progress = (packet.progress + dt * packet.speed) % 1;
+        const point = pointOnVectorPath(packet.points, packet.progress);
+        if (point) packet.sprite.position.copy(point);
+        const pulse = 1 + Math.sin(performance.now() * 0.01 + packet.phase) * 0.24;
+        packet.sprite.scale.set(7.5 * pulse, 7.5 * pulse, 1);
+        if (packet.sprite.material) packet.sprite.material.opacity = 0.72 + Math.max(0, pulse - 1) * 0.65;
       });
 
       if (this.selectionGroup?.children.length) {

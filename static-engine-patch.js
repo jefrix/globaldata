@@ -232,10 +232,7 @@
     const originalUpdateLiveData = engine.updateLiveData?.bind(engine);
     const originalUpdateFlights = engine.updateFlights?.bind(engine);
     const originalClearGroup = engine._clearGroup?.bind(engine);
-    const originalAddArc = engine._addArc?.bind(engine);
     const originalMakeSurfaceTexture = engine._makeSurfaceTexture?.bind(engine);
-
-    engine.cyberPackets = [];
 
     if (originalMakeSurfaceTexture) {
       engine._makeSurfaceTexture = function patchedMakeSurfaceTexture() {
@@ -247,18 +244,8 @@
     if (originalClearGroup) {
       engine._clearGroup = function patchedClearGroup(id) {
         originalClearGroup(id);
-        if (id === 'cyber') engine.cyberPackets = [];
       };
     }
-
-    if (originalAddArc) {
-      engine._addArc = function patchedAddArc(layer, origin, target, color, opacity = 0.34) {
-        if (layer !== 'cyber') return originalAddArc(layer, origin, target, color, opacity);
-        return addCyberArc(engine, origin, target, color || '#ff5c2e', opacity);
-      };
-    }
-
-    startCyberPacketAnimation(engine);
 
     if (originalUpdateLiveData) {
       engine.updateLiveData = function patchedUpdateLiveData(data) {
