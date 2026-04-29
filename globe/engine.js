@@ -899,21 +899,21 @@ window.GlobeEngine = (function () {
     const selectedBlocs = new Set(selected?.blocs || []);
     const natoHub = { lat: 50.88, lon: 4.42, name: 'NATO HQ' };
     const bricsHub = { lat: 28.61, lon: 77.21, name: 'BRICS 2026 Presidency' };
-    const shouldShowNato = !selected || selectedBlocs.has('NATO');
-    const shouldShowBrics = !selected || selectedBlocs.has('BRICS');
+    const shouldShowNato = selected && selectedBlocs.has('NATO');
+    const shouldShowBrics = selected && selectedBlocs.has('BRICS');
     const natoMembers = (countries || []).filter(c => (c.blocs || []).includes('NATO'));
     const bricsMembers = (countries || []).filter(c => (c.blocs || []).includes('BRICS'));
 
     if (shouldShowNato) {
       natoMembers.forEach(country => {
         const origin = selected && selectedBlocs.has('NATO') ? selected : natoHub;
-        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#5aa8ff', selected ? 0.24 : 0.14);
+        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#5aa8ff', 0.24);
       });
     }
     if (shouldShowBrics) {
       bricsMembers.forEach(country => {
         const origin = selected && selectedBlocs.has('BRICS') ? selected : bricsHub;
-        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#f5b142', selected ? 0.28 : 0.16);
+        if (origin.code !== country.code) this._addArc('diplomacy', origin, country, '#f5b142', 0.28);
       });
     }
 

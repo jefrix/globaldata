@@ -279,10 +279,6 @@
     if (originalUpdateLiveData) {
       engine.updateLiveData = function patchedUpdateLiveData(data) {
         originalUpdateLiveData(data);
-        if (!data?.shippingLanes?.length || !engine._addLine || !engine.layerGroups?.logistics) return;
-        data.shippingLanes.slice(0, 260).forEach(lane => {
-          engine._addLine('logistics', lane.pts || lane, engine.theme.lane || '#7bd6a8', 0.28);
-        });
       };
     }
 
