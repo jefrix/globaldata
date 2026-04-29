@@ -19,8 +19,9 @@ window.THEMES = {
     text: "#cfe2ff", textDim: "#7a94b8", accent: "#3b8df5", accentWarm: "#f5b142",
     classification: "#f5b142",
     // Globe
-    glow: "#1a4d8f", core: "#061528", grid: "#1e4f86", gridStrong: "#3b8df5",
-    land: "#5ea9ff", landFill: "#10283a",
+    glow: "#1a4d8f", core: "#061528", surfaceWater: "#020a12", surfaceWaterMid: "#06365a", surfaceWaterDeep: "#000306",
+    grid: "#1e4f86", gridStrong: "#3b8df5",
+    land: "#9edbff", landFill: "#8fa4ae", surfaceLand: "#8fa4ae",
     river: "#4bc6e8", mountain: "#d4b16a",
     city: "#ffffff",
     storm: "#a38bff", stormHi: "#d85cff",
@@ -33,8 +34,9 @@ window.THEMES = {
     bg1: "#0d0a07", bg2: "#14100b", panel: "#1a1510", panelEdge: "#3a2f22",
     text: "#ffe8c7", textDim: "#a08766", accent: "#f59431", accentWarm: "#f59431",
     classification: "#f59431",
-    glow: "#7a3e10", core: "#0a0804", grid: "#4a3420", gridStrong: "#8a5a28",
-    land: "#e6a964", landFill: "#2d2014",
+    glow: "#7a3e10", core: "#0a0804", surfaceWater: "#07090a", surfaceWaterMid: "#253242", surfaceWaterDeep: "#010203",
+    grid: "#4a3420", gridStrong: "#8a5a28",
+    land: "#f0c188", landFill: "#9a8a78", surfaceLand: "#9a8a78",
     river: "#8cb8c8", mountain: "#d88836",
     city: "#ffe6b8",
     storm: "#ff7a3a", stormHi: "#ff3a3a",
@@ -47,8 +49,9 @@ window.THEMES = {
     bg1: "#020a0c", bg2: "#02141a", panel: "#03151b", panelEdge: "#0c4152",
     text: "#d4fbff", textDim: "#5d8a95", accent: "#1de8f0", accentWarm: "#f5e342",
     classification: "#1de8f0",
-    glow: "#0a9fb8", core: "#021418", grid: "#1b6b7a", gridStrong: "#1de8f0",
-    land: "#4fe8f0", landFill: "#07313a",
+    glow: "#0a9fb8", core: "#021418", surfaceWater: "#020c10", surfaceWaterMid: "#074250", surfaceWaterDeep: "#000405",
+    grid: "#1b6b7a", gridStrong: "#1de8f0",
+    land: "#b8f7ff", landFill: "#789aa0", surfaceLand: "#789aa0",
     river: "#70e8d4", mountain: "#b8f0a0",
     city: "#ffffff",
     storm: "#f058ff", stormHi: "#ff4080",
@@ -440,6 +443,26 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
         data: s,
       }));
     }
+    if (active.logistics) {
+      (D.vessels || []).filter(v => !isMilitaryVesselRecord(v)).slice(0, 18).forEach(v => feed.push({
+        id: v.id || v.name,
+        t: Date.now() - Math.random() * 1800000, kind: 'SHP', cat: v.type || 'VESSEL',
+        city: v.laneName || v.region || 'SEA LANE', country: v.country || '--',
+        title: v.name || v.id || 'Tracked vessel', meta: v.status || v.type || 'ACTIVE',
+        color: v.type === 'oil' ? '#f5a742' : v.type === 'lng' ? '#9ad4ff' : '#7bd6a8',
+        inspectorKind: 'vessel',
+        data: v,
+      }));
+      (D.ports || []).slice(0, 16).forEach(p => feed.push({
+        id: p.id || `${p.name}-${p.country}`,
+        t: Date.now() - Math.random() * 3600000, kind: 'PRT', cat: p.traffic || 'PORT',
+        city: p.name || p.city || 'Port', country: p.country || '--',
+        title: p.name || p.city || 'Port', meta: p.status || p.traffic || 'OPEN',
+        color: '#7bd6a8',
+        inspectorKind: 'port',
+        data: p,
+      }));
+    }
     if (active.flights) {
       D.flights.slice(0, 12).forEach(f => feed.push({
         id: f.id || f.callsign,
@@ -817,14 +840,7 @@ function isMilitaryVesselRecord(vessel) {
 }
 
 function selectionColorForEvent(pick) {
-  if (pick?.kind === 'news') return isTodayUtc(pick.data?.ts) ? '#e03535' : '#f5d142';
-  if (pick?.kind === 'military') return '#9ad4ff';
-  if (pick?.kind === 'conflict') return '#ff3040';
-  if (pick?.kind === 'earthquake') return Number(pick.data?.mag || 0) >= 5 ? '#ff7050' : '#f5b142';
-  if (pick?.kind === 'weather' || pick?.kind === 'storm') return '#a38bff';
-  if (pick?.kind === 'flight') return '#ffd96e';
-  if (pick?.kind === 'cyber') return '#ff5c2e';
-  return '#ffffff';
+  return '#73ff9a';
 }
 
 function normalizeTweaks(tweaks, defaults) {

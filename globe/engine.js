@@ -137,7 +137,7 @@ window.GlobeEngine = (function () {
     }));
   }
 
-  function drawRingOnTexture(ctx, ring, width, height) {
+  function drawRingOnTexture(ctx, ring, width, height, stroke = false) {
     const coords = ring.coordinates?.[0] || [];
     if (coords.length < 3) return;
     const segments = [];
@@ -163,6 +163,7 @@ window.GlobeEngine = (function () {
       segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
       ctx.closePath();
       ctx.fill();
+      if (stroke) ctx.stroke();
     });
   }
 
@@ -312,9 +313,14 @@ window.GlobeEngine = (function () {
     } else if (kind === 'selection') {
       ctx.strokeStyle = color;
       ctx.shadowColor = color;
-      ctx.shadowBlur = 12;
-      ctx.lineWidth = 4;
-      ctx.strokeRect(11, 11, 42, 42);
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = 5;
+      ctx.strokeRect(7, 7, 50, 50);
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 0.18;
+      ctx.fillStyle = color;
+      ctx.fillRect(10, 10, 44, 44);
+      ctx.globalAlpha = 1;
       ctx.lineWidth = 2;
       ctx.globalAlpha = 0.62;
       ctx.beginPath();
@@ -546,7 +552,7 @@ window.GlobeEngine = (function () {
     this.coreMesh = new THREE.Mesh(
       new THREE.SphereGeometry(R, 64, 64),
       new THREE.MeshBasicMaterial({
-        color: this.theme.core || '#06111d',
+        color: 0xffffff,
         map: this.surfaceTexture,
         transparent: false,
         opacity: 1,
@@ -644,14 +650,23 @@ window.GlobeEngine = (function () {
     canvas.height = height;
     const ctx = canvas.getContext('2d');
 
-    const ocean = this.theme.core || '#06111d';
-    const land = this.theme.landFill || '#10283a';
-    ctx.fillStyle = ocean;
+    const ocean = this.theme.surfaceWater || this.theme.core || '#031222';
+    const oceanMid = this.theme.surfaceWaterMid || '#062641';
+    const oceanDeep = this.theme.surfaceWaterDeep || '#01070d';
+    const land = this.theme.surfaceLand || this.theme.landFill || '#536d78';
+    const coast = this.theme.land || this.theme.gridStrong || '#8bd3ff';
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, oceanMid);
+    gradient.addColorStop(0.52, ocean);
+    gradient.addColorStop(1, oceanDeep);
+    ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = land;
+    ctx.strokeStyle = coast;
+    ctx.lineWidth = 1.15;
 
     ringsToFeatureLike(this.mapLandRings || localCoastlineRings()).forEach(ring => {
-      drawRingOnTexture(ctx, ring, width, height);
+      drawRingOnTexture(ctx, ring, width, height, true);
     });
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -719,9 +734,9 @@ window.GlobeEngine = (function () {
     });
     const marker = new THREE.Sprite(material);
     marker.position.copy(latLonToVec3(Number(lat), Number(lon), R + 3.2));
-    marker.scale.set(6.4, 6.4, 1);
+    marker.scale.set(9.0, 9.0, 1);
     marker.renderOrder = 7;
-    marker.userData = { kind: 'selection-highlight', pulse: 0, baseScale: 6.4 };
+    marker.userData = { kind: 'selection-highlight', pulse: 0, baseScale: 9.0 };
     this.selectionGroup.add(marker);
   };
 

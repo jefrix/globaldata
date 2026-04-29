@@ -1,5 +1,4 @@
 (function () {
-  if (window.location.hostname !== 'jefrix.github.io') return;
   if (!window.GlobeEngine || !window.GlobeEngine.create || !window.THREE) return;
 
   const R = 100;
@@ -59,14 +58,16 @@
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
-    const ocean = engine.theme.core || '#061528';
-    const land = engine.theme.landFill || '#1d4f54';
-    const coast = engine.theme.gridStrong || engine.theme.land || '#7bd6a8';
+    const ocean = engine.theme.surfaceWater || engine.theme.core || '#031222';
+    const oceanMid = engine.theme.surfaceWaterMid || '#062641';
+    const oceanDeep = engine.theme.surfaceWaterDeep || '#01070d';
+    const land = engine.theme.surfaceLand || engine.theme.landFill || '#536d78';
+    const coast = engine.theme.land || engine.theme.gridStrong || '#8bd3ff';
 
     const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, ocean);
-    gradient.addColorStop(0.45, '#03111f');
-    gradient.addColorStop(1, '#02070d');
+    gradient.addColorStop(0, oceanMid);
+    gradient.addColorStop(0.52, ocean);
+    gradient.addColorStop(1, oceanDeep);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
@@ -88,12 +89,12 @@
       ctx.stroke();
     }
 
-    ctx.globalAlpha = 0.94;
+    ctx.globalAlpha = 0.9;
     paintRings(ctx, engine.mapLandRings, width, height, land, coast);
 
-    ctx.globalAlpha = 0.3;
-    ctx.strokeStyle = '#b7fff4';
-    ctx.lineWidth = 2.2;
+    ctx.globalAlpha = 0.46;
+    ctx.strokeStyle = coast;
+    ctx.lineWidth = 2.4;
     (engine.mapLandRings || []).forEach(ring => {
       ringToSegments(ring.points || [], width, height).forEach(segment => {
         ctx.beginPath();
@@ -115,6 +116,7 @@
     if (!engine?.coreMesh?.material) return;
     const oldMap = engine.coreMesh.material.map;
     engine.coreMesh.material.map = makeContrastSurfaceTexture(engine);
+    engine.coreMesh.material.color?.set?.(0xffffff);
     engine.coreMesh.material.needsUpdate = true;
     oldMap?.dispose?.();
   }
