@@ -66,6 +66,25 @@
       .trim();
   }
 
+  function normalizeArticleUrl(url, host = 'https://en.wikipedia.org') {
+    const value = String(url || '').trim();
+    if (!value) return '';
+    if (value.startsWith('//')) return `https:${value}`;
+    if (/^https?:\/\//i.test(value)) {
+      try {
+        const parsed = new URL(value);
+        if (parsed.hostname === window.location.hostname && parsed.pathname.startsWith('/wiki/')) {
+          return `${host}${parsed.pathname}${parsed.search}${parsed.hash}`;
+        }
+      } catch {
+        return value;
+      }
+      return value;
+    }
+    if (value.startsWith('/wiki/')) return `${host}${value}`;
+    return value;
+  }
+
   function newsLocation(title) {
     const text = String(title || '').toLowerCase();
     const match = Object.entries(countryCenters).find(([name]) => name !== 'global' && text.includes(name));
@@ -186,7 +205,7 @@
           source: 'wikipedia.org',
           sourceName: 'Wikipedia Current Events',
           officialSource: true,
-          url: link ? link.href : `https://en.wikipedia.org/wiki/${encodeURIComponent(page.page.replace(/ /g, '_'))}`,
+          url: link ? normalizeArticleUrl(link.getAttribute('href') || link.href) : `https://en.wikipedia.org/wiki/${encodeURIComponent(page.page.replace(/ /g, '_'))}`,
           sources: 1,
           ts: page.ts - index * 60000,
         });
