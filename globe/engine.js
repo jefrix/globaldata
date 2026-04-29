@@ -130,6 +130,35 @@ window.GlobeEngine = (function () {
     return Object.entries(window.COASTLINES || {}).map(([name, points]) => ({ name, points }));
   }
 
+  function angularDistance(a, b) {
+    const av = latLonToVec3(Number(a[0]), Number(a[1]), 1).normalize();
+    const bv = latLonToVec3(Number(b[0]), Number(b[1]), 1).normalize();
+    return av.angleTo(bv);
+  }
+
+  function splitLandLineSegments(poly, maxRadians = 0.62) {
+    const segments = [];
+    let segment = [];
+
+    (poly || []).forEach(point => {
+      if (
+        segment.length &&
+        (!Number.isFinite(Number(point[0])) ||
+          !Number.isFinite(Number(point[1])) ||
+          angularDistance(segment[segment.length - 1], point) > maxRadians)
+      ) {
+        if (segment.length > 1) segments.push(segment);
+        segment = [];
+      }
+      if (Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]))) {
+        segment.push(point);
+      }
+    });
+
+    if (segment.length > 1) segments.push(segment);
+    return segments;
+  }
+
   function ringsToFeatureLike(rings) {
     return (rings || []).map(({ name, points }) => ({
       name,
@@ -628,13 +657,16 @@ window.GlobeEngine = (function () {
     });
 
     (this.mapLandRings || localCoastlineRings()).forEach(({ name, points: poly }) => {
-      const pts = poly.map(([lat, lon]) => latLonToVec3(lat, lon, R * 1.012));
-      if (pts.length > 2) pts.push(pts[0].clone());
-      this.landmasses.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), coastMat));
+      splitLandLineSegments(poly).forEach(segment => {
+        const shouldClose = segment.length > 2 && angularDistance(segment[0], segment[segment.length - 1]) < 0.08;
+        const pts = segment.map(([lat, lon]) => latLonToVec3(lat, lon, R * 1.012));
+        if (shouldClose) pts.push(pts[0].clone());
+        this.landmasses.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), coastMat));
 
-      const shelfPts = poly.map(([lat, lon]) => latLonToVec3(lat, lon, R * 1.018));
-      if (shelfPts.length > 2) shelfPts.push(shelfPts[0].clone());
-      this.landmasses.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(shelfPts), shelfMat));
+        const shelfPts = segment.map(([lat, lon]) => latLonToVec3(lat, lon, R * 1.018));
+        if (shouldClose) shelfPts.push(shelfPts[0].clone());
+        this.landmasses.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(shelfPts), shelfMat));
+      });
     });
 
     this.root.add(this.landmasses);
