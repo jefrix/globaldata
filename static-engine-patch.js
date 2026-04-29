@@ -35,10 +35,8 @@
     return segments.filter(part => part.length > 2);
   }
 
-  function paintRings(ctx, rings, width, height, fill, stroke) {
+  function paintRings(ctx, rings, width, height, fill) {
     ctx.fillStyle = fill;
-    ctx.strokeStyle = stroke;
-    ctx.lineWidth = 1.35;
     (rings || []).forEach(ring => {
       const points = [];
       let previousX = null;
@@ -60,7 +58,6 @@
         points.slice(1).forEach(([x, y]) => ctx.lineTo(x + offset, y));
         ctx.closePath();
         ctx.fill();
-        ctx.stroke();
       });
     });
   }
@@ -98,20 +95,7 @@
     }
 
     ctx.globalAlpha = 0.96;
-    paintRings(ctx, engine.mapLandRings, width, height, land, coast);
-
-    ctx.globalAlpha = 0.34;
-    ctx.strokeStyle = coast;
-    ctx.lineWidth = 2.4;
-    (engine.mapLandRings || []).forEach(ring => {
-      ringToSegments(ring.points || [], width, height).forEach(segment => {
-        ctx.beginPath();
-        ctx.moveTo(segment[0][0], segment[0][1]);
-        segment.slice(1).forEach(([x, y]) => ctx.lineTo(x, y));
-        ctx.closePath();
-        ctx.stroke();
-      });
-    });
+    paintRings(ctx, engine.mapLandRings, width, height, land);
     ctx.globalAlpha = 1;
 
     const texture = new THREE.CanvasTexture(canvas);

@@ -686,11 +686,9 @@ window.GlobeEngine = (function () {
     ctx.fillStyle = ocean;
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = land;
-    ctx.strokeStyle = coast;
-    ctx.lineWidth = 1.15;
 
     ringsToFeatureLike(this.mapLandRings || localCoastlineRings()).forEach(ring => {
-      drawRingOnTexture(ctx, ring, width, height, true);
+      drawRingOnTexture(ctx, ring, width, height, false);
     });
 
     const texture = new THREE.CanvasTexture(canvas);
