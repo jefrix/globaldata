@@ -48,6 +48,24 @@
     return { name, ok, count: Array.isArray(data) ? data.length : 0, error };
   }
 
+  function parseLimitFromUrl(url, name, fallback, max) {
+    try {
+      const parsed = new URL(url);
+      const value = Number(parsed.searchParams.get(name));
+      if (!Number.isFinite(value)) return fallback;
+      return Math.max(0, Math.min(max, Math.floor(value)));
+    } catch {
+      return fallback;
+    }
+  }
+
+  function compactText(value) {
+    return String(value || '')
+      .replace(/\[[^\]]+\]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function newsLocation(title) {
     const text = String(title || '').toLowerCase();
     const match = Object.entries(countryCenters).find(([name]) => name !== 'global' && text.includes(name));
@@ -86,9 +104,10 @@
   }
 
   async function loadNews() {
+    const currentEvents = await loadWikipediaCurrentEvents();
     const url = 'https://en.wikinews.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Published&cmtype=page&cmprop=ids|title|timestamp&cmsort=timestamp&cmdir=desc&cmlimit=40&format=json&origin=*';
-    const data = await getJson(url);
-    return (data.query && data.query.categorymembers || []).map(item => {
+    const data = await getJson(url).catch(() => ({ query: { categorymembers: [] } }));
+    const wikinews = (data.query && data.query.categorymembers || []).map(item => {
       const located = newsLocation(item.title);
       return {
         id: `wikinews-${item.pageid}`,
@@ -106,6 +125,97 @@
         ts: item.timestamp ? Date.parse(item.timestamp) : Date.now(),
       };
     }).filter(item => item.title);
+
+    const byId = new Map();
+    [...currentEvents, ...wikinews].forEach(item => {
+      const key = item.url || item.id || item.title;
+      if (!byId.has(key)) byId.set(key, item);
+    });
+    return [...byId.values()].sort((a, b) => b.ts - a.ts).slice(0, 180);
+  }
+
+  function currentEventPages() {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December',
+    ];
+    const pages = [];
+    const now = new Date();
+    for (let offset = 0; offset < 7; offset += 1) {
+      const day = new Date(now.getTime() - offset * 86400000);
+      pages.push({
+        page: `Portal:Current_events/${day.getUTCFullYear()}_${months[day.getUTCMonth()]}_${day.getUTCDate()}`,
+        ts: Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), 12),
+      });
+    }
+    return pages;
+  }
+
+  async function loadWikipediaCurrentEvents() {
+    const pages = await Promise.all(currentEventPages().map(async item => {
+      const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(item.page)}&prop=text&format=json&origin=*`;
+      try {
+        const data = await getJson(url);
+        return { ...item, html: data.parse && data.parse.text && data.parse.text['*'] || '' };
+      } catch {
+        return { ...item, html: '' };
+      }
+    }));
+
+    const output = [];
+    pages.forEach(page => {
+      if (!page.html) return;
+      const doc = new DOMParser().parseFromString(page.html, 'text/html');
+      const bullets = [...doc.querySelectorAll('li')]
+        .map(node => compactText(node.textContent))
+        .filter(text => text.length > 55 && text.length < 260)
+        .slice(0, 35);
+
+      bullets.forEach((title, index) => {
+        const link = [...doc.querySelectorAll('a')]
+          .find(anchor => title.includes(compactText(anchor.textContent)) && anchor.href);
+        const located = newsLocation(title);
+        output.push({
+          id: `wiki-current-${page.page}-${index}`,
+          lat: located.lat,
+          lon: located.lon,
+          city: located.city,
+          country: located.country,
+          title,
+          category: 'NEWS',
+          source: 'wikipedia.org',
+          sourceName: 'Wikipedia Current Events',
+          officialSource: true,
+          url: link ? link.href : `https://en.wikipedia.org/wiki/${encodeURIComponent(page.page.replace(/ /g, '_'))}`,
+          sources: 1,
+          ts: page.ts - index * 60000,
+        });
+      });
+    });
+
+    return output;
+  }
+
+  async function loadFlights(limit = 2500) {
+    const data = await getJson('https://api.airplanes.live/v2/point/0/0/10000');
+    const aircraft = data.ac || data.aircraft || [];
+    return aircraft
+      .map(plane => ({
+        id: plane.hex || plane.icao || plane.flight || plane.r,
+        callsign: String(plane.flight || plane.callsign || plane.r || plane.hex || '').trim(),
+        country: plane.t || 'airplanes.live',
+        lon: Number(plane.lon),
+        lat: Number(plane.lat),
+        alt: Number(plane.alt_baro === 'ground' ? 0 : plane.alt_baro || plane.alt_geom),
+        velocity: Number(plane.gs),
+        heading: Number(plane.track || plane.true_heading || plane.mag_heading),
+        updated: Date.now() - Number(plane.seen || 0) * 1000,
+        source: 'airplanes.live',
+        live: true,
+      }))
+      .filter(plane => Number.isFinite(plane.lat) && Number.isFinite(plane.lon))
+      .sort((a, b) => (b.updated || 0) - (a.updated || 0))
+      .slice(0, limit);
   }
 
   async function loadEarthquakes() {
@@ -189,9 +299,11 @@
     }
   }
 
-  async function staticPayload() {
+  async function staticPayload(requestUrl) {
+    const flightLimit = parseLimitFromUrl(requestUrl, 'limit', 2500, 5000);
     const results = await Promise.all([
       settle('news', loadNews),
+      settle('flights', () => loadFlights(flightLimit)),
       settle('earthquakes', loadEarthquakes),
       settle('weather', loadWeather),
       settle('shippingLanes', loadShippingLanes),
@@ -202,10 +314,9 @@
       generatedAt: Date.now(),
       sources: [
         ...results.map(result => sourceResult(result.name, result.ok, result.data, result.error)),
-        sourceResult('flights', false, [], 'Requires a deployed live API; browser CORS blocks ADS-B feeds'),
         sourceResult('vessels', false, [], 'Requires a deployed AIS backend; synthetic vessels disabled'),
       ],
-      flights: [],
+      flights: byName.flights.data,
       news: byName.news.data,
       shippingLanes: byName.shippingLanes.data,
       ports: byName.ports.data,
@@ -226,7 +337,7 @@
   window.fetch = function (input, options) {
     const url = typeof input === 'string' ? input : input && input.url;
     if (/^http:\/\/localhost:30(00|01|09)\/api\/live/.test(String(url || ''))) {
-      payloadPromise = payloadPromise || staticPayload();
+      payloadPromise = payloadPromise || staticPayload(String(url || ''));
       return payloadPromise.then(jsonResponse);
     }
     return originalFetch(input, options);
