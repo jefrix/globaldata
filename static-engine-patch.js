@@ -73,16 +73,10 @@
     canvas.height = height;
     const ctx = canvas.getContext('2d');
     const ocean = engine.theme.surfaceWater || engine.theme.core || '#031222';
-    const oceanMid = engine.theme.surfaceWaterMid || '#062641';
-    const oceanDeep = engine.theme.surfaceWaterDeep || '#01070d';
     const land = engine.theme.surfaceLand || engine.theme.landFill || '#536d78';
     const coast = engine.theme.land || engine.theme.gridStrong || '#8bd3ff';
 
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, oceanMid);
-    gradient.addColorStop(0.52, ocean);
-    gradient.addColorStop(1, oceanDeep);
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = ocean;
     ctx.fillRect(0, 0, width, height);
 
     ctx.globalAlpha = 0.28;

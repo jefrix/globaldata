@@ -649,15 +649,9 @@ window.GlobeEngine = (function () {
     const ctx = canvas.getContext('2d');
 
     const ocean = this.theme.surfaceWater || this.theme.core || '#031222';
-    const oceanMid = this.theme.surfaceWaterMid || '#062641';
-    const oceanDeep = this.theme.surfaceWaterDeep || '#01070d';
     const land = this.theme.surfaceLand || this.theme.landFill || '#536d78';
     const coast = this.theme.land || this.theme.gridStrong || '#8bd3ff';
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, oceanMid);
-    gradient.addColorStop(0.52, ocean);
-    gradient.addColorStop(1, oceanDeep);
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = ocean;
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = land;
     ctx.strokeStyle = coast;
