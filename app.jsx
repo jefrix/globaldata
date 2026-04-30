@@ -587,7 +587,10 @@ function VesselDetail({ d }) {
   return (<>
     <div className="insp-title" style={{ color: d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8' }}>{d.name || d.id}</div>
     <Row k="TYPE" v={d.type?.toUpperCase()} />
-    <Row k="STATUS" v={d.status || 'Estimated underway'} />
+    <Row k="STATUS" v={d.status || 'Underway'} />
+    {d.flag && <Row k="FLAG" v={d.flag} />}
+    {d.originCountry && <Row k="ORIGIN" v={d.originCountry} />}
+    {d.destinationCountry && <Row k="DEST" v={d.destinationCountry} />}
     <Row k="LANE" v={`#${d.lane}`} />
     <Row k="SPD" v={`${Math.round((d.speed || 0) * 100000)} kt`} />
     <Row k="PROG" v={`${Math.round((d.progress || 0) * 100)}%`} />

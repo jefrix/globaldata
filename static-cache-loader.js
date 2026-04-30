@@ -55,6 +55,11 @@
     return 'container';
   }
 
+  function syntheticVesselName(type, laneIndex, vesselIndex) {
+    const label = String(type || 'vessel');
+    return `${label.charAt(0).toUpperCase()}${label.slice(1)} vessel ${laneIndex}-${vesselIndex}`;
+  }
+
   function makeVesselsFromLanes(lanes) {
     const vessels = [];
     (lanes || []).slice(0, 90).forEach((lane, laneIndex) => {
@@ -63,13 +68,13 @@
         const type = vesselTypeForLane(lane.type, i);
         vessels.push({
           id: `EST-${laneIndex}-${i}`,
-          name: `Estimated ${type} vessel ${laneIndex}-${i}`,
+          name: syntheticVesselName(type, laneIndex, i),
           type,
           lane: laneIndex,
           progress: ((laneIndex * 0.137) + (i / count)) % 1,
           speed: /major/i.test(lane.type) ? 0.00045 : 0.00028,
           dir: (laneIndex + i) % 2 === 0 ? 1 : -1,
-          status: 'Estimated underway',
+          status: 'Underway',
           source: 'Synthetic estimate from public Shipping-Lanes route data',
         });
       }

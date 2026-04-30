@@ -544,21 +544,27 @@ function vesselTypeForLane(type, index) {
   return 'container';
 }
 
+function syntheticVesselName(type, laneIndex, vesselIndex) {
+  const label = String(type || 'vessel');
+  return `${label.charAt(0).toUpperCase()}${label.slice(1)} vessel ${laneIndex}-${vesselIndex}`;
+}
+
 function makeVesselsFromLanes(lanes) {
   const vessels = [];
   lanes.slice(0, 90).forEach((lane, laneIndex) => {
     const count = /major/i.test(lane.type) ? 3 : /middle/i.test(lane.type) ? 2 : 1;
     for (let i = 0; i < count; i++) {
+      const type = vesselTypeForLane(lane.type, i);
       vessels.push({
         id: `AIS-${laneIndex}-${i}`,
-        name: `Estimated ${vesselTypeForLane(lane.type, i)} vessel ${laneIndex}-${i}`,
-        type: vesselTypeForLane(lane.type, i),
+        name: syntheticVesselName(type, laneIndex, i),
+        type,
         lane: laneIndex,
         progress: ((laneIndex * 0.137) + (i / count)) % 1,
         speed: /major/i.test(lane.type) ? 0.00045 : 0.00028,
         dir: (laneIndex + i) % 2 === 0 ? 1 : -1,
-        status: 'Estimated underway',
-        source: 'Shipping-Lanes synthetic traffic',
+        status: 'Underway',
+        source: 'Synthetic estimate from public Shipping-Lanes route data',
       });
     }
   });
