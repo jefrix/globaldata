@@ -41,6 +41,8 @@ const locations = [
   ['united kingdom', 54.2, -2.5, 'United Kingdom', 'GBR'], ['london', 51.51, -0.13, 'London', 'GBR'],
   ['france', 46.2, 2.2, 'France', 'FRA'], ['paris', 48.86, 2.35, 'Paris', 'FRA'],
   ['germany', 51.2, 10.4, 'Germany', 'DEU'], ['berlin', 52.52, 13.4, 'Berlin', 'DEU'],
+  ['belgium', 50.5, 4.5, 'Belgium', 'BEL'], ['brussels', 50.85, 4.35, 'Brussels', 'BEL'],
+  ['switzerland', 46.8, 8.2, 'Switzerland', 'CHE'], ['geneva', 46.2, 6.14, 'Geneva', 'CHE'],
   ['poland', 52.0, 19.0, 'Poland', 'POL'], ['warsaw', 52.23, 21.01, 'Warsaw', 'POL'],
   ['turkey', 39.0, 35.2, 'Turkey', 'TUR'], ['ankara', 39.93, 32.86, 'Ankara', 'TUR'],
   ['global', 20, 0, 'Global', 'GLOBAL'],
@@ -48,15 +50,28 @@ const locations = [
 
 const rssFeeds = [
   ['BBC World', 'https://feeds.bbci.co.uk/news/world/rss.xml'],
+  ['BBC Business', 'https://feeds.bbci.co.uk/news/business/rss.xml'],
   ['Al Jazeera', 'https://www.aljazeera.com/xml/rss/all.xml'],
   ['France 24', 'https://www.france24.com/en/rss'],
   ['Deutsche Welle', 'https://rss.dw.com/rdf/rss-en-all'],
   ['UN News', 'https://news.un.org/feed/subscribe/en/news/all/rss.xml'],
   ['Guardian World', 'https://www.theguardian.com/world/rss'],
+  ['Guardian Business', 'https://www.theguardian.com/business/rss'],
   ['NPR World', 'https://feeds.npr.org/1004/rss.xml'],
   ['CBC World', 'https://www.cbc.ca/cmlink/rss-world'],
   ['Sky News World', 'https://feeds.skynews.com/feeds/rss/world.xml'],
   ['CBS World', 'https://www.cbsnews.com/latest/rss/world'],
+  ['AP Top News', 'https://feeds.apnews.com/rss/apf-topnews'],
+  ['AP World News', 'https://feeds.apnews.com/rss/apf-worldnews'],
+  ['CNBC World Economy', 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362'],
+  ['IMF News', 'https://www.imf.org/en/News/RSS?Language=ENG'],
+  ['WTO News', 'https://www.wto.org/library/rss/latest_news_e.xml'],
+  ['NATO News', 'https://www.nato.int/cps/en/natohq/news.xml'],
+  ['EU Council', 'https://www.consilium.europa.eu/en/press/press-releases/rss/'],
+  ['Federal Reserve', 'https://www.federalreserve.gov/feeds/press_all.xml'],
+  ['US Treasury', 'https://home.treasury.gov/news/press-releases/rss'],
+  ['USTR', 'https://ustr.gov/about-us/policy-offices/press-office/press-releases/feed'],
+  ['US Commerce', 'https://www.commerce.gov/news/rss'],
   ['Defense News', 'https://www.defensenews.com/arc/outboundfeeds/rss/category/global/?outputType=xml'],
   ['Military Times', 'https://www.militarytimes.com/arc/outboundfeeds/rss/category/flashpoints/?outputType=xml'],
   ['Long War Journal', 'https://www.longwarjournal.org/feed'],
@@ -74,13 +89,41 @@ const rssFeeds = [
 ];
 
 const gdeltQueries = [
-  'war OR missile OR drone OR airstrike OR clashes OR explosion OR evacuation',
+  'tariff OR tariffs OR sanctions OR "trade deal" OR "trade war" OR exports OR imports',
+  '"central bank" OR inflation OR "interest rates" OR currency OR debt OR bonds OR recession',
+  'oil OR gas OR energy OR pipeline OR "supply chain" OR semiconductor OR "rare earth"',
+  'NATO OR BRICS OR "European Union" OR "United Nations" OR WTO OR IMF OR "World Bank" OR G7 OR G20',
+  '"defense spending" OR "military aid" OR "arms deal" OR missile OR drone OR naval OR airstrike',
+  '"multinational corporation" OR antitrust OR merger OR acquisition OR "foreign investment"',
   'shipping OR vessel OR port OR strait OR maritime OR tanker OR cargo',
-  'earthquake OR flood OR wildfire OR cyclone OR storm OR volcano',
-  'cyberattack OR ransomware OR outage OR ddos',
+  'earthquake OR flood OR wildfire OR cyclone OR hurricane OR typhoon OR volcano OR "state of emergency"',
+  'cyberattack OR ransomware OR outage OR ddos OR "data breach"',
 ];
 
 const conflictWords = /\b(war|airstrike|missile|rocket|drone|uav|explosion|blast|shelling|artillery|clash|clashes|fighting|offensive|evacuation|military|naval|vessel|tanker|strait|blockade|cyberattack|ransomware|ddos)\b/i;
+const sportsNewsWords = /\b(sport|sports|soccer|football|basketball|baseball|hockey|tennis|golf|cricket|rugby|olympic|olympics|fifa|uefa|nba|nfl|mlb|nhl|wnba|ncaa|premier league|champions league|world cup|super bowl|grand slam|playoff|playoffs|matchday|tournament|stadium|coach|quarterback|striker|goalkeeper|pitcher)\b/i;
+const strategicNewsWords = /\b(finance|financial|economy|economic|trade|tariff|tariffs|sanction|sanctions|export|exports|import|imports|supply chain|inflation|interest rate|central bank|currency|debt|bond|bonds|oil|gas|energy|pipeline|semiconductor|chip|rare earth|market|markets|investment|foreign investment|multinational|corporation|corporate|merger|acquisition|antitrust|regulation|policy|lawmakers|election|treaty|border|migration|defense|defence|military|naval|arms|missile|drone|airstrike|war|conflict|NATO|BRICS|European Union|EU|United Nations|UN|WTO|IMF|World Bank|G7|G20|OPEC|ASEAN|cyberattack|ransomware|data breach|shipping|maritime|port|strait|tanker|cargo)\b/i;
+const majorNatureWords = /\b(earthquake|hurricane|typhoon|cyclone|flood|wildfire|volcano|tsunami|landslide|state of emergency|evacuation|catastrophe|disaster|fatalities|killed|dead|damage|blackout)\b/i;
+
+function isSportsNews(item) {
+  return sportsNewsWords.test(`${item.title || ''} ${item.description || ''} ${item.category || ''}`);
+}
+
+function newsRelevanceScore(item) {
+  const text = `${item.title || ''} ${item.description || ''} ${item.category || ''} ${item.sourceName || ''}`;
+  let score = 0;
+  if (strategicNewsWords.test(text)) score += 6;
+  if (majorNatureWords.test(text)) score += 4;
+  if (/\b(IMF|World Bank|WTO|NATO|BRICS|European Union|United Nations|Federal Reserve|Treasury|USTR|Defense\.gov)\b/i.test(text)) score += 4;
+  if (/\b(tariff|sanction|central bank|inflation|defense spending|military aid|semiconductor|rare earth|supply chain|oil|gas|shipping|port|cyberattack)\b/i.test(text)) score += 3;
+  if (item.officialSource) score += 1;
+  return score;
+}
+
+function isRelevantNews(item) {
+  if (!item || isSportsNews(item)) return false;
+  return newsRelevanceScore(item) > 0;
+}
 
 function htmlDecode(value) {
   return String(value || '')
@@ -124,8 +167,11 @@ function locate(text, id = '') {
 
 function categoryFor(text) {
   const lower = String(text || '').toLowerCase();
+  if (/\b(tariff|tariffs|sanction|sanctions|trade|economy|economic|inflation|interest rate|central bank|currency|debt|bond|oil|gas|energy|semiconductor|chip|rare earth|supply chain|market|markets)\b/.test(lower)) return 'ECONOMY';
+  if (/\b(nato|brics|european union|\beu\b|united nations|\bun\b|wto|imf|world bank|g7|g20|opec|asean|treaty|diplomacy|summit)\b/.test(lower)) return 'DIPLOMACY';
+  if (/\b(multinational|corporation|corporate|merger|acquisition|antitrust|foreign investment|regulation)\b/.test(lower)) return 'CORPORATE';
   if (/\b(vessel|ship|shipping|maritime|port|strait|tanker|cargo|naval)\b/.test(lower)) return 'MARITIME';
-  if (/\b(earthquake|flood|storm|wildfire|cyclone|volcano|weather)\b/.test(lower)) return 'CLIMATE';
+  if (/\b(earthquake|flood|storm|wildfire|cyclone|hurricane|typhoon|volcano|weather|tsunami|disaster)\b/.test(lower)) return 'CLIMATE';
   if (/\b(cyberattack|ransomware|ddos|outage|hack)\b/.test(lower)) return 'CYBER';
   if (conflictWords.test(lower)) return 'CONFLICT';
   return 'NEWS';
@@ -479,11 +525,14 @@ async function loadEarthquakes() {
 function dedupeNews(items) {
   const byKey = new Map();
   items.forEach(item => {
+    if (!isRelevantNews(item)) return;
     const key = String(item.url || item.title || item.id).replace(/[?#].*$/, '').toLowerCase();
     if (!key || byKey.has(key)) return;
-    byKey.set(key, item);
+    byKey.set(key, { ...item, relevanceScore: newsRelevanceScore(item) });
   });
-  return [...byKey.values()].sort((a, b) => (b.ts || 0) - (a.ts || 0)).slice(0, MAX_NEWS);
+  return [...byKey.values()]
+    .sort((a, b) => (b.relevanceScore - a.relevanceScore) || ((b.ts || 0) - (a.ts || 0)))
+    .slice(0, MAX_NEWS);
 }
 
 function toConflictEvents(news) {

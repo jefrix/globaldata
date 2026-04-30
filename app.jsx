@@ -356,12 +356,12 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
 }
 
 // ============ RIGHT RAIL — EVENT TICKER ============
-function EventFeed({ active, theme, data, onSelect, selectedId }) {
+function EventFeed({ active, theme, data, densityValue, onSelect, selectedId }) {
   const items = useMemo(() => {
     const D = data || window.MOCK_DATA;
     const feed = [];
     if (active.news) {
-      D.news.slice(0, 30).forEach(n => feed.push({
+      D.news.slice(0, newsFeedLimitFromDensity(densityValue)).forEach(n => feed.push({
         id: n.id || n.url || n.title,
         t: n.ts, kind: 'NEWS', cat: n.category, city: n.city, country: n.country,
         title: n.title, meta: n.source || `${n.sources} SRC`,
@@ -476,7 +476,7 @@ function EventFeed({ active, theme, data, onSelect, selectedId }) {
     }
     feed.sort((a, b) => b.t - a.t);
     return feed.slice(0, 60);
-  }, [active, theme, data]);
+  }, [active, theme, data, densityValue]);
 
   const fmtT = (t) => {
     const diff = Math.floor((Date.now() - t) / 60000);
@@ -752,6 +752,11 @@ function mergeLiveData(live) {
 function objectLimitFromDensity(value) {
   const t = Math.max(0, Math.min(1, Number(value) || 0));
   return Math.round(250 + t * 4750);
+}
+
+function newsFeedLimitFromDensity(value) {
+  const t = Math.max(0, Math.min(1, Number(value) || 0));
+  return Math.round(30 + t * 170);
 }
 
 function interpolateFeedPath(path, progress = 0) {
@@ -1231,6 +1236,7 @@ engineRef.current = e;
             active={active}
             theme={theme}
             data={data}
+            densityValue={densityValue}
             selectedId={railPick?.eventId || null}
             onSelect={selectFeedEvent}
           />

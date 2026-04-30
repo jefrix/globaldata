@@ -66,6 +66,15 @@
       .trim();
   }
 
+  const sportsNewsWords = /\b(sport|sports|soccer|football|basketball|baseball|hockey|tennis|golf|cricket|rugby|olympic|olympics|fifa|uefa|nba|nfl|mlb|nhl|wnba|ncaa|premier league|champions league|world cup|super bowl|grand slam|playoff|playoffs|matchday|tournament|stadium|coach|quarterback|striker|goalkeeper|pitcher)\b/i;
+  const strategicNewsWords = /\b(finance|financial|economy|economic|trade|tariff|tariffs|sanction|sanctions|export|exports|import|imports|supply chain|inflation|interest rate|central bank|currency|debt|bond|bonds|oil|gas|energy|pipeline|semiconductor|chip|rare earth|market|markets|investment|foreign investment|multinational|corporation|corporate|merger|acquisition|antitrust|regulation|policy|lawmakers|election|treaty|border|migration|defense|defence|military|naval|arms|missile|drone|airstrike|war|conflict|NATO|BRICS|European Union|EU|United Nations|UN|WTO|IMF|World Bank|G7|G20|OPEC|ASEAN|cyberattack|ransomware|data breach|shipping|maritime|port|strait|tanker|cargo)\b/i;
+  const majorNatureWords = /\b(earthquake|hurricane|typhoon|cyclone|flood|wildfire|volcano|tsunami|landslide|state of emergency|evacuation|catastrophe|disaster|fatalities|killed|dead|damage|blackout)\b/i;
+
+  function isRelevantNewsTitle(title) {
+    const text = String(title || '');
+    return !sportsNewsWords.test(text) && (strategicNewsWords.test(text) || majorNatureWords.test(text));
+  }
+
   function normalizeArticleUrl(url, host = 'https://en.wikipedia.org') {
     const value = String(url || '').trim();
     if (!value) return '';
@@ -202,7 +211,7 @@
     }).filter(item => item.title);
 
     const byId = new Map();
-    [...currentEvents, ...wikinews].forEach(item => {
+    [...currentEvents, ...wikinews].filter(item => isRelevantNewsTitle(item.title)).forEach(item => {
       const key = item.url || item.id || item.title;
       if (!byId.has(key)) byId.set(key, item);
     });
@@ -244,6 +253,7 @@
       const bullets = [...doc.querySelectorAll('li')]
         .map(node => compactText(node.textContent))
         .filter(text => text.length > 55 && text.length < 260)
+        .filter(isRelevantNewsTitle)
         .slice(0, 35);
 
       bullets.forEach((title, index) => {
