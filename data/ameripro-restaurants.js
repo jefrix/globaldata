@@ -12,12 +12,16 @@ window.AMERIPRO_RESTAURANTS = {
       "Open balance",
       "Attachments"
     ],
-    "greaseTrapMatches": 85,
+    "greaseTrapMatches": 108,
     "greaseTrapSource": "Jeff Sorted Restaurant List - Sheet1.csv",
     "greaseTrapFieldsMerged": [
       "greaseTrapSizeGal",
       "greaseTrapLocation"
-    ]
+    ],
+    "greaseTrapAddressMatchesAdded": 23,
+    "greaseTrapAddressReplacements": 0,
+    "greaseTrapAddressConflictsSkipped": 9,
+    "greaseTrapAddressMatchRule": "normalized street address plus matching city or ZIP"
   },
   "customers": [
     {
@@ -530,7 +534,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "179 E DYKES ST, COCHRAN, GA, 31014",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "CAPTAIN D'S",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0038",
@@ -1606,7 +1615,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "85 INDUSTRIAL BLVD, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "DODGE COUNTY SHERIFFS OFFICE",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0120",
@@ -1690,7 +1704,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "602 SOPERTON AVE, EAST DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "EXPRESS 29",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0126",
@@ -2300,7 +2319,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "401 N JEFFERSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "AMERICAN DELI / WORLD DELI",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0167",
@@ -2388,7 +2412,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2113 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "GOLDEN CORRAL",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0173",
@@ -2430,7 +2459,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "12834 BROAD ST, SPARTA, GA, 31087",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "CENTRAL PARK OF SPARTA",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0177",
@@ -2624,7 +2658,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "300 E HANCOCK ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "HUDDLE HOUSE",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0190",
@@ -2818,7 +2857,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "119 W MAIN ST, IRWINTON, GA, 31042",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "JET FOODS",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0203",
@@ -3776,7 +3820,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1300 S PETERSON AVE, DOUGLAS, GA, 31533",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 3000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "MCDONALD'S",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0271",
@@ -3790,7 +3839,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "108 E BRAZELL ST, REIDSVILLE, GA, 30453",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 2500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "MCDONALD'S",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0272",
@@ -3804,7 +3858,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "MCDONALD'S",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0273",
@@ -3878,7 +3937,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1206 CRAWFORD ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 75,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "PIZZA HUT",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0279",
@@ -4032,7 +4096,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2419 PIO NONO AVE, MACON, GA, 31206",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "MRS WINNER'S",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0291",
@@ -4156,7 +4225,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2105 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "RED LOBSTER",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0299",
@@ -4550,7 +4624,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "12825 WHITE BLUFF RD, SAVANNAH, GA, 31419",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "PRUITT HEALTH",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0328",
@@ -4578,7 +4657,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 400,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "QUALITY INN",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0330",
@@ -4804,7 +4888,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2161 US HWY 441, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "THE RECIPE FUSION / SALSA'S MEXICAN RESTAURANT",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0345",
@@ -5076,7 +5165,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "140 W HANCOCK ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "KUROSHIMA",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0365",
@@ -5164,7 +5258,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "501 E MCCARTY ST, SANDERSVILLE, GA, 31082",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "SMITH'S NURSING HOME",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0371",
@@ -5714,7 +5813,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1817 RICE AVE, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "SURCHEROS FRESH GRILL",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0409",
@@ -6140,7 +6244,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1015 CLAXTON DAIRY RD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 30,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "FRIENDLY'S ICE CREAM",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0439",
@@ -6370,7 +6479,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "206 ROBERSON MILL RD, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "HUDDLE HOUSE",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0454",
@@ -6416,7 +6530,12 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "169 E DYKES ST, COCHRAN, GA, 31014",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List address match",
+      "greaseTrapMatchedName": "SUPER HONG KONG BUFFET",
+      "greaseTrapMatchType": "address"
     },
     {
       "id": "cust-0457",
