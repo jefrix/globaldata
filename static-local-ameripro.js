@@ -206,6 +206,92 @@
         letter-spacing: 0.1em;
         margin-top: 3px;
       }
+      .feed.ameripro-feed-mode > .feed-head,
+      .feed.ameripro-feed-mode > .feed-list {
+        display: none;
+      }
+      .ameripro-tank-board {
+        display: grid;
+        height: 100%;
+        min-height: 0;
+        grid-template-rows: auto repeat(4, minmax(0, 1fr));
+        border-top: 1px solid rgba(115,255,154,0.18);
+      }
+      .ameripro-tank-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(115,255,154,0.22);
+        font-family: var(--mono);
+        letter-spacing: 0.14em;
+        font-size: 9px;
+        color: #73ff9a;
+      }
+      .ameripro-tank-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 46px;
+        align-content: center;
+        gap: 7px 9px;
+        padding: 8px 12px;
+        border-bottom: 1px solid rgba(26,49,83,0.56);
+        background: rgba(3,12,24,0.35);
+      }
+      .ameripro-tank-row.selected {
+        background: rgba(115,255,154,0.08);
+        box-shadow: inset 2px 0 0 var(--asset-color, #73ff9a);
+      }
+      .ameripro-tank-name {
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ameripro-tank-kind {
+        color: var(--text-dim);
+        font-family: var(--mono);
+        font-size: 7.5px;
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ameripro-tank-level {
+        grid-row: span 2;
+        align-self: center;
+        justify-self: end;
+        color: var(--asset-color, #73ff9a);
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+      }
+      .ameripro-tank-slider {
+        grid-column: 1 / -1;
+        width: 100%;
+        height: 14px;
+        accent-color: var(--asset-color, #73ff9a);
+      }
+      .ameripro-tank-track {
+        grid-column: 1 / -1;
+        height: 5px;
+        border: 1px solid rgba(115,255,154,0.25);
+        background: rgba(0,0,0,0.28);
+      }
+      .ameripro-tank-track span {
+        display: block;
+        height: 100%;
+        width: var(--level, 0%);
+        background: linear-gradient(90deg, #73ff9a, #f5d142, #ff7050);
+      }
+      .ameripro-inspector .insp-note {
+        margin-top: 10px;
+        color: var(--text-dim);
+        font-size: 11px;
+        line-height: 1.45;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -324,25 +410,9 @@
       row('SERVICE', 'FOG / GREASE TRAPS / HOODS'),
       row('PHONE', BASE.phone),
       row('FLEET', '3 PUMP TRUCKS / 1 FRAK TANK', '#73ff9a'),
-      '<div class="ameripro-fleet-list">',
-      ...ASSETS.map(asset => {
-        const level = levels[asset.id] || 0;
-        return [
-          `<button class="ameripro-fleet-item" data-ameripro-pick="${escapeHtml(asset.id)}" type="button" style="--asset-color:${asset.color}">`,
-          '<span>',
-          `<div class="ameripro-fleet-name">${escapeHtml(asset.label)}</div>`,
-          `<div class="ameripro-fleet-kind">${escapeHtml(asset.kind)} / ${escapeHtml(asset.capacity)} / ${level}%</div>`,
-          '</span>',
-          `<span class="ameripro-fleet-meter" style="--level:${level}%"><span></span></span>`,
-          '</button>',
-        ].join('');
-      }),
-      '</div>',
+      row('TANK INPUT', 'EVENT PANE SLIDERS', '#f5d142'),
       '</div>',
     ].join('');
-    panel.querySelectorAll('[data-ameripro-pick]').forEach(button => {
-      button.addEventListener('click', () => selectAsset(button.dataset.ameriproPick));
-    });
   }
 
   function renderAsset(asset) {
@@ -361,14 +431,10 @@
       row('TYPE', asset.kind.toUpperCase()),
       row('TANK', asset.tank.toUpperCase()),
       row('CAPACITY', asset.capacity.toUpperCase()),
-      `<div class="insp-row"><span>LEVEL</span><b data-ameripro-level-value style="color:${asset.color}">${level}%</b></div>`,
+      row('LEVEL', `${level}%`, asset.color),
       row('BASE', BASE.address),
       row('SOURCE', asset.fixed ? 'USER INPUT / DUBLIN FRAK TANK' : 'USER INPUT / AMERIPRO FLEET'),
-      `<div class="ameripro-meter" style="--level:${level}%">`,
-      '<div class="ameripro-meter-track"><div class="ameripro-meter-fill"></div></div>',
-      '<div class="ameripro-meter-labels"><span>EMPTY</span><span>FULL</span></div>',
-      `<input class="ameripro-slider" data-ameripro-level="${escapeHtml(asset.id)}" type="range" min="0" max="100" value="${level}">`,
-      '</div>',
+      '<div class="insp-note">Use the tank sliders in the Event pane to update levels.</div>',
       '</div>',
     ].join('');
 
@@ -376,15 +442,6 @@
       selectedId = null;
       resetSelectedClass();
       renderOverview();
-    });
-    panel.querySelector('[data-ameripro-level]')?.addEventListener('input', event => {
-      const next = Math.max(0, Math.min(100, Math.round(Number(event.target.value) || 0)));
-      levels[asset.id] = next;
-      saveLevels();
-      const valueNode = panel.querySelector('[data-ameripro-level-value]');
-      if (valueNode) valueNode.textContent = `${next}%`;
-      const meter = panel.querySelector('.ameripro-meter');
-      if (meter) meter.style.setProperty('--level', `${next}%`);
     });
   }
 
@@ -394,16 +451,115 @@
     selectedId = id;
     resetSelectedClass();
     renderAsset(asset);
+    renderTankBoard();
+  }
+
+  function setLevel(id, level) {
+    const asset = ASSETS.find(item => item.id === id);
+    if (!asset) return;
+    levels[id] = Math.max(0, Math.min(100, Math.round(Number(level) || 0)));
+    saveLevels();
+    updateTankBoardValues(id);
+    if (selectedId === id) renderAsset(asset);
+  }
+
+  function renderTankBoard() {
+    const feed = document.querySelector('.rail-right .feed');
+    if (!feed || !placeholderActive()) return;
+    ensureStyle();
+    feed.classList.add('ameripro-feed-mode');
+    let board = feed.querySelector('[data-ameripro-tank-board]');
+    if (board) {
+      ASSETS.forEach(asset => updateTankBoardValues(asset.id));
+      updateTankBoardSelection();
+      return;
+    }
+    board = document.createElement('div');
+    board.className = 'ameripro-tank-board';
+    board.dataset.ameriproTankBoard = '1';
+    feed.appendChild(board);
+    board.innerHTML = [
+      '<div class="ameripro-tank-head">',
+      '<span>TANK LEVELS</span>',
+      '<span>EMPTY / FULL</span>',
+      '</div>',
+      ...ASSETS.map(asset => tankRow(asset)),
+    ].join('');
+    board.querySelectorAll('[data-ameripro-tank-slider]').forEach(slider => {
+      slider.addEventListener('input', event => {
+        selectedId = event.target.dataset.ameriproTankSlider;
+        resetSelectedClass();
+        setLevel(selectedId, event.target.value);
+        updateTankBoardSelection();
+      });
+      slider.addEventListener('focus', event => {
+        selectedId = event.target.dataset.ameriproTankSlider;
+        resetSelectedClass();
+        renderAsset(ASSETS.find(asset => asset.id === selectedId));
+        updateTankBoardSelection();
+      });
+    });
+    board.querySelectorAll('[data-ameripro-tank-row]').forEach(rowNode => {
+      rowNode.addEventListener('click', event => {
+        if (event.target?.matches?.('input')) return;
+        selectedId = rowNode.dataset.ameriproTankRow;
+        resetSelectedClass();
+        renderAsset(ASSETS.find(asset => asset.id === selectedId));
+        updateTankBoardSelection();
+      });
+    });
+    updateTankBoardSelection();
+  }
+
+  function tankRow(asset) {
+    const level = levels[asset.id] || 0;
+    const selected = selectedId === asset.id ? ' selected' : '';
+    return [
+      `<div class="ameripro-tank-row${selected}" data-ameripro-tank-row="${escapeHtml(asset.id)}" style="--asset-color:${asset.color};--level:${level}%">`,
+      `<div class="ameripro-tank-name">${escapeHtml(asset.label)}</div>`,
+      `<div class="ameripro-tank-level" data-ameripro-level-text="${escapeHtml(asset.id)}">${level}%</div>`,
+      `<div class="ameripro-tank-kind">${escapeHtml(asset.kind)} / ${escapeHtml(asset.capacity)}</div>`,
+      `<input class="ameripro-tank-slider" data-ameripro-tank-slider="${escapeHtml(asset.id)}" type="range" min="0" max="100" value="${level}">`,
+      '<div class="ameripro-tank-track"><span></span></div>',
+      '</div>',
+    ].join('');
+  }
+
+  function updateTankBoardValues(id) {
+    const rowNode = document.querySelector(`[data-ameripro-tank-row="${id}"]`);
+    const text = document.querySelector(`[data-ameripro-level-text="${id}"]`);
+    const slider = document.querySelector(`[data-ameripro-tank-slider="${id}"]`);
+    const level = levels[id] || 0;
+    if (rowNode) rowNode.style.setProperty('--level', `${level}%`);
+    if (text) text.textContent = `${level}%`;
+    if (slider && Number(slider.value) !== level) slider.value = String(level);
+  }
+
+  function updateTankBoardSelection() {
+    document.querySelectorAll('[data-ameripro-tank-row]').forEach(rowNode => {
+      rowNode.classList.toggle('selected', rowNode.dataset.ameriproTankRow === selectedId);
+    });
+  }
+
+  function resetTankBoard() {
+    const feed = document.querySelector('.rail-right .feed.ameripro-feed-mode');
+    if (!feed) return;
+    feed.classList.remove('ameripro-feed-mode');
+    feed.querySelector('[data-ameripro-tank-board]')?.remove();
   }
 
   function setActive(next) {
     active = Boolean(next);
     drawAssets();
-    if (active) renderOverview();
+    if (active) {
+      renderOverview();
+      renderTankBoard();
+    }
     if (!active) {
       selectedId = null;
       resetSelectedClass();
       resetInspectorIfAmeripro();
+      resetTankBoard();
     }
   }
 
@@ -413,7 +569,11 @@
     if (rowSub) rowSub.textContent = '3 TRUCKS / FRAK TANK / LEVELS';
     drawAssets();
     if (next && !document.querySelector('.ameripro-inspector')) renderOverview();
-    if (!next) resetInspectorIfAmeripro();
+    if (next) renderTankBoard();
+    if (!next) {
+      resetInspectorIfAmeripro();
+      resetTankBoard();
+    }
   }
 
   function resetInspectorIfAmeripro() {
@@ -430,12 +590,7 @@
     setActive,
     getActive: () => placeholderActive(),
     selectAsset,
-    setLevel(id, level) {
-      if (!ASSETS.some(asset => asset.id === id)) return;
-      levels[id] = Math.max(0, Math.min(100, Math.round(Number(level) || 0)));
-      saveLevels();
-      if (selectedId === id) renderAsset(ASSETS.find(asset => asset.id === id));
-    },
+    setLevel,
     getLevels: () => ({ ...levels }),
   };
 
