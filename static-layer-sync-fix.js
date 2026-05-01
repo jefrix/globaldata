@@ -17,6 +17,10 @@
   }
 
   function setExtraLayer(layer, active) {
+    if (layer === 'local' && window.GlobalDataLocalLayer?.setActive) {
+      window.GlobalDataLocalLayer.setActive(active);
+      return;
+    }
     const engine = window.__globalDataEngine;
     if (!engine?.layerGroups?.[layer]) return;
     engine.setLayerVisible?.(layer, active);
