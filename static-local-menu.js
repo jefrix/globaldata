@@ -248,7 +248,7 @@
       keyName: 'localNews',
       hotkey: 'N',
       label: 'LOCAL NEWS',
-      sub: 'REGIONAL INCIDENTS / ALERTS',
+      sub: 'GA BUSINESS / POLICY / INDUSTRY / 5D',
       color: '#f58a42',
       active: localState.localNews,
       onToggle: () => {

@@ -1,46 +1,68 @@
 (function () {
-  const MAX_NEWS_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+  const MAX_NEWS_AGE_MS = 5 * 24 * 60 * 60 * 1000;
   const SERVICE_TERMS = [
-    'Georgia', 'Savannah', 'Macon', 'Warner Robins', 'Dublin', 'Statesboro',
-    'Chatham', 'Bibb', 'Houston', 'Laurens', 'Bulloch', 'Effingham', 'Bryan',
-    'Toombs', 'Emanuel', 'Treutlen', 'Johnson', 'Bleckley', 'Twiggs',
+    'Georgia', 'Atlanta', 'Savannah', 'Augusta', 'Columbus', 'Macon', 'Athens',
+    'Warner Robins', 'Dublin', 'Statesboro', 'Valdosta', 'Brunswick', 'Albany',
+    'Rome', 'Gainesville', 'Dalton', 'Chatham County', 'Fulton County',
+    'Cobb County', 'Gwinnett County', 'Bibb County', 'Houston County',
+    'Laurens County', 'Bulloch County',
   ];
   const TOPICS = [
     {
-      id: 'restaurant',
-      label: 'OPEN / CLOSE',
+      id: 'business',
+      label: 'BUSINESS',
       color: '#f58a42',
-      terms: ['restaurant', 'restaurants', 'new restaurant', 'restaurant opens', 'restaurant opening', 'restaurant closes', 'restaurant closing', 'food service'],
+      terms: ['business', 'company', 'companies', 'corporate', 'headquarters', 'investment', 'expansion', 'layoffs', 'jobs', 'workforce', 'plant', 'facility', 'factory', 'warehouse', 'distribution center'],
     },
     {
-      id: 'health',
-      label: 'HEALTH SCORES',
+      id: 'economy',
+      label: 'ECONOMY',
       color: '#73ff9a',
-      terms: ['restaurant inspection', 'health inspection', 'inspection score', 'restaurant report card', 'food service inspection', 'health score'],
+      terms: ['economy', 'economic development', 'revenue', 'budget', 'tax', 'taxes', 'tariff', 'trade', 'inflation', 'housing market', 'labor market', 'unemployment', 'port traffic', 'supply chain'],
     },
     {
       id: 'industry',
-      label: 'GREASE / HOODS',
+      label: 'INDUSTRY',
       color: '#5bd7ff',
-      terms: ['grease trap', 'exhaust hood', 'hood cleaning', 'kitchen exhaust', 'commercial kitchen cleaning', 'restaurant grease'],
+      terms: ['manufacturing', 'industrial', 'logistics', 'shipping', 'port', 'rail', 'freight', 'semiconductor', 'battery plant', 'EV plant', 'automotive', 'aerospace', 'agriculture', 'energy'],
     },
     {
-      id: 'roads',
-      label: 'ROAD CLOSURES',
+      id: 'government',
+      label: 'GOV / POLICY',
       color: '#ff3d8d',
-      terms: ['road closure', 'lane closure', 'traffic shift', 'detour', 'interstate closure', 'bridge closure', 'GDOT'],
+      terms: ['governor', 'legislature', 'state senate', 'state house', 'mayor', 'commission', 'agency', 'regulation', 'policy', 'lawmakers', 'bill', 'permit', 'contract', 'procurement'],
+    },
+    {
+      id: 'infrastructure',
+      label: 'INFRA',
+      color: '#f5d142',
+      terms: ['infrastructure', 'transportation', 'GDOT', 'road project', 'bridge', 'highway', 'airport', 'port of savannah', 'power grid', 'utility', 'water system', 'broadband'],
+    },
+    {
+      id: 'weather',
+      label: 'MAJOR WEATHER',
+      color: '#9fb7ff',
+      terms: ['hurricane', 'tropical storm', 'tornado', 'flooding', 'severe weather', 'storm damage', 'state of emergency', 'disaster declaration'],
     },
   ];
   const CITY_POINTS = [
+    { match: /atlanta|fulton|cobb|gwinnett|dekalb/i, city: 'Atlanta', lat: 33.7490, lon: -84.3880 },
     { match: /savannah|chatham/i, city: 'Savannah', lat: 32.0809, lon: -81.0912 },
+    { match: /augusta|richmond/i, city: 'Augusta', lat: 33.4735, lon: -82.0105 },
+    { match: /columbus|muscogee/i, city: 'Columbus', lat: 32.4609, lon: -84.9877 },
     { match: /statesboro|bulloch/i, city: 'Statesboro', lat: 32.4488, lon: -81.7832 },
     { match: /dublin|laurens/i, city: 'Dublin', lat: 32.5404, lon: -82.9038 },
     { match: /warner robins|houston/i, city: 'Warner Robins', lat: 32.6130, lon: -83.6242 },
     { match: /macon|bibb/i, city: 'Macon', lat: 32.8407, lon: -83.6324 },
+    { match: /athens|clarke/i, city: 'Athens', lat: 33.9519, lon: -83.3576 },
+    { match: /valdosta|lowndes/i, city: 'Valdosta', lat: 30.8327, lon: -83.2785 },
+    { match: /brunswick|glynn/i, city: 'Brunswick', lat: 31.1499, lon: -81.4915 },
+    { match: /albany|dougherty/i, city: 'Albany', lat: 31.5785, lon: -84.1557 },
     { match: /vidalia|toombs/i, city: 'Vidalia', lat: 32.2177, lon: -82.4135 },
     { match: /swainsboro|emanuel/i, city: 'Swainsboro', lat: 32.5974, lon: -82.3337 },
   ];
-  const rejectWords = /\b(sports|football|basketball|baseball|obituary|recipe|review|movie|music|concert|coupon|best restaurants|dating|celebrity)\b/i;
+  const rejectWords = /\b(sports|football|basketball|baseball|soccer|golf|tennis|recruiting|playoff|championship|obituary|recipe|review|movie|music|concert|coupon|best restaurants|dating|celebrity|festival|arts?|theater|theatre|dance|lifestyle|fashion|wedding|podcast|book club|foodie|dining guide)\b/i;
+  const relevanceWords = /\b(business|company|corporate|economic|economy|financial|finance|bank|investment|expansion|jobs|workforce|layoffs|plant|facility|factory|warehouse|industrial|manufacturing|logistics|shipping|port|rail|freight|supply chain|tariff|trade|budget|tax|revenue|governor|legislature|lawmakers|policy|regulation|bill|contract|procurement|infrastructure|transportation|GDOT|bridge|highway|airport|utility|power grid|hurricane|tropical storm|tornado|flooding|severe weather|disaster)\b/i;
   const gaScopeWords = new RegExp(`\\b(${SERVICE_TERMS.map(escapeRegExp).join('|')})\\b`, 'i');
   let active = false;
   let loaded = false;
@@ -171,7 +193,7 @@
     layer.innerHTML = [
       '<div class="local-news-panel">',
       '<div class="local-news-head">',
-      '<div class="local-news-title">LOCAL NEWS / COMPANY SIGNALS / 30D</div>',
+      '<div class="local-news-title">GEORGIA NEWS / BUSINESS + POLICY / 5D</div>',
       '<div class="local-news-status" data-local-news-status>READY</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
@@ -194,7 +216,7 @@
       format: 'json',
       sort: 'datedesc',
       maxrecords: '35',
-      timespan: '30d',
+      timespan: '5d',
     });
     return `https://api.gdeltproject.org/api/v2/doc/doc?${params}`;
   }
@@ -204,6 +226,20 @@
     if (!response.ok) throw new Error(`GDELT ${response.status}`);
     const data = await response.json();
     return (data.articles || []).map(article => normalizeArticle(article, topic)).filter(Boolean);
+  }
+
+  async function loadTopicWithRetry(topic) {
+    try {
+      return await loadTopic(topic);
+    } catch (error) {
+      if (!/429/.test(String(error?.message || error))) throw error;
+      await wait(1400);
+      return loadTopic(topic);
+    }
+  }
+
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   function normalizeArticle(article, topic) {
@@ -229,16 +265,19 @@
       lat: point.lat,
       lon: point.lon,
       ts: seen,
-      source: 'GDELT / Georgia-filtered web news',
+      source: 'GDELT / Georgia business-policy filter',
     };
   }
 
   function isCompanyRelevant(text, topicId) {
-    if (topicId === 'restaurant') return /\b(restaurant|restaurants|food service|eatery|cafe|barbecue|bbq|diner|kitchen|opens|opening|closes|closing|closed)\b/i.test(text);
-    if (topicId === 'health') return /\b(inspection|inspections|score|scores|health department|restaurant report card|food service)\b/i.test(text);
-    if (topicId === 'industry') return /\b(grease trap|exhaust hood|hood cleaning|kitchen exhaust|commercial kitchen|restaurant grease)\b/i.test(text);
-    if (topicId === 'roads') return /\b(road closure|lane closure|traffic shift|detour|interstate|bridge closure|GDOT|closed to traffic)\b/i.test(text);
-    return false;
+    if (!relevanceWords.test(text)) return false;
+    if (topicId === 'business') return /\b(business|company|corporate|headquarters|investment|expansion|jobs|workforce|layoffs|plant|facility|factory|warehouse|distribution center)\b/i.test(text);
+    if (topicId === 'economy') return /\b(economy|economic development|revenue|budget|tax|tariff|trade|inflation|housing market|labor market|unemployment|port traffic|supply chain)\b/i.test(text);
+    if (topicId === 'industry') return /\b(manufacturing|industrial|logistics|shipping|port|rail|freight|semiconductor|battery plant|EV plant|automotive|aerospace|agriculture|energy)\b/i.test(text);
+    if (topicId === 'government') return /\b(governor|legislature|state senate|state house|mayor|commission|agency|regulation|policy|lawmakers|bill|permit|contract|procurement)\b/i.test(text);
+    if (topicId === 'infrastructure') return /\b(infrastructure|transportation|GDOT|road project|bridge|highway|airport|port of savannah|power grid|utility|water system|broadband)\b/i.test(text);
+    if (topicId === 'weather') return /\b(hurricane|tropical storm|tornado|flooding|severe weather|storm damage|state of emergency|disaster declaration)\b/i.test(text);
+    return relevanceWords.test(text);
   }
 
   function compact(value) {
@@ -275,13 +314,13 @@
       const text = `${road} ${desc}`;
       const ts = Number(event.Reported || event.reported || 0) * 1000 || Date.now();
       if (Date.now() - ts > MAX_NEWS_AGE_MS) return null;
-      if (!/\b(closure|closed|detour|lane|traffic shift|construction)\b/i.test(text)) return null;
+      if (!/\b(closure|closed|detour|lane|traffic shift|construction|bridge|interstate|highway)\b/i.test(text)) return null;
       const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
       return {
         id: `ga511-${event.ID || hash(text)}`,
-        topic: 'roads',
-        topicLabel: 'ROAD CLOSURES',
-        color: '#ff3d8d',
+        topic: 'infrastructure',
+        topicLabel: 'INFRA',
+        color: '#f5d142',
         title: `${road || 'Georgia road'}: ${desc || 'Traffic event'}`,
         url: 'https://511ga.org/',
         domain: '511ga.org',
@@ -289,7 +328,7 @@
         lat: point.lat,
         lon: point.lon,
         ts,
-        source: 'Georgia 511 traffic events',
+        source: 'Georgia 511 infrastructure events',
       };
     }).filter(Boolean);
   }
@@ -299,11 +338,23 @@
     if (loaded && Date.now() - lastLoadedAt < 900000) return cachedItems;
     loading = true;
     try {
-      const batches = await Promise.allSettled([...TOPICS.map(loadTopic), loadGeorgia511()]);
+      const batches = [];
+      for (const topic of TOPICS) {
+        try {
+          batches.push(await loadTopicWithRetry(topic));
+        } catch {
+          batches.push([]);
+        }
+        await wait(360);
+      }
+      try {
+        batches.push(await loadGeorgia511());
+      } catch {
+        batches.push([]);
+      }
       const byUrl = new Map();
-      batches.forEach(result => {
-        if (result.status !== 'fulfilled') return;
-        result.value.forEach(item => {
+      batches.forEach(batch => {
+        batch.forEach(item => {
           const key = item.url || item.id;
           if (!byUrl.has(key)) byUrl.set(key, item);
         });
@@ -325,10 +376,10 @@
     if (!layer) return;
     const list = layer.querySelector('[data-local-news-list]');
     const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = items.length ? `${items.length} MATCHES / 30D` : 'NO MATCHES / 30D';
+    if (status) status.textContent = items.length ? `${items.length} MATCHES / 5D` : 'NO MATCHES / 5D';
     if (!list) return;
     if (!items.length) {
-      list.innerHTML = '<div class="local-news-empty">NO MATCHING COMPANY-RELEVANT GEORGIA NEWS FOUND IN THE LAST 30 DAYS.</div>';
+      list.innerHTML = '<div class="local-news-empty">NO MATCHING GEORGIA BUSINESS, POLICY, INDUSTRIAL, OR MAJOR WEATHER NEWS FOUND IN THE LAST 5 DAYS.</div>';
       return;
     }
     list.replaceChildren(...items.map(item => {
@@ -402,7 +453,7 @@
     const next = Boolean(localMode && marker && marker.style.display !== 'none');
     setActive(next);
     const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
-    if (rowSub) rowSub.textContent = 'RESTAURANTS / SCORES / ROADS / 30D';
+    if (rowSub) rowSub.textContent = 'GA BUSINESS / POLICY / INDUSTRY / 5D';
   }
 
   setInterval(syncFromLocalMenu, 300);
