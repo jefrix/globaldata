@@ -226,7 +226,9 @@
       color: '#5bd7ff',
       active: localState.restaurants,
       onToggle: () => {
-        setPlaceholderLayer('restaurants', !localState.restaurants);
+        const next = !localState.restaurants;
+        setPlaceholderLayer('restaurants', next);
+        window.GlobalDataRestaurants?.setActive?.(next);
         refreshRows();
       },
     }));
@@ -364,6 +366,7 @@
       }
       if (name === 'powerGrid') window.GlobalDataPowerGrid?.setActive?.(Boolean(active));
       if (name === 'ameripro') window.GlobalDataAmeripro?.setActive?.(Boolean(active));
+      if (name === 'restaurants') window.GlobalDataRestaurants?.setActive?.(Boolean(active));
       refreshRows();
     },
     getLayer(name) {
@@ -392,6 +395,12 @@
       const next = !localState.ameripro;
       setPlaceholderLayer('ameripro', next);
       window.GlobalDataAmeripro?.setActive?.(next);
+      refreshRows();
+    }
+    if (event.key === 'r' || event.key === 'R') {
+      const next = !localState.restaurants;
+      setPlaceholderLayer('restaurants', next);
+      window.GlobalDataRestaurants?.setActive?.(next);
       refreshRows();
     }
   });
