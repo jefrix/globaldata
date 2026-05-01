@@ -274,12 +274,17 @@
     const quality = item.locationQuality === 'city-estimated'
       ? 'City-estimated location'
       : 'Street-matched location';
-    return [
+    const rows = [
       ['ADDRESS', locationText(item)],
       ['SERVICE', item.serviceFocus || 'Grease trap / exhaust hood service'],
       ['TYPE', item.type || 'Restaurant / food service customer'],
-      ['SOURCE', quality],
-    ].map(([label, value]) => `<div class="restaurant-info-row"><span>${label}</span><b>${escapeHtml(value)}</b></div>`).join('');
+    ];
+    if (item.greaseTrapSizeGal || item.greaseTrapLocation) {
+      rows.push(['TRAP', `${item.greaseTrapSizeGal ? `${item.greaseTrapSizeGal} gal` : 'Size unknown'} / ${item.greaseTrapLocation || 'Location unknown'}`]);
+      rows.push(['TRAP SRC', item.greaseTrapMatchedName ? `${item.greaseTrapMatchedName} / older list` : 'Older restaurant list']);
+    }
+    rows.push(['SOURCE', quality]);
+    return rows.map(([label, value]) => `<div class="restaurant-info-row"><span>${label}</span><b>${escapeHtml(value)}</b></div>`).join('');
   }
 
   function renderBoard() {

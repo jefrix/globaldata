@@ -11,6 +11,12 @@ window.AMERIPRO_RESTAURANTS = {
       "Phone",
       "Open balance",
       "Attachments"
+    ],
+    "greaseTrapMatches": 85,
+    "greaseTrapSource": "Jeff Sorted Restaurant List - Sheet1.csv",
+    "greaseTrapFieldsMerged": [
+      "greaseTrapSizeGal",
+      "greaseTrapLocation"
     ]
   },
   "customers": [
@@ -138,7 +144,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "212 FAIRVIEW PARK DR, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 2500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "ADDINGTON PLACE"
     },
     {
       "id": "cust-0010",
@@ -194,7 +204,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1910 MARION ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "AMERICAN DELI"
     },
     {
       "id": "cust-0014",
@@ -544,7 +558,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "206 TRIPP ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CARTER'S FRIED CHICKEN"
     },
     {
       "id": "cust-0040",
@@ -642,7 +660,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2002 CENTRAL AVE, CORDELE, GA, 31015",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "ZAXBY'S"
     },
     {
       "id": "cust-0047",
@@ -726,7 +748,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "140 TOM HILL SR BLVD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1300,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHICK-FIL-A"
     },
     {
       "id": "cust-0055",
@@ -740,7 +766,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "5055 BROOKHAVEN RD, MACON, GA, 31206",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHICK-FIL-A"
     },
     {
       "id": "cust-0056",
@@ -754,7 +784,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1569 BASS RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 2000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHICK-FIL-A"
     },
     {
       "id": "cust-0057",
@@ -824,7 +858,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1730 N COLUMBIA ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1200,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHICK-FIL-A"
     },
     {
       "id": "cust-0062",
@@ -838,7 +876,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1200,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHICK-FIL-A"
     },
     {
       "id": "cust-0063",
@@ -908,7 +950,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "52 S TALLAHASSEE ST, HAZLEHURST, GA, 31539",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHINA BUFFET"
     },
     {
       "id": "cust-0068",
@@ -922,7 +968,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "106 MALL RD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHINA GARDEN"
     },
     {
       "id": "cust-0069",
@@ -936,7 +986,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "850 COLLEGE ST, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CHINESE CHEF"
     },
     {
       "id": "cust-0070",
@@ -1118,7 +1172,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 15,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "COMPANY SUPPLY"
     },
     {
       "id": "cust-0083",
@@ -1146,7 +1204,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "637 E COURT ST, WRIGHTSVILLE, GA, 31096",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "CORNBREAD CAFE"
     },
     {
       "id": "cust-0091",
@@ -1230,7 +1292,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1234 US HWY 25, MILLEN, GA, 30442",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DAIRY QUEEN"
     },
     {
       "id": "cust-0099",
@@ -1272,7 +1338,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 200,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DAIRY QUEEN"
     },
     {
       "id": "cust-0102",
@@ -1286,7 +1356,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "721 CENTRAL DR, EAST DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0103",
@@ -1300,7 +1374,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "265 OCILLA HWY, FITZGERALD, GA, 31750",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0104",
@@ -1496,7 +1574,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "112 W JACKSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 30,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DEANO'S"
     },
     {
       "id": "cust-0118",
@@ -1650,7 +1732,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DUBLIN PLACE"
     },
     {
       "id": "cust-0129",
@@ -1664,7 +1750,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2181 US HWY 441, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DUNKIN' DONUTS"
     },
     {
       "id": "cust-0130",
@@ -1678,7 +1768,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "106 NATHANIEL DR, DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "EAST DUBLIN SEAFOOD"
     },
     {
       "id": "cust-0131",
@@ -1692,7 +1786,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "556 CHESTER HWY, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 50,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "EASTMAN HEALTHCARE AND REHAB"
     },
     {
       "id": "cust-0132",
@@ -1748,7 +1846,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "200 INDUSTRIAL BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FAIRVIEW PARK HOSPITAL"
     },
     {
       "id": "cust-0136",
@@ -1790,7 +1892,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "6237 ZEBULON RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FAZOLI'S"
     },
     {
       "id": "cust-0139",
@@ -1804,7 +1910,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "950 HILLCREST BLVD, MACON, GA, 31204",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 200,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FINGTOWN"
     },
     {
       "id": "cust-0140",
@@ -1860,7 +1970,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "120 TOM HILL SR BLVD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FIVE GUYS"
     },
     {
       "id": "cust-0144",
@@ -1888,7 +2002,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FRIENDLY GUS"
     },
     {
       "id": "cust-0146",
@@ -2252,7 +2370,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "3933 ARKWRIGHT RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 4000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "GLORY DAYS GRILL"
     },
     {
       "id": "cust-0172",
@@ -2406,7 +2528,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "652 FERNCREST DR, SANDERSVILLE, GA, 31082",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1200,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HERITAGE INN SANDERSVILLE HEALTH"
     },
     {
       "id": "cust-0184",
@@ -2434,7 +2560,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HOMETOWN GRILL"
     },
     {
       "id": "cust-0186",
@@ -2448,7 +2578,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1825 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HONG KONG RESTAURANT"
     },
     {
       "id": "cust-0187",
@@ -2532,7 +2666,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "I HEART TACOS"
     },
     {
       "id": "cust-0193",
@@ -2616,7 +2754,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "213 INDUSTRIAL BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "JAMES PLACE SENIOR LIVING"
     },
     {
       "id": "cust-0199",
@@ -2644,7 +2786,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "442 RECREATION DR, MILLEN, GA, 30442",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 2000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "JENKINS COUNTY CORRECTIONAL"
     },
     {
       "id": "cust-0201",
@@ -2714,7 +2860,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "921 US HWY 80, EAST DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "JET FOODS"
     },
     {
       "id": "cust-0206",
@@ -2924,7 +3074,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2421 US HWY 80, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "KOIYA"
     },
     {
       "id": "cust-0222",
@@ -2938,7 +3092,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "542 S MAIN ST, SWAINSBORO, GA, 30401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "KOIYA JAPANESE EXPRESS"
     },
     {
       "id": "cust-0224",
@@ -3022,7 +3180,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "LA HACIENDA"
     },
     {
       "id": "cust-0230",
@@ -3204,7 +3366,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1100 HILLCREST PKWY, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "LITTLE TOKYO STEAK AND SUSHI"
     },
     {
       "id": "cust-0243",
@@ -3232,7 +3398,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "106 TRAVEL CENTER BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "LONGHORN STEAKHOUSE"
     },
     {
       "id": "cust-0245",
@@ -3260,7 +3430,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1821 RICE AVE, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "LOS CHILES"
     },
     {
       "id": "cust-0247",
@@ -3414,7 +3588,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "505 COLISEUM DR, MACON, GA, 31217",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "MACON REHABILITATION AND HEALTH"
     },
     {
       "id": "cust-0258",
@@ -3484,7 +3662,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "5465 BOWMAN RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 2000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "GENGHIS GRILL"
     },
     {
       "id": "cust-0263",
@@ -3512,7 +3694,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "538 S MAIN ST, SWAINSBORO, GA, 30401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "MARYLAND FRIED CHICKEN"
     },
     {
       "id": "cust-0266",
@@ -3540,7 +3726,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1330 E LAMAR ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "MCDONALD'S"
     },
     {
       "id": "cust-0268",
@@ -3554,7 +3744,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "120 S TALLAHASSEE ST, HAZLEHURST, GA, 31539",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "MCDONALD'S"
     },
     {
       "id": "cust-0269",
@@ -3666,7 +3860,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2400 N COLUMBIA ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HONG KONG EXPRESS"
     },
     {
       "id": "cust-0278",
@@ -3904,7 +4102,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "120 TOM HILL SR BLVD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PANDA EXPRESS"
     },
     {
       "id": "cust-0296",
@@ -3918,7 +4120,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "203 E BROAD ST, LOUISVILLE, GA, 30434",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PANSY'S RESTAURANT"
     },
     {
       "id": "cust-0297",
@@ -3932,7 +4138,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1085 S LEWIS ST, METTER, GA, 30439",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 750,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PAPA BUCK'S BBQ"
     },
     {
       "id": "cust-0298",
@@ -3988,7 +4198,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "114 SULLIVAN DR, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PERFECT CARE"
     },
     {
       "id": "cust-0302",
@@ -4114,7 +4328,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2601 N COLUMBIA ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PHO LITTLE SAIGON"
     },
     {
       "id": "cust-0311",
@@ -4198,7 +4416,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "384 W TRILBY ST, WRIGHTSVILLE, GA, 31096",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PIGGLY WIGGLY"
     },
     {
       "id": "cust-0317",
@@ -4254,7 +4476,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 50,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "PIZZA HUT"
     },
     {
       "id": "cust-0321",
@@ -4478,7 +4704,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "102 5TH AVE, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0339",
@@ -4506,7 +4736,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "4900 OCMULGEE EAST BLVD, MACON, GA, 31217",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0341",
@@ -4520,7 +4754,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "90 W OAK ST, MC RAE HELENA, GA, 31055",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0342",
@@ -4534,7 +4772,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "10596 STATE RTE 29, SOPERTON, GA, 30457",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "HUDDLE HOUSE"
     },
     {
       "id": "cust-0343",
@@ -4576,7 +4818,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "108 MALL RD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SALSA'S MEXICAN RESTAURANT"
     },
     {
       "id": "cust-0346",
@@ -4688,7 +4934,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "339 LOG CABIN RD NE, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 50,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "DOMINO'S PIZZA"
     },
     {
       "id": "cust-0354",
@@ -4702,7 +4952,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "110 S JEFFERSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SALTWATER FISHERY"
     },
     {
       "id": "cust-0355",
@@ -4786,7 +5040,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2909 JEFFERSONVILLE RD, MACON, GA, 31217",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SHARK'S FISH AND CHICKEN"
     },
     {
       "id": "cust-0363",
@@ -4800,7 +5058,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 10,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SHEPPARD HOUSE RESTAURANT"
     },
     {
       "id": "cust-0364",
@@ -4884,7 +5146,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "30 W COFFEE ST, HAZLEHURST, GA, 31539",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SMITH'S FRIED CHICKEN"
     },
     {
       "id": "cust-0370",
@@ -4982,7 +5248,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "880 BUCKHEAD DR, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SONIC"
     },
     {
       "id": "cust-0377",
@@ -5024,7 +5294,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "100 W COLLEGE PARK DR, DOUGLAS, GA, 31533",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SOUTH GA STATE COLLEGE"
     },
     {
       "id": "cust-0380",
@@ -5178,7 +5452,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2276 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SOUTHERN HERITAGE"
     },
     {
       "id": "cust-0392",
@@ -5206,7 +5484,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SOUTHLAND ACADEMY"
     },
     {
       "id": "cust-0394",
@@ -5276,7 +5558,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "FRESH START ACADEMY HEAD START"
     },
     {
       "id": "cust-0399",
@@ -5290,7 +5576,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SUMTER COUNTY ELEMENTARY SCHOOL"
     },
     {
       "id": "cust-0400",
@@ -5332,7 +5622,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SUMTER COUNTY MIDDLE SCHOOL"
     },
     {
       "id": "cust-0403",
@@ -5346,7 +5640,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1500,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "SUMTER COUNTY PRIMARY SCHOOL"
     },
     {
       "id": "cust-0404",
@@ -5430,7 +5728,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "40 E MAIN ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "TANDOOR AND TAP"
     },
     {
       "id": "cust-0410",
@@ -5444,7 +5746,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "39 NE BROAD ST, METTER, GA, 30439",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "TAQUERIA EL SOL"
     },
     {
       "id": "cust-0411",
@@ -5458,7 +5764,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "3729 US HWY 441, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "TEEN CHALLENGE"
     },
     {
       "id": "cust-0412",
@@ -5724,7 +6034,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "125 W LAMAR ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 75,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "WINDSOR HOTEL"
     },
     {
       "id": "cust-0432",
@@ -5780,7 +6094,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1580 STATE RTE 68 N, TENNILLE, GA, 31089",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "TWIN CITY COUNTRY CLUB"
     },
     {
       "id": "cust-0436",
@@ -5878,7 +6196,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1027 COLLEGE ST, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "VILLAGE PIZZA"
     },
     {
       "id": "cust-0443",
@@ -5920,7 +6242,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "501 INDUSTRIAL DR, SANDERSVILLE, GA, 31082",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "RIDGE ROAD ELEMENTARY SCHOOL"
     },
     {
       "id": "cust-0446",
@@ -5934,7 +6260,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "501 INDUSTRIAL DR, SANDERSVILLE, GA, 31082",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "T J ELDER MIDDLE SCHOOL"
     },
     {
       "id": "cust-0447",
@@ -5948,7 +6278,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "501 INDUSTRIAL DR, SANDERSVILLE, GA, 31082",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "WASHINGTON COUNTY HIGH SCHOOL"
     },
     {
       "id": "cust-0448",
@@ -5962,7 +6296,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1687 BASS RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "WELCH'S COUNTRY SMOKEHOUSE"
     },
     {
       "id": "cust-0449",
@@ -6046,7 +6384,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "4634 PRESIDENTIAL PKWY, MACON, GA, 31206",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 100,
+      "greaseTrapLocation": "Interior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "WINGSTOP"
     },
     {
       "id": "cust-0455",
@@ -6088,7 +6430,11 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "337 W COURT ST, WRIGHTSVILLE, GA, 31096",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "greaseTrapSizeGal": 1000,
+      "greaseTrapLocation": "Exterior",
+      "greaseTrapSource": "Jeff Sorted Restaurant List",
+      "greaseTrapMatchedName": "WRIGHTSVILLE MANOR"
     },
     {
       "id": "cust-0458",
