@@ -42,7 +42,6 @@
     setTimeout(() => {
       requestAnimationFrame(() => {
         setExtraLayer('infrastructure', next);
-        setExtraLayer('local', next);
       });
     }, 0);
   }, true);

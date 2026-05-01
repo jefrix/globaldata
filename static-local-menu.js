@@ -1,8 +1,8 @@
 (function () {
   const localState = {
-    counties: true,
+    counties: false,
     cities: false,
-    highways: true,
+    highways: false,
     water: false,
     powerGrid: false,
     ameripro: false,
