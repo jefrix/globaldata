@@ -1,6 +1,7 @@
 (function () {
   const BOUNDS = { minLon: -85.62, maxLon: -80.84, minLat: 30.36, maxLat: 35.01 };
   const LEVEL_KEY = 'gd_ameripro_tank_levels';
+  const LEVEL_STEP = 5;
   const BASE = {
     name: 'AmeriPro Environmental Services',
     address: '210 Savannah Ave, East Dublin, GA 31027',
@@ -268,15 +269,15 @@
         font-size: 12px;
         letter-spacing: 0.08em;
       }
-      .ameripro-tank-slider {
+      .ameripro-tank-control {
         grid-column: 1 / -1;
-        width: 100%;
-        height: 14px;
-        accent-color: var(--asset-color, #73ff9a);
+        display: grid;
+        grid-template-columns: 24px minmax(0, 1fr) 24px;
+        gap: 8px;
+        align-items: center;
       }
       .ameripro-tank-track {
-        grid-column: 1 / -1;
-        height: 5px;
+        height: 8px;
         border: 1px solid rgba(115,255,154,0.25);
         background: rgba(0,0,0,0.28);
       }
@@ -285,6 +286,24 @@
         height: 100%;
         width: var(--level, 0%);
         background: linear-gradient(90deg, #73ff9a, #f5d142, #ff7050);
+        transition: width .12s linear;
+      }
+      .ameripro-tank-step {
+        width: 24px;
+        height: 22px;
+        border: 1px solid rgba(115,255,154,0.34);
+        background: rgba(8,23,42,0.84);
+        color: var(--asset-color, #73ff9a);
+        cursor: pointer;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1;
+      }
+      .ameripro-tank-step:hover,
+      .ameripro-tank-step:focus-visible {
+        border-color: var(--asset-color, #73ff9a);
+        background: rgba(115,255,154,0.12);
+        outline: none;
       }
       .ameripro-inspector .insp-note {
         margin-top: 10px;
@@ -410,7 +429,7 @@
       row('SERVICE', 'FOG / GREASE TRAPS / HOODS'),
       row('PHONE', BASE.phone),
       row('FLEET', '3 PUMP TRUCKS / 1 FRAK TANK', '#73ff9a'),
-      row('TANK INPUT', 'EVENT PANE SLIDERS', '#f5d142'),
+      row('TANK INPUT', 'EVENT PANE +/- CONTROLS', '#f5d142'),
       '</div>',
     ].join('');
   }
@@ -434,7 +453,7 @@
       row('LEVEL', `${level}%`, asset.color),
       row('BASE', BASE.address),
       row('SOURCE', asset.fixed ? 'USER INPUT / DUBLIN FRAK TANK' : 'USER INPUT / AMERIPRO FLEET'),
-      '<div class="insp-note">Use the tank sliders in the Event pane to update levels.</div>',
+      '<div class="insp-note">Use the tank controls in the Event pane to update levels.</div>',
       '</div>',
     ].join('');
 
@@ -463,6 +482,11 @@
     if (selectedId === id) renderAsset(asset);
   }
 
+  function stepLevel(id, delta) {
+    const current = levels[id] || 0;
+    setLevel(id, current + delta);
+  }
+
   function renderTankBoard() {
     const feed = document.querySelector('.rail-right .feed');
     if (!feed || !placeholderActive()) return;
@@ -485,23 +509,19 @@
       '</div>',
       ...ASSETS.map(asset => tankRow(asset)),
     ].join('');
-    board.querySelectorAll('[data-ameripro-tank-slider]').forEach(slider => {
-      slider.addEventListener('input', event => {
-        selectedId = event.target.dataset.ameriproTankSlider;
-        resetSelectedClass();
-        setLevel(selectedId, event.target.value);
-        updateTankBoardSelection();
-      });
-      slider.addEventListener('focus', event => {
-        selectedId = event.target.dataset.ameriproTankSlider;
+    board.querySelectorAll('[data-ameripro-level-step]').forEach(button => {
+      button.addEventListener('click', event => {
+        event.stopPropagation();
+        selectedId = event.currentTarget.dataset.ameriproLevelId;
         resetSelectedClass();
         renderAsset(ASSETS.find(asset => asset.id === selectedId));
+        stepLevel(selectedId, Number(event.currentTarget.dataset.ameriproLevelStep));
         updateTankBoardSelection();
       });
     });
     board.querySelectorAll('[data-ameripro-tank-row]').forEach(rowNode => {
       rowNode.addEventListener('click', event => {
-        if (event.target?.matches?.('input')) return;
+        if (event.target?.matches?.('button')) return;
         selectedId = rowNode.dataset.ameriproTankRow;
         resetSelectedClass();
         renderAsset(ASSETS.find(asset => asset.id === selectedId));
@@ -519,8 +539,11 @@
       `<div class="ameripro-tank-name">${escapeHtml(asset.label)}</div>`,
       `<div class="ameripro-tank-level" data-ameripro-level-text="${escapeHtml(asset.id)}">${level}%</div>`,
       `<div class="ameripro-tank-kind">${escapeHtml(asset.kind)} / ${escapeHtml(asset.capacity)}</div>`,
-      `<input class="ameripro-tank-slider" data-ameripro-tank-slider="${escapeHtml(asset.id)}" type="range" min="0" max="100" value="${level}">`,
+      '<div class="ameripro-tank-control">',
+      `<button class="ameripro-tank-step" data-ameripro-level-step="-${LEVEL_STEP}" data-ameripro-level-id="${escapeHtml(asset.id)}" type="button" aria-label="Lower ${escapeHtml(asset.label)} level">-</button>`,
       '<div class="ameripro-tank-track"><span></span></div>',
+      `<button class="ameripro-tank-step" data-ameripro-level-step="${LEVEL_STEP}" data-ameripro-level-id="${escapeHtml(asset.id)}" type="button" aria-label="Raise ${escapeHtml(asset.label)} level">+</button>`,
+      '</div>',
       '</div>',
     ].join('');
   }
@@ -528,11 +551,9 @@
   function updateTankBoardValues(id) {
     const rowNode = document.querySelector(`[data-ameripro-tank-row="${id}"]`);
     const text = document.querySelector(`[data-ameripro-level-text="${id}"]`);
-    const slider = document.querySelector(`[data-ameripro-tank-slider="${id}"]`);
     const level = levels[id] || 0;
     if (rowNode) rowNode.style.setProperty('--level', `${level}%`);
     if (text) text.textContent = `${level}%`;
-    if (slider && Number(slider.value) !== level) slider.value = String(level);
   }
 
   function updateTankBoardSelection() {
