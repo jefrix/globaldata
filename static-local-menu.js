@@ -171,7 +171,7 @@
       hotkey: 'H',
       label: 'HIGHWAYS',
       sub: 'INTERSTATES / MAJOR ROUTES',
-      color: '#ff3d8d',
+      color: '#d9e4ef',
       active: localState.highways,
       onToggle: () => {
         setHighwaysVisible(!localState.highways);
@@ -272,7 +272,7 @@
   function refreshRows() {
     document.querySelectorAll('[data-local-menu-layer="counties"]').forEach(row => setToggle(row, localState.counties, '#73ff9a'));
     document.querySelectorAll('[data-local-menu-layer="cities"]').forEach(row => setToggle(row, localState.cities, '#cfe2ff'));
-    document.querySelectorAll('[data-local-menu-layer="highways"]').forEach(row => setToggle(row, localState.highways, '#ff3d8d'));
+    document.querySelectorAll('[data-local-menu-layer="highways"]').forEach(row => setToggle(row, localState.highways, '#d9e4ef'));
     document.querySelectorAll('[data-local-menu-layer="water"]').forEach(row => setToggle(row, localState.water, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="powerGrid"]').forEach(row => setToggle(row, localState.powerGrid, '#f5d142'));
     document.querySelectorAll('[data-local-menu-layer="ameripro"]').forEach(row => setToggle(row, localState.ameripro, '#73ff9a'));

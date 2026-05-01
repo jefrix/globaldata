@@ -142,28 +142,34 @@
         cursor: pointer;
       }
       .local-road.interstate {
-        stroke: #ff3d8d;
-        stroke-width: 1.55;
-        filter: drop-shadow(0 0 1.5px rgba(255,61,141,0.58));
+        stroke: #d9e4ef;
+        stroke-width: 0.82;
+        opacity: 0.86;
+        filter: drop-shadow(0 0 0.45px rgba(217,228,239,0.22));
       }
       .local-road.interstate-loop {
-        stroke: #d85cff;
-        stroke-width: 1.45;
-        filter: drop-shadow(0 0 1.5px rgba(216,92,255,0.55));
+        stroke: #d9e4ef;
+        stroke-width: 0.76;
+        opacity: 0.82;
+        filter: drop-shadow(0 0 0.45px rgba(217,228,239,0.20));
       }
       .local-road.major {
-        stroke: #f5d142;
-        stroke-width: 1.15;
-        filter: drop-shadow(0 0 1.2px rgba(245,209,66,0.48));
+        stroke: #6fb4ff;
+        stroke-width: 0.58;
+        opacity: 0.72;
+        filter: drop-shadow(0 0 0.35px rgba(111,180,255,0.18));
       }
       .local-road.primary {
-        stroke: #5bd7ff;
-        stroke-width: 0.7;
-        opacity: 0.78;
+        stroke: #6fb4ff;
+        stroke-width: 0.42;
+        opacity: 0.50;
+        filter: none;
       }
       .local-road:hover {
         stroke: #ffffff;
-        stroke-width: 2.0;
+        stroke-width: 1.15;
+        opacity: 1;
+        filter: drop-shadow(0 0 1px rgba(255,255,255,0.30));
       }
       .local-map-legend {
         display: inline-flex;
@@ -191,9 +197,8 @@
     const legend = document.createElement('span');
     legend.className = 'local-map-legend';
     legend.innerHTML = [
-      '<span class="local-map-key"><i class="local-map-swatch" style="color:#ff3d8d;background:#ff3d8d"></i>INTERSTATE</span>',
-      '<span class="local-map-key"><i class="local-map-swatch" style="color:#f5d142;background:#f5d142"></i>MAJOR</span>',
-      '<span class="local-map-key"><i class="local-map-swatch" style="color:#5bd7ff;background:#5bd7ff"></i>PRIMARY</span>',
+      '<span class="local-map-key"><i class="local-map-swatch" style="color:#d9e4ef;background:#d9e4ef"></i>INTERSTATE</span>',
+      '<span class="local-map-key"><i class="local-map-swatch" style="color:#6fb4ff;background:#6fb4ff"></i>MAJOR / PRIMARY</span>',
     ].join('');
     const first = foot.firstElementChild;
     if (first) first.replaceWith(legend);
