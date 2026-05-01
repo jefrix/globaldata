@@ -270,6 +270,11 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
             <div className="logo-st">INTELLIGENCE BRIEFING SYSTEM / v1.0</div>
           </div>
         </div>
+        <nav className="top-links" aria-label="Jefrix project links">
+          <a href="https://jefrix.github.io/Fieldnotes/index.html">FIELDNOTES</a>
+          <a href="https://jefrix.github.io/History-Timeline/">TIMELINE</a>
+          <a href="https://jefrix.github.io/HQR/">HQR</a>
+        </nav>
       </div>
       <div className="tb-center">
         <div className="class-banner" style={{ borderColor: theme.classification, color: theme.classification }}>

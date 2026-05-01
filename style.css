@@ -39,16 +39,43 @@ html, body {
   gap: 16px;
   z-index: 20;
 }
-.tb-left { flex: 1; }
+.tb-left { flex: 1; display: flex; align-items: center; gap: 14px; min-width: 0; }
 .tb-center { flex: 1; display: flex; justify-content: center; }
 .tb-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 12px; }
 
-.logo { display: flex; align-items: center; gap: 10px; }
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .logo-t {
   font-weight: 700; letter-spacing: 0.15em; font-size: 13px; color: var(--text);
 }
 .logo-st {
   font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--text-dim);
+}
+
+.top-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.top-links a {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--edge);
+  background: rgba(0,0,0,0.22);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  border-radius: 1px;
+  white-space: nowrap;
+}
+.top-links a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(59,141,245,0.10);
 }
 
 .class-banner {
