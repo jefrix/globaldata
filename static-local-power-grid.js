@@ -52,16 +52,27 @@
       }
       .local-power-pulse {
         fill: #fff8c9;
-        opacity: 0.24;
+        opacity: 0.46;
         pointer-events: none;
         mix-blend-mode: screen;
-        filter: drop-shadow(0 0 4px rgba(255,248,201,0.32));
+        filter: drop-shadow(0 0 5px rgba(255,248,201,0.46));
       }
       .local-power-pulse-core {
         fill: #ffffff;
-        opacity: 0.18;
+        opacity: 0.58;
         pointer-events: none;
         mix-blend-mode: screen;
+      }
+      .local-power-pulse-tail {
+        fill: none;
+        stroke: #fff8c9;
+        stroke-width: 1.05;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+        opacity: 0.32;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        filter: drop-shadow(0 0 4px rgba(255,248,201,0.28));
       }
       .local-power-hub {
         fill: #ff4d5f;
@@ -303,17 +314,23 @@
       pulseLines(lines).forEach((line, index) => {
         const style = powerStyle(line.voltage);
         const points = projectedPoints(line.points, project);
-        const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const tail = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
         const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        tail.setAttribute('class', 'local-power-pulse-tail');
         pulse.setAttribute('class', 'local-power-pulse');
         core.setAttribute('class', 'local-power-pulse-core');
-        pulse.setAttribute('r', line.voltage >= 345 ? '2.2' : '1.55');
-        core.setAttribute('r', line.voltage >= 345 ? '0.9' : '0.62');
+        pulse.setAttribute('rx', line.voltage >= 345 ? '3.3' : '2.4');
+        pulse.setAttribute('ry', line.voltage >= 345 ? '1.18' : '0.86');
+        core.setAttribute('r', line.voltage >= 345 ? '0.95' : '0.68');
+        tail.style.stroke = style.color;
         pulse.style.fill = style.color;
         pulse.__powerPoints = points;
         pulse.dataset.phase = String((index * 0.137) % 1);
-        pulse.dataset.speed = String(0.000035 + Math.min(0.000055, Math.max(0, line.voltage) / 9000000));
+        pulse.dataset.speed = String(0.000055 + Math.min(0.000085, Math.max(0, line.voltage) / 7000000));
+        tail.dataset.followPulseTail = '1';
         core.dataset.followPulse = '1';
+        pulseGroup.appendChild(tail);
         pulseGroup.appendChild(pulse);
         pulseGroup.appendChild(core);
       });
@@ -379,8 +396,16 @@
         pulse.dataset.phase = String(phase);
         const pos = pointAtProgress(points, phase);
         if (!pos) return;
+        const nextPos = pointAtProgress(points, phase + 0.0035) || pos;
+        const tailPos = pointAtProgress(points, phase - 0.022) || pos;
+        const angle = Math.atan2(nextPos.y - pos.y, nextPos.x - pos.x) * 180 / Math.PI;
         pulse.setAttribute('cx', pos.x.toFixed(2));
         pulse.setAttribute('cy', pos.y.toFixed(2));
+        pulse.setAttribute('transform', `rotate(${angle.toFixed(1)} ${pos.x.toFixed(2)} ${pos.y.toFixed(2)})`);
+        const tail = pulse.previousElementSibling?.dataset?.followPulseTail ? pulse.previousElementSibling : null;
+        if (tail) {
+          tail.setAttribute('d', `M${tailPos.x.toFixed(2)} ${tailPos.y.toFixed(2)} L${pos.x.toFixed(2)} ${pos.y.toFixed(2)}`);
+        }
         const core = pulse.nextElementSibling?.dataset?.followPulse ? pulse.nextElementSibling : null;
         if (core) {
           core.setAttribute('cx', pos.x.toFixed(2));
