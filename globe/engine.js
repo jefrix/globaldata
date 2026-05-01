@@ -316,26 +316,17 @@ window.GlobeEngine = (function () {
       ctx.fill();
     } else if (kind === 'flight') {
       ctx.shadowColor = color;
-      ctx.shadowBlur = 9;
+      ctx.shadowBlur = 5;
       ctx.beginPath();
-      ctx.moveTo(32, 6);
-      ctx.lineTo(47, 32);
-      ctx.lineTo(38, 30);
-      ctx.lineTo(38, 55);
-      ctx.lineTo(26, 55);
-      ctx.lineTo(26, 30);
-      ctx.lineTo(17, 32);
+      ctx.moveTo(32, 9);
+      ctx.lineTo(49, 51);
+      ctx.lineTo(32, 42);
+      ctx.lineTo(15, 51);
       ctx.closePath();
       ctx.fill();
       ctx.shadowBlur = 0;
       ctx.strokeStyle = 'rgba(255,255,255,0.78)';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(2,10,18,0.75)';
       ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(32, 13);
-      ctx.lineTo(32, 48);
       ctx.stroke();
     } else if (kind === 'selection') {
       ctx.strokeStyle = color;
@@ -804,6 +795,25 @@ window.GlobeEngine = (function () {
     });
   };
 
+  GlobeEngine.prototype._getFlightPickGeometry = function () {
+    if (!this.flightPickGeometry) this.flightPickGeometry = new THREE.SphereGeometry(0.46, 6, 6);
+    return this.flightPickGeometry;
+  };
+
+  GlobeEngine.prototype._getFlightPickMaterial = function () {
+    if (!this.flightPickMaterial) {
+      this.flightPickMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.01,
+        colorWrite: false,
+        depthTest: true,
+        depthWrite: false,
+      });
+    }
+    return this.flightPickMaterial;
+  };
+
   GlobeEngine.prototype._getQuakeMaterial = function (color, rings, opacity = 1) {
     const key = `quake:${color}:${rings}`;
     if (!this.markerMaterials[key]) {
@@ -1200,7 +1210,7 @@ window.GlobeEngine = (function () {
     (flights || []).slice(0, Math.min(this.maxFlightMarkers, this.maxTrackedObjects)).forEach(f => {
       const initial = routePosition(f);
       if (!initial) return;
-      const size = initial.live ? 1.75 : 1.5;
+      const size = initial.live ? 1.35 : 1.15;
       const heading = Number.isFinite(Number(initial.heading)) ? Number(initial.heading)
         : Number.isFinite(Number(f.heading)) ? Number(f.heading)
         : Math.random() * 360;
@@ -1211,20 +1221,10 @@ window.GlobeEngine = (function () {
       mesh.renderOrder = 2;
       mesh.userData = { layer: 'flights', kind: 'flight-marker', data: f };
       this.layerGroups.flights.add(mesh);
-      const head = offsetLatLonByHeading(initial.lat, initial.lon, heading, initial.live ? 0.52 : 0.46);
-      const pickHead = new THREE.Mesh(
-        new THREE.SphereGeometry(0.62, 8, 8),
-        new THREE.MeshBasicMaterial({
-          color: 0xffffff,
-          transparent: true,
-          opacity: 0.01,
-          colorWrite: false,
-          depthTest: true,
-          depthWrite: false,
-        })
-      );
+      const head = offsetLatLonByHeading(initial.lat, initial.lon, heading, initial.live ? 0.40 : 0.34);
+      const pickHead = new THREE.Mesh(this._getFlightPickGeometry(), this._getFlightPickMaterial());
       pickHead.position.copy(latLonToVec3(head.lat, head.lon, R + 1.72));
-      pickHead.userData = { layer: 'flights', kind: 'flight', data: f, pickHead: true };
+      pickHead.userData = { layer: 'flights', kind: 'flight', data: f, pickHead: true, preserveResources: true };
       this.layerGroups.flights.add(pickHead);
       this.pickables.push(pickHead);
       this.flightObjects.push({
