@@ -198,7 +198,9 @@
       color: '#f5d142',
       active: localState.powerGrid,
       onToggle: () => {
-        setPlaceholderLayer('powerGrid', !localState.powerGrid);
+        const next = !localState.powerGrid;
+        setPlaceholderLayer('powerGrid', next);
+        window.GlobalDataPowerGrid?.setActive?.(next);
         refreshRows();
       },
     }));
@@ -360,6 +362,7 @@
       if (['cities', 'water', 'powerGrid', 'ameripro', 'restaurants', 'parks', 'localNews'].includes(name)) {
         setPlaceholderLayer(name, Boolean(active));
       }
+      if (name === 'powerGrid') window.GlobalDataPowerGrid?.setActive?.(Boolean(active));
       if (name === 'ameripro') window.GlobalDataAmeripro?.setActive?.(Boolean(active));
       refreshRows();
     },
@@ -380,7 +383,9 @@
       refreshRows();
     }
     if (event.key === 'p' || event.key === 'P') {
-      setPlaceholderLayer('powerGrid', !localState.powerGrid);
+      const next = !localState.powerGrid;
+      setPlaceholderLayer('powerGrid', next);
+      window.GlobalDataPowerGrid?.setActive?.(next);
       refreshRows();
     }
     if (event.key === 'a' || event.key === 'A') {
