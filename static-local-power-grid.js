@@ -2,6 +2,7 @@
   const BOUNDS = { minLon: -85.70, maxLon: -80.75, minLat: 30.30, maxLat: 35.08 };
   const SERVICE_URL = 'https://services2.arcgis.com/LYMgRMwHfrWWEg3s/ArcGIS/rest/services/HIFLD_US_Electric_Power_Transmission_Lines/FeatureServer/0/query';
   const MAX_FEATURES = 2800;
+  const MAX_PULSES = 130;
   const PAGE_SIZE = 2000;
   const FIELD_LIST = 'ID,TYPE,STATUS,SOURCE,SOURCEDATE,OWNER,VOLTAGE,VOLT_CLASS,INFERRED,SUB_1,SUB_2';
   const FALLBACK_LINES = [
@@ -48,6 +49,19 @@
         opacity: 1;
         stroke-width: 2.4;
         filter: drop-shadow(0 0 7px rgba(255,255,255,0.78));
+      }
+      .local-power-pulse {
+        fill: #fff8c9;
+        opacity: 0.24;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        filter: drop-shadow(0 0 4px rgba(255,248,201,0.32));
+      }
+      .local-power-pulse-core {
+        fill: #ffffff;
+        opacity: 0.18;
+        pointer-events: none;
+        mix-blend-mode: screen;
       }
       .local-power-hub {
         fill: #ff4d5f;
@@ -202,6 +216,13 @@
     }).join(' ');
   }
 
+  function projectedPoints(points, project) {
+    return points.map(([lat, lon]) => {
+      const [x, y] = project([lon, lat]);
+      return { x, y };
+    });
+  }
+
   function powerStyle(voltage) {
     if (voltage >= 500) return { color: '#ff3d8d', glow: 'rgba(255,61,141,0.78)', width: 1.7 };
     if (voltage >= 345) return { color: '#ff5c2e', glow: 'rgba(255,92,46,0.72)', width: 1.45 };
@@ -276,12 +297,99 @@
         group.appendChild(path);
       });
 
+      const pulseGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      pulseGroup.dataset.localPowerPulses = '1';
+      pulseGroup.style.display = isActive ? '' : 'none';
+      pulseLines(lines).forEach((line, index) => {
+        const style = powerStyle(line.voltage);
+        const points = projectedPoints(line.points, project);
+        const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulse.setAttribute('class', 'local-power-pulse');
+        core.setAttribute('class', 'local-power-pulse-core');
+        pulse.setAttribute('r', line.voltage >= 345 ? '2.2' : '1.55');
+        core.setAttribute('r', line.voltage >= 345 ? '0.9' : '0.62');
+        pulse.style.fill = style.color;
+        pulse.__powerPoints = points;
+        pulse.dataset.phase = String((index * 0.137) % 1);
+        pulse.dataset.speed = String(0.000035 + Math.min(0.000055, Math.max(0, line.voltage) / 9000000));
+        core.dataset.followPulse = '1';
+        pulseGroup.appendChild(pulse);
+        pulseGroup.appendChild(core);
+      });
+      group.appendChild(pulseGroup);
+      ensurePulseAnimation();
+
       svg.insertBefore(group, svg.querySelector('[data-local-cities]') || null);
       installLegend(overlay, lines.length);
       refreshSelection();
     } finally {
       drawing = false;
     }
+  }
+
+  function pulseLines(lines) {
+    const high = lines.filter(line => line.voltage >= 230);
+    const medium = lines.filter(line => line.voltage >= 115 && line.voltage < 230);
+    return [...high, ...medium.filter((_, index) => index % 9 === 0)].slice(0, MAX_PULSES);
+  }
+
+  function pointAtProgress(points, progress) {
+    if (!Array.isArray(points) || points.length < 2) return null;
+    const distances = [];
+    let total = 0;
+    for (let index = 0; index < points.length - 1; index += 1) {
+      const a = points[index];
+      const b = points[index + 1];
+      const dist = Math.hypot(b.x - a.x, b.y - a.y);
+      distances.push(dist);
+      total += dist;
+    }
+    if (!total) return points[0];
+    let target = (((progress % 1) + 1) % 1) * total;
+    for (let index = 0; index < distances.length; index += 1) {
+      const dist = distances[index];
+      if (target > dist) {
+        target -= dist;
+        continue;
+      }
+      const a = points[index];
+      const b = points[index + 1];
+      const t = dist ? target / dist : 0;
+      return {
+        x: a.x + (b.x - a.x) * t,
+        y: a.y + (b.y - a.y) * t,
+      };
+    }
+    return points[points.length - 1];
+  }
+
+  function ensurePulseAnimation() {
+    if (window.__globalDataPowerPulseLoop) return;
+    window.__globalDataPowerPulseLoop = true;
+    let last = performance.now();
+    const tick = now => {
+      const dt = Math.min(60, now - last);
+      last = now;
+      const pulses = [...document.querySelectorAll('.globe-wrap.local-map-mode [data-local-power-pulses] .local-power-pulse')];
+      pulses.forEach(pulse => {
+        const points = pulse.__powerPoints || [];
+        const speed = Number(pulse.dataset.speed) || 0.00004;
+        const phase = (((Number(pulse.dataset.phase) || 0) + speed * dt) % 1 + 1) % 1;
+        pulse.dataset.phase = String(phase);
+        const pos = pointAtProgress(points, phase);
+        if (!pos) return;
+        pulse.setAttribute('cx', pos.x.toFixed(2));
+        pulse.setAttribute('cy', pos.y.toFixed(2));
+        const core = pulse.nextElementSibling?.dataset?.followPulse ? pulse.nextElementSibling : null;
+        if (core) {
+          core.setAttribute('cx', pos.x.toFixed(2));
+          core.setAttribute('cy', pos.y.toFixed(2));
+        }
+      });
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
   function setReadout(line) {
