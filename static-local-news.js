@@ -1,4 +1,5 @@
 (function () {
+  const MAX_NEWS_AGE_MS = 30 * 24 * 60 * 60 * 1000;
   const SERVICE_TERMS = [
     'Georgia', 'Savannah', 'Macon', 'Warner Robins', 'Dublin', 'Statesboro',
     'Chatham', 'Bibb', 'Houston', 'Laurens', 'Bulloch', 'Effingham', 'Bryan',
@@ -170,7 +171,7 @@
     layer.innerHTML = [
       '<div class="local-news-panel">',
       '<div class="local-news-head">',
-      '<div class="local-news-title">LOCAL NEWS / COMPANY SIGNALS</div>',
+      '<div class="local-news-title">LOCAL NEWS / COMPANY SIGNALS / 30D</div>',
       '<div class="local-news-status" data-local-news-status>READY</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
@@ -211,6 +212,7 @@
     const domain = article.domain || sourceDomain(url);
     const seen = Date.parse(article.seendate || article.datetime || article.date || '') || Date.now();
     const text = `${title} ${domain}`;
+    if (Date.now() - seen > MAX_NEWS_AGE_MS) return null;
     if (!title || rejectWords.test(text)) return null;
     if (!isCompanyRelevant(text, topic.id)) return null;
     if (!gaScopeWords.test(text)) return null;
@@ -271,6 +273,8 @@
       const desc = compact(event.Description || event.description || event.EventDescription);
       const road = compact(event.RoadwayName || event.roadwayName || event.route);
       const text = `${road} ${desc}`;
+      const ts = Number(event.Reported || event.reported || 0) * 1000 || Date.now();
+      if (Date.now() - ts > MAX_NEWS_AGE_MS) return null;
       if (!/\b(closure|closed|detour|lane|traffic shift|construction)\b/i.test(text)) return null;
       const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
       return {
@@ -284,7 +288,7 @@
         city: point.city,
         lat: point.lat,
         lon: point.lon,
-        ts: Number(event.Reported || event.reported || 0) * 1000 || Date.now(),
+        ts,
         source: 'Georgia 511 traffic events',
       };
     }).filter(Boolean);
@@ -304,7 +308,10 @@
           if (!byUrl.has(key)) byUrl.set(key, item);
         });
       });
-      cachedItems = [...byUrl.values()].sort((a, b) => b.ts - a.ts).slice(0, 80);
+      cachedItems = [...byUrl.values()]
+        .filter(item => Date.now() - (Number(item.ts) || 0) <= MAX_NEWS_AGE_MS)
+        .sort((a, b) => b.ts - a.ts)
+        .slice(0, 80);
       loaded = true;
       lastLoadedAt = Date.now();
       return cachedItems;
@@ -318,10 +325,10 @@
     if (!layer) return;
     const list = layer.querySelector('[data-local-news-list]');
     const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = items.length ? `${items.length} MATCHES` : 'NO MATCHES';
+    if (status) status.textContent = items.length ? `${items.length} MATCHES / 30D` : 'NO MATCHES / 30D';
     if (!list) return;
     if (!items.length) {
-      list.innerHTML = '<div class="local-news-empty">NO MATCHING COMPANY-RELEVANT GEORGIA NEWS FOUND IN THE CURRENT WINDOW.</div>';
+      list.innerHTML = '<div class="local-news-empty">NO MATCHING COMPANY-RELEVANT GEORGIA NEWS FOUND IN THE LAST 30 DAYS.</div>';
       return;
     }
     list.replaceChildren(...items.map(item => {
@@ -395,7 +402,7 @@
     const next = Boolean(localMode && marker && marker.style.display !== 'none');
     setActive(next);
     const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
-    if (rowSub) rowSub.textContent = 'RESTAURANTS / SCORES / ROADS';
+    if (rowSub) rowSub.textContent = 'RESTAURANTS / SCORES / ROADS / 30D';
   }
 
   setInterval(syncFromLocalMenu, 300);
