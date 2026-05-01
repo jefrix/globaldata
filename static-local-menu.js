@@ -143,6 +143,34 @@
   function renderPanel(panel) {
     panel.replaceChildren();
     panel.appendChild(layerRow({
+      keyName: 'ameripro',
+      hotkey: 'A',
+      label: 'AMERIPRO',
+      sub: 'FLEET / FOG TANK LEVELS',
+      color: '#73ff9a',
+      active: localState.ameripro,
+      onToggle: () => {
+        const next = !localState.ameripro;
+        setPlaceholderLayer('ameripro', next);
+        window.GlobalDataAmeripro?.setActive?.(next);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'restaurants',
+      hotkey: 'R',
+      label: 'RESTAURANTS',
+      sub: 'CLIENTS / GREASE / HOODS',
+      color: '#5bd7ff',
+      active: localState.restaurants,
+      onToggle: () => {
+        const next = !localState.restaurants;
+        setPlaceholderLayer('restaurants', next);
+        window.GlobalDataRestaurants?.setActive?.(next);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
       keyName: 'counties',
       hotkey: 'C',
       label: 'COUNTIES',
@@ -201,34 +229,6 @@
         const next = !localState.powerGrid;
         setPlaceholderLayer('powerGrid', next);
         window.GlobalDataPowerGrid?.setActive?.(next);
-        refreshRows();
-      },
-    }));
-    panel.appendChild(layerRow({
-      keyName: 'ameripro',
-      hotkey: 'A',
-      label: 'AMERIPRO',
-      sub: 'FLEET / FOG TANK LEVELS',
-      color: '#73ff9a',
-      active: localState.ameripro,
-      onToggle: () => {
-        const next = !localState.ameripro;
-        setPlaceholderLayer('ameripro', next);
-        window.GlobalDataAmeripro?.setActive?.(next);
-        refreshRows();
-      },
-    }));
-    panel.appendChild(layerRow({
-      keyName: 'restaurants',
-      hotkey: 'R',
-      label: 'RESTAURANTS',
-      sub: 'CLIENTS / GREASE / HOODS',
-      color: '#5bd7ff',
-      active: localState.restaurants,
-      onToggle: () => {
-        const next = !localState.restaurants;
-        setPlaceholderLayer('restaurants', next);
-        window.GlobalDataRestaurants?.setActive?.(next);
         refreshRows();
       },
     }));
