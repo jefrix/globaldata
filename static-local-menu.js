@@ -1,8 +1,13 @@
 (function () {
   const localState = {
+    counties: true,
+    cities: false,
     highways: true,
+    water: false,
     powerGrid: false,
     restaurants: false,
+    parks: false,
+    localNews: false,
   };
   let lastLocalMode = false;
   let savedHeader = null;
@@ -32,6 +37,18 @@
         z-index: 5;
         display: none;
         pointer-events: none;
+      }
+      .local-placeholder-badge {
+        position: absolute;
+        right: 22px;
+        top: 58px;
+        border: 1px solid var(--edge);
+        background: rgba(0,0,0,0.34);
+        color: var(--text-dim);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.16em;
+        padding: 6px 8px;
       }
     `;
     document.head.appendChild(style);
@@ -90,6 +107,16 @@
     });
   }
 
+  function setCountiesVisible(active) {
+    localState.counties = active;
+    document.querySelectorAll('[data-local-counties]').forEach(group => {
+      group.style.display = active ? '' : 'none';
+    });
+    document.querySelectorAll('.local-county, .local-county-label, .local-fallback-point').forEach(node => {
+      if (!node.closest('[data-local-counties]')) node.style.display = active ? '' : 'none';
+    });
+  }
+
   function setPlaceholderLayer(name, active) {
     localState[name] = active;
     const wrap = document.querySelector('.globe-wrap');
@@ -99,21 +126,44 @@
       layer = document.createElement('div');
       layer.className = 'local-placeholder-layer';
       layer.dataset.localPlaceholder = name;
+      layer.innerHTML = `<div class="local-placeholder-badge">${layerLabel(name)} / READY FOR DATA</div>`;
       wrap.appendChild(layer);
     }
     layer.style.display = active ? 'block' : 'none';
   }
 
+  function layerLabel(name) {
+    return String(name)
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, char => char.toUpperCase())
+      .toUpperCase();
+  }
+
   function renderPanel(panel) {
     panel.replaceChildren();
     panel.appendChild(layerRow({
-      keyName: 'local',
-      hotkey: 'L',
-      label: 'LOCAL',
-      sub: 'GEORGIA / RETURN TO GLOBE',
+      keyName: 'counties',
+      hotkey: 'C',
+      label: 'COUNTIES',
+      sub: 'BOUNDARIES / COUNTY VIEW',
       color: '#73ff9a',
-      active: true,
-      onToggle: () => window.GlobalDataLocalLayer?.setActive?.(false),
+      active: localState.counties,
+      onToggle: () => {
+        setCountiesVisible(!localState.counties);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'cities',
+      hotkey: 'I',
+      label: 'CITIES',
+      sub: 'READY FOR MUNICIPAL DATA',
+      color: '#cfe2ff',
+      active: localState.cities,
+      onToggle: () => {
+        setPlaceholderLayer('cities', !localState.cities);
+        refreshRows();
+      },
     }));
     panel.appendChild(layerRow({
       keyName: 'highways',
@@ -124,6 +174,18 @@
       active: localState.highways,
       onToggle: () => {
         setHighwaysVisible(!localState.highways);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'water',
+      hotkey: 'W',
+      label: 'WATER',
+      sub: 'LAKES / RIVERS',
+      color: '#5bd7ff',
+      active: localState.water,
+      onToggle: () => {
+        setPlaceholderLayer('water', !localState.water);
         refreshRows();
       },
     }));
@@ -151,6 +213,39 @@
         refreshRows();
       },
     }));
+    panel.appendChild(layerRow({
+      keyName: 'parks',
+      hotkey: 'K',
+      label: 'PARKS',
+      sub: 'PUBLIC LAND / RECREATION',
+      color: '#7bd6a8',
+      active: localState.parks,
+      onToggle: () => {
+        setPlaceholderLayer('parks', !localState.parks);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'localNews',
+      hotkey: 'N',
+      label: 'LOCAL NEWS',
+      sub: 'REGIONAL INCIDENTS / ALERTS',
+      color: '#f58a42',
+      active: localState.localNews,
+      onToggle: () => {
+        setPlaceholderLayer('localNews', !localState.localNews);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'local',
+      hotkey: 'L',
+      label: 'LOCAL',
+      sub: 'RETURN TO GLOBAL GLOBE',
+      color: '#73ff9a',
+      active: true,
+      onToggle: () => window.GlobalDataLocalLayer?.setActive?.(false),
+    }));
     const note = document.createElement('div');
     note.className = 'local-menu-section';
     note.innerHTML = '<div class="local-menu-note">SERVICE AREA: SAVANNAH / STATESBORO / DUBLIN / MACON / WARNER ROBINS</div>';
@@ -158,10 +253,35 @@
   }
 
   function refreshRows() {
+    document.querySelectorAll('[data-local-menu-layer="counties"]').forEach(row => setToggle(row, localState.counties, '#73ff9a'));
+    document.querySelectorAll('[data-local-menu-layer="cities"]').forEach(row => setToggle(row, localState.cities, '#cfe2ff'));
     document.querySelectorAll('[data-local-menu-layer="highways"]').forEach(row => setToggle(row, localState.highways, '#ff3d8d'));
+    document.querySelectorAll('[data-local-menu-layer="water"]').forEach(row => setToggle(row, localState.water, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="powerGrid"]').forEach(row => setToggle(row, localState.powerGrid, '#f5d142'));
     document.querySelectorAll('[data-local-menu-layer="restaurants"]').forEach(row => setToggle(row, localState.restaurants, '#5bd7ff'));
+    document.querySelectorAll('[data-local-menu-layer="parks"]').forEach(row => setToggle(row, localState.parks, '#7bd6a8'));
+    document.querySelectorAll('[data-local-menu-layer="localNews"]').forEach(row => setToggle(row, localState.localNews, '#f58a42'));
+    setCountiesVisible(localState.counties);
     setHighwaysVisible(localState.highways);
+  }
+
+  function groupCountyLayer() {
+    const svg = document.querySelector('[data-local-map-svg]');
+    if (!svg || svg.querySelector('[data-local-counties]')) return;
+    const nodes = [...svg.querySelectorAll('.local-county, .local-county-label, .local-fallback-point')];
+    if (!nodes.length) return;
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.dataset.localCounties = '1';
+    svg.insertBefore(group, svg.firstChild);
+    nodes.forEach(node => group.appendChild(node));
+  }
+
+  function moveGlobalLocalToTop() {
+    const layers = document.querySelector('.layers');
+    const row = layers?.querySelector('[data-local-row]');
+    if (!layers || !row || document.querySelector('.globe-wrap.local-map-mode')) return;
+    const target = layers.children[1] || layers.firstChild;
+    if (target && row !== target) layers.insertBefore(row, target);
   }
 
   function setGlobalMenuHidden(layers, hidden) {
@@ -209,13 +329,21 @@
     }
     setGlobalMenuHidden(layers, localMode);
     updateHeader(localMode);
-    if (localMode) refreshRows();
+    if (localMode) {
+      groupCountyLayer();
+      refreshRows();
+    } else {
+      moveGlobalLocalToTop();
+    }
   }
 
   window.GlobalDataLocalMenu = {
     setLayer(name, active) {
+      if (name === 'counties') setCountiesVisible(Boolean(active));
       if (name === 'highways') setHighwaysVisible(Boolean(active));
-      if (name === 'powerGrid' || name === 'restaurants') setPlaceholderLayer(name, Boolean(active));
+      if (['cities', 'water', 'powerGrid', 'restaurants', 'parks', 'localNews'].includes(name)) {
+        setPlaceholderLayer(name, Boolean(active));
+      }
       refreshRows();
     },
     getLayer(name) {
@@ -228,6 +356,10 @@
     if (event.target?.tagName === 'INPUT' || event.target?.tagName === 'TEXTAREA') return;
     if (event.key === 'h' || event.key === 'H') {
       setHighwaysVisible(!localState.highways);
+      refreshRows();
+    }
+    if (event.key === 'c' || event.key === 'C') {
+      setCountiesVisible(!localState.counties);
       refreshRows();
     }
     if (event.key === 'p' || event.key === 'P') {
