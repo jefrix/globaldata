@@ -1,24 +1,12 @@
 (function () {
   if (!window.GlobeEngine || !window.GlobeEngine.create || !window.THREE) return;
 
-  const R = 100;
-  const DEG = Math.PI / 180;
   const GEORGIA_COUNTIES_URL = 'https://cdn.jsdelivr.net/gh/plotly/datasets@master/geojson-counties-fips.json';
   const originalCreate = window.GlobeEngine.create;
-  const STATE_CENTER = { lat: 32.72, lon: -83.35 };
-  const STATE_ZOOM = 175;
+  const FALLBACK_BOUNDS = { minLon: -85.62, maxLon: -80.84, minLat: 30.36, maxLat: 35.01 };
   let countyPromise = null;
   let countyCache = null;
-
-  function latLonToVec3(lat, lon, radius = R) {
-    const phi = (90 - lat) * DEG;
-    const theta = (lon + 180) * DEG;
-    return new THREE.Vector3(
-      -(radius * Math.sin(phi) * Math.cos(theta)),
-      radius * Math.cos(phi),
-      radius * Math.sin(phi) * Math.sin(theta)
-    );
-  }
+  let overlayReady = false;
 
   function ensureLayer(engine) {
     if (!engine.layerGroups) engine.layerGroups = {};
@@ -38,10 +26,22 @@
     return [];
   }
 
-  function ringToLatLon(ring) {
+  function validLonLat(point) {
+    return Array.isArray(point) && Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]));
+  }
+
+  function cleanRing(ring) {
     return (ring || [])
-      .map(([lon, lat]) => [Number(lat), Number(lon)])
-      .filter(([lat, lon]) => Number.isFinite(lat) && Number.isFinite(lon));
+      .filter(validLonLat)
+      .map(([lon, lat]) => [Number(lon), Number(lat)]);
+  }
+
+  function isGeorgiaCounty(feature) {
+    const props = feature.properties || {};
+    const id = String(feature.id || props.GEOID || props.COUNTYFP || props.COUNTY || '').padStart(5, '0');
+    const geoId = String(props.GEO_ID || props.GEOID || '');
+    const state = String(props.STATE || props.STATEFP || '').padStart(2, '0');
+    return id.startsWith('13') || geoId.includes('US13') || state === '13';
   }
 
   function centroid(rings) {
@@ -50,8 +50,8 @@
     let count = 0;
     rings.forEach(ring => {
       ring.forEach(point => {
-        lat += point[0];
-        lon += point[1];
+        lon += point[0];
+        lat += point[1];
         count += 1;
       });
     });
@@ -86,10 +86,9 @@
         })
         .then(data => {
           const counties = (data.features || [])
-            .filter(feature => String(feature.id || feature.properties?.GEO_ID || '').includes('13'))
-            .filter(feature => String(feature.id || feature.properties?.STATE || '').startsWith('13') || feature.properties?.STATE === '13')
+            .filter(isGeorgiaCounty)
             .map(feature => {
-              const rings = ringsFromGeometry(feature.geometry).map(ringToLatLon).filter(ring => ring.length > 2);
+              const rings = ringsFromGeometry(feature.geometry).map(cleanRing).filter(ring => ring.length > 2);
               return {
                 id: feature.id || feature.properties?.GEO_ID || feature.properties?.COUNTY,
                 name: feature.properties?.NAME || feature.properties?.name || 'Georgia County',
@@ -98,7 +97,8 @@
                 properties: feature.properties || {},
               };
             })
-            .filter(county => county.center);
+            .filter(county => county.center)
+            .sort((a, b) => a.name.localeCompare(b.name));
           countyCache = counties.length ? counties : fallbackCounties();
           return countyCache;
         })
@@ -110,52 +110,221 @@
     return countyPromise;
   }
 
-  function addCountyLine(engine, ring, color, opacity) {
-    const group = ensureLayer(engine);
-    const points = ring.map(([lat, lon]) => latLonToVec3(lat, lon, R + 2.15));
-    if (points.length < 2) return;
-    const line = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(points),
-      new THREE.LineBasicMaterial({
-        color,
-        transparent: true,
-        opacity,
-        depthTest: true,
-        depthWrite: false,
-      })
-    );
-    line.renderOrder = 6;
-    line.userData = { layer: 'local', kind: 'local-boundary' };
-    group.add(line);
+  function ensureOverlayStyles() {
+    if (document.querySelector('[data-local-map-style]')) return;
+    const style = document.createElement('style');
+    style.dataset.localMapStyle = '1';
+    style.textContent = `
+      .globe-wrap.local-map-mode .globe,
+      .globe-wrap.local-map-mode .zoom-controls,
+      .globe-wrap.local-map-mode .bearing {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .local-map-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 10px;
+        padding: 20px 22px 18px;
+        background:
+          linear-gradient(90deg, rgba(115,255,154,0.05) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(115,255,154,0.05) 1px, transparent 1px),
+          radial-gradient(circle at 50% 50%, rgba(115,255,154,0.10), transparent 62%),
+          linear-gradient(to bottom, var(--bg1), var(--bg2));
+        background-size: 34px 34px, 34px 34px, auto, auto;
+      }
+      .local-map-overlay[hidden] { display: none; }
+      .local-map-top,
+      .local-map-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: var(--mono);
+        letter-spacing: 0.18em;
+        color: var(--text-dim);
+        z-index: 2;
+      }
+      .local-map-title {
+        color: #73ff9a;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .local-map-status,
+      .local-map-foot {
+        font-size: 10px;
+      }
+      .local-map-stage {
+        position: relative;
+        min-height: 0;
+        border: 1px solid rgba(115,255,154,0.22);
+        background: rgba(0,0,0,0.16);
+        overflow: hidden;
+      }
+      .local-map-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .local-county {
+        fill: rgba(115,255,154,0.105);
+        stroke: rgba(115,255,154,0.72);
+        stroke-width: 0.75;
+        vector-effect: non-scaling-stroke;
+        cursor: pointer;
+      }
+      .local-county:hover {
+        fill: rgba(115,255,154,0.28);
+        stroke: #f5d142;
+      }
+      .local-county-label {
+        fill: rgba(207,226,255,0.78);
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-anchor: middle;
+        pointer-events: none;
+      }
+      .local-fallback-point {
+        fill: #73ff9a;
+        stroke: rgba(0,0,0,0.8);
+        stroke-width: 1;
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  function addCountyPoint(engine, county) {
-    const center = county.center;
-    if (!center) return;
-    const data = {
-      id: county.id,
-      name: `${county.name} County`,
-      country: 'Georgia, USA',
-      state: county.fallback ? 'County reference point' : 'County boundary',
-      lat: center.lat,
-      lon: center.lon,
-      source: county.fallback ? 'Local Georgia fallback' : 'US county GeoJSON',
-    };
-    engine._addPoint?.('local', center.lat, center.lon, '#73ff9a', county.fallback ? 0.34 : 0.22, 'port', data);
+  function ensureGeorgiaOverlay() {
+    ensureOverlayStyles();
+    const wrap = document.querySelector('.globe-wrap');
+    if (!wrap) return null;
+    let overlay = wrap.querySelector('[data-local-map-overlay]');
+    if (overlay) return overlay;
+
+    overlay = document.createElement('div');
+    overlay.className = 'local-map-overlay';
+    overlay.dataset.localMapOverlay = '1';
+    overlay.hidden = true;
+    overlay.innerHTML = [
+      '<div class="local-map-top">',
+      '<div class="local-map-title">LOCAL / GEORGIA USA</div>',
+      '<div class="local-map-status" data-local-map-status>LOADING COUNTIES</div>',
+      '</div>',
+      '<div class="local-map-stage">',
+      '<svg class="local-map-svg" data-local-map-svg role="img" aria-label="Georgia county map"></svg>',
+      '</div>',
+      '<div class="local-map-foot">',
+      '<span>COUNTY LEVEL VIEW</span>',
+      '<span data-local-map-readout>STATEWIDE</span>',
+      '</div>',
+    ].join('');
+    wrap.appendChild(overlay);
+    return overlay;
   }
 
-  function renderLocal(engine, counties) {
-    ensureLayer(engine);
-    engine._clearGroup?.('local');
-    const lineColor = '#73ff9a';
+  function countyBounds(counties) {
+    const bounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
     counties.forEach(county => {
-      county.rings.forEach(ring => addCountyLine(engine, ring, lineColor, 0.36));
-      addCountyPoint(engine, county);
+      county.rings.forEach(ring => {
+        ring.forEach(([lon, lat]) => {
+          bounds.minLon = Math.min(bounds.minLon, lon);
+          bounds.maxLon = Math.max(bounds.maxLon, lon);
+          bounds.minLat = Math.min(bounds.minLat, lat);
+          bounds.maxLat = Math.max(bounds.maxLat, lat);
+        });
+      });
     });
-    const labelCounties = ['Fulton', 'Cobb', 'DeKalb', 'Gwinnett', 'Chatham', 'Richmond', 'Muscogee', 'Bibb', 'Clarke', 'Lowndes'];
-    counties
-      .filter(county => labelCounties.includes(county.name))
-      .forEach(county => engine._addTextLabel?.('local', county.center.lat, county.center.lon, [county.name, 'GA COUNTY'], '#73ff9a', 10, 3.8));
+    return Number.isFinite(bounds.minLon) ? bounds : FALLBACK_BOUNDS;
+  }
+
+  function projectionFor(counties, width, height) {
+    const bounds = countyBounds(counties);
+    const pad = Math.max(16, Math.min(width, height) * 0.04);
+    const spanLon = bounds.maxLon - bounds.minLon || 1;
+    const spanLat = bounds.maxLat - bounds.minLat || 1;
+    const scale = Math.min((width - pad * 2) / spanLon, (height - pad * 2) / spanLat);
+    const mapW = spanLon * scale;
+    const mapH = spanLat * scale;
+    const ox = (width - mapW) / 2;
+    const oy = (height - mapH) / 2;
+    return ([lon, lat]) => [
+      ox + (lon - bounds.minLon) * scale,
+      oy + (bounds.maxLat - lat) * scale,
+    ];
+  }
+
+  function ringPath(ring, project) {
+    return ring.map((point, index) => {
+      const [x, y] = project(point);
+      return `${index ? 'L' : 'M'}${x.toFixed(2)} ${y.toFixed(2)}`;
+    }).join(' ') + ' Z';
+  }
+
+  function drawCountyMap(counties) {
+    const overlay = ensureGeorgiaOverlay();
+    if (!overlay) return;
+    const svg = overlay.querySelector('[data-local-map-svg]');
+    const status = overlay.querySelector('[data-local-map-status]');
+    const readout = overlay.querySelector('[data-local-map-readout]');
+    const stage = overlay.querySelector('.local-map-stage');
+    const rect = stage.getBoundingClientRect();
+    const width = Math.max(320, rect.width || 900);
+    const height = Math.max(320, rect.height || 620);
+    const project = projectionFor(counties, width, height);
+    const labelNames = new Set(['Fulton', 'Cobb', 'DeKalb', 'Gwinnett', 'Chatham', 'Richmond', 'Muscogee', 'Bibb', 'Clarke', 'Lowndes']);
+
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.replaceChildren();
+
+    counties.forEach(county => {
+      if (county.rings.length) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('class', 'local-county');
+        path.setAttribute('d', county.rings.map(ring => ringPath(ring, project)).join(' '));
+        path.dataset.countyName = county.name;
+        path.addEventListener('mouseenter', () => {
+          readout.textContent = `${county.name.toUpperCase()} COUNTY`;
+        });
+        path.addEventListener('mouseleave', () => {
+          readout.textContent = 'STATEWIDE';
+        });
+        svg.appendChild(path);
+      } else if (county.center) {
+        const [x, y] = project([county.center.lon, county.center.lat]);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'local-fallback-point');
+        circle.setAttribute('cx', x.toFixed(2));
+        circle.setAttribute('cy', y.toFixed(2));
+        circle.setAttribute('r', '4');
+        svg.appendChild(circle);
+      }
+
+      if (county.center && labelNames.has(county.name)) {
+        const [x, y] = project([county.center.lon, county.center.lat]);
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('class', 'local-county-label');
+        label.setAttribute('x', x.toFixed(2));
+        label.setAttribute('y', y.toFixed(2));
+        label.textContent = county.name.toUpperCase();
+        svg.appendChild(label);
+      }
+    });
+
+    status.textContent = `${counties.length} COUNTIES`;
+    overlayReady = true;
+  }
+
+  function showGeorgiaOverlay(active) {
+    const wrap = document.querySelector('.globe-wrap');
+    const overlay = ensureGeorgiaOverlay();
+    if (!wrap || !overlay) return;
+    wrap.classList.toggle('local-map-mode', active);
+    overlay.hidden = !active;
+    if (active && !overlayReady) {
+      loadGeorgiaCounties().then(drawCountyMap);
+    }
   }
 
   function setUiActive(row, active) {
@@ -177,34 +346,11 @@
 
   function applyLocal(active) {
     const engine = window.__globalDataEngine;
-    if (!engine?.layerGroups?.local) return;
-    engine.setLayerVisible?.('local', active);
-    if (active) {
-      engine.focusOn?.(STATE_CENTER.lat, STATE_CENTER.lon, STATE_ZOOM);
+    if (engine?.layerGroups?.local) {
+      engine.setLayerVisible?.('local', active);
     }
+    showGeorgiaOverlay(active);
     document.querySelectorAll('[data-local-row]').forEach(row => setUiActive(row, active));
-  }
-
-  function applyInfrastructure(active) {
-    const engine = window.__globalDataEngine;
-    if (!engine?.layerGroups?.infrastructure) return;
-    engine.setLayerVisible?.('infrastructure', active);
-    document.querySelectorAll('[data-infra-row]').forEach(row => {
-      row.classList.toggle('active', active);
-      const knob = row.querySelector('[data-infra-knob]');
-      const button = row.querySelector('[data-infra-toggle]');
-      const slider = row.querySelector('input[type="range"]');
-      if (button) {
-        button.style.background = active ? '#5bd7ff' : 'transparent';
-        button.style.borderColor = active ? '#5bd7ff' : 'var(--edge)';
-        button.setAttribute('aria-pressed', String(active));
-      }
-      if (knob) {
-        knob.style.left = active ? '17px' : '1px';
-        knob.style.background = active ? '#000' : 'var(--text-dim)';
-      }
-      if (slider) slider.disabled = !active;
-    });
   }
 
   function injectUi() {
@@ -240,6 +386,8 @@
     slider.addEventListener('input', event => {
       const opacity = Number(event.target.value) / 100;
       value.textContent = String(Math.round(opacity * 100)).padStart(3, '0');
+      const overlay = ensureGeorgiaOverlay();
+      if (overlay) overlay.style.opacity = String(Math.max(0.15, opacity));
       engine.setLayerOpacity?.('local', opacity);
     });
 
@@ -249,24 +397,22 @@
     setUiActive(row, Boolean(engine.layerGroups.local?.visible));
   }
 
+  window.GlobalDataLocalLayer = {
+    setActive: applyLocal,
+    redraw: () => loadGeorgiaCounties().then(drawCountyMap),
+  };
+
   window.addEventListener('keydown', event => {
     if (event.target?.tagName === 'INPUT' || event.target?.tagName === 'TEXTAREA') return;
     if (event.key !== 'l' && event.key !== 'L') return;
     const engine = window.__globalDataEngine;
-    if (!engine?.layerGroups?.local) return;
-    applyLocal(!engine.layerGroups.local.visible);
+    applyLocal(!engine?.layerGroups?.local?.visible);
   });
 
-  document.addEventListener('click', event => {
-    const button = event.target?.closest?.('.rail-btn');
-    if (!button) return;
-    const label = String(button.textContent || '').toUpperCase();
-    if (!/ALL LAYERS|CLEAR ALL/.test(label)) return;
-    const next = label.includes('ALL LAYERS');
-    setTimeout(() => {
-      applyLocal(next);
-      applyInfrastructure(next);
-    }, 0);
+  window.addEventListener('resize', () => {
+    if (document.querySelector('.globe-wrap.local-map-mode')) {
+      loadGeorgiaCounties().then(drawCountyMap);
+    }
   });
 
   setInterval(injectUi, 1200);
@@ -275,23 +421,19 @@
     const engine = originalCreate(el, theme);
     window.__globalDataEngine = engine;
     const originalEnsure = engine._ensureLayerGroups?.bind(engine);
-    const originalClear = engine._clearGroup?.bind(engine);
     const originalUpdate = engine.updateLiveData?.bind(engine);
 
     engine._ensureLayerGroups = function localEnsure() {
       originalEnsure?.();
       ensureLayer(engine);
     };
-    engine._clearGroup = function localClear(id) {
-      originalClear?.(id);
-    };
     engine.updateLiveData = function localUpdate(data) {
       originalUpdate?.(data);
-      loadGeorgiaCounties().then(counties => renderLocal(engine, counties));
+      loadGeorgiaCounties();
     };
 
     engine._ensureLayerGroups();
-    loadGeorgiaCounties().then(counties => renderLocal(engine, counties));
+    loadGeorgiaCounties();
     injectUi();
     return engine;
   };
