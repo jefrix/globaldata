@@ -5,6 +5,7 @@
     highways: true,
     water: false,
     powerGrid: false,
+    ameripro: false,
     restaurants: false,
     parks: false,
     localNews: false,
@@ -202,6 +203,20 @@
       },
     }));
     panel.appendChild(layerRow({
+      keyName: 'ameripro',
+      hotkey: 'A',
+      label: 'AMERIPRO',
+      sub: 'FLEET / FOG TANK LEVELS',
+      color: '#73ff9a',
+      active: localState.ameripro,
+      onToggle: () => {
+        const next = !localState.ameripro;
+        setPlaceholderLayer('ameripro', next);
+        window.GlobalDataAmeripro?.setActive?.(next);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
       keyName: 'restaurants',
       hotkey: 'R',
       label: 'RESTAURANTS',
@@ -258,6 +273,7 @@
     document.querySelectorAll('[data-local-menu-layer="highways"]').forEach(row => setToggle(row, localState.highways, '#ff3d8d'));
     document.querySelectorAll('[data-local-menu-layer="water"]').forEach(row => setToggle(row, localState.water, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="powerGrid"]').forEach(row => setToggle(row, localState.powerGrid, '#f5d142'));
+    document.querySelectorAll('[data-local-menu-layer="ameripro"]').forEach(row => setToggle(row, localState.ameripro, '#73ff9a'));
     document.querySelectorAll('[data-local-menu-layer="restaurants"]').forEach(row => setToggle(row, localState.restaurants, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="parks"]').forEach(row => setToggle(row, localState.parks, '#7bd6a8'));
     document.querySelectorAll('[data-local-menu-layer="localNews"]').forEach(row => setToggle(row, localState.localNews, '#f58a42'));
@@ -341,9 +357,10 @@
     setLayer(name, active) {
       if (name === 'counties') setCountiesVisible(Boolean(active));
       if (name === 'highways') setHighwaysVisible(Boolean(active));
-      if (['cities', 'water', 'powerGrid', 'restaurants', 'parks', 'localNews'].includes(name)) {
+      if (['cities', 'water', 'powerGrid', 'ameripro', 'restaurants', 'parks', 'localNews'].includes(name)) {
         setPlaceholderLayer(name, Boolean(active));
       }
+      if (name === 'ameripro') window.GlobalDataAmeripro?.setActive?.(Boolean(active));
       refreshRows();
     },
     getLayer(name) {
@@ -364,6 +381,12 @@
     }
     if (event.key === 'p' || event.key === 'P') {
       setPlaceholderLayer('powerGrid', !localState.powerGrid);
+      refreshRows();
+    }
+    if (event.key === 'a' || event.key === 'A') {
+      const next = !localState.ameripro;
+      setPlaceholderLayer('ameripro', next);
+      window.GlobalDataAmeripro?.setActive?.(next);
       refreshRows();
     }
   });
