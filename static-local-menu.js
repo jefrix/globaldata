@@ -271,6 +271,19 @@
     panel.appendChild(note);
   }
 
+  function enforcePrimaryLayerOrder(panel) {
+    if (!panel) return;
+    const ameripro = panel.querySelector('[data-local-menu-layer="ameripro"]');
+    const restaurants = panel.querySelector('[data-local-menu-layer="restaurants"]');
+    const firstLayer = panel.querySelector('[data-local-menu-layer]');
+    if (ameripro && firstLayer !== ameripro) {
+      panel.insertBefore(ameripro, firstLayer || panel.firstChild);
+    }
+    if (restaurants && ameripro?.nextElementSibling !== restaurants) {
+      ameripro?.after(restaurants);
+    }
+  }
+
   function refreshRows() {
     document.querySelectorAll('[data-local-menu-layer="counties"]').forEach(row => setToggle(row, localState.counties, '#73ff9a'));
     document.querySelectorAll('[data-local-menu-layer="cities"]').forEach(row => setToggle(row, localState.cities, '#cfe2ff'));
@@ -347,6 +360,7 @@
       renderPanel(panel);
       panel.dataset.rendered = '1';
     }
+    enforcePrimaryLayerOrder(panel);
     setGlobalMenuHidden(layers, localMode);
     updateHeader(localMode);
     if (localMode) {
