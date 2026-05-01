@@ -279,8 +279,10 @@
       ['SERVICE', item.serviceFocus || 'Grease trap / exhaust hood service'],
       ['TYPE', item.type || 'Restaurant / food service customer'],
     ];
+    rows.push(['TRAP', item.greaseTrapSizeGal || item.greaseTrapLocation
+      ? `${item.greaseTrapSizeGal ? `${item.greaseTrapSizeGal} gal` : 'Size unknown'} / ${item.greaseTrapLocation || 'Location unknown'}`
+      : 'Not found in older list']);
     if (item.greaseTrapSizeGal || item.greaseTrapLocation) {
-      rows.push(['TRAP', `${item.greaseTrapSizeGal ? `${item.greaseTrapSizeGal} gal` : 'Size unknown'} / ${item.greaseTrapLocation || 'Location unknown'}`]);
       rows.push(['TRAP SRC', item.greaseTrapMatchedName ? `${item.greaseTrapMatchedName} / older list` : 'Older restaurant list']);
     }
     rows.push(['SOURCE', quality]);
@@ -318,7 +320,7 @@
         `<button class="restaurant-feed-row ${item.id === selectedId ? 'active' : ''}" data-restaurant-row="${escapeHtml(item.id)}">`,
         '<span>',
         `<strong>${escapeHtml(item.name)}</strong>`,
-        `<small>${escapeHtml([item.city, item.state].filter(Boolean).join(', '))}</small>`,
+        `<small>${escapeHtml([item.city, item.state].filter(Boolean).join(', '))}${item.greaseTrapSizeGal ? ` / ${item.greaseTrapSizeGal} gal ${item.greaseTrapLocation || ''}` : ''}</small>`,
         '</span>',
         `<span class="restaurant-quality">${qualityLabel(item)}</span>`,
         '</button>',
