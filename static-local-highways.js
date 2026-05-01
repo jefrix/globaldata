@@ -143,27 +143,27 @@
       }
       .local-road.interstate {
         stroke: #ff3d8d;
-        stroke-width: 2.6;
-        filter: drop-shadow(0 0 4px rgba(255,61,141,0.75));
+        stroke-width: 1.55;
+        filter: drop-shadow(0 0 1.5px rgba(255,61,141,0.58));
       }
       .local-road.interstate-loop {
         stroke: #d85cff;
-        stroke-width: 2.35;
-        filter: drop-shadow(0 0 4px rgba(216,92,255,0.70));
+        stroke-width: 1.45;
+        filter: drop-shadow(0 0 1.5px rgba(216,92,255,0.55));
       }
       .local-road.major {
         stroke: #f5d142;
-        stroke-width: 1.95;
-        filter: drop-shadow(0 0 3px rgba(245,209,66,0.58));
+        stroke-width: 1.15;
+        filter: drop-shadow(0 0 1.2px rgba(245,209,66,0.48));
       }
       .local-road.primary {
         stroke: #5bd7ff;
-        stroke-width: 1.25;
-        opacity: 0.86;
+        stroke-width: 0.7;
+        opacity: 0.78;
       }
       .local-road:hover {
         stroke: #ffffff;
-        stroke-width: 3.1;
+        stroke-width: 2.0;
       }
       .local-map-legend {
         display: inline-flex;
