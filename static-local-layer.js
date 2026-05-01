@@ -4,9 +4,12 @@
   const GEORGIA_COUNTIES_URL = 'https://cdn.jsdelivr.net/gh/plotly/datasets@master/geojson-counties-fips.json';
   const originalCreate = window.GlobeEngine.create;
   const FALLBACK_BOUNDS = { minLon: -85.62, maxLon: -80.84, minLat: 30.36, maxLat: 35.01 };
+  const MIN_LOCAL_ZOOM = 1;
+  const MAX_LOCAL_ZOOM = 5;
   let countyPromise = null;
   let countyCache = null;
   let overlayReady = false;
+  let localZoom = 1;
 
   function ensureLayer(engine) {
     if (!engine.layerGroups) engine.layerGroups = {};
@@ -167,6 +170,56 @@
         width: 100%;
         height: 100%;
         display: block;
+        transform-origin: 50% 50%;
+        transition: transform 0.16s ease-out;
+      }
+      .local-zoom-controls {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 6;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--mono);
+      }
+      .local-zoom-controls button {
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--edge);
+        border-radius: 1px;
+        background: rgba(0,0,0,0.48);
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-size: 14px;
+      }
+      .local-zoom-controls button:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .local-zoom-rail {
+        position: relative;
+        width: 2px;
+        height: 90px;
+        background: rgba(59,141,245,0.38);
+      }
+      .local-zoom-tick {
+        position: absolute;
+        left: -3px;
+        width: 8px;
+        height: 2px;
+        background: var(--accent);
+        transition: top 0.16s ease-out;
+      }
+      .local-zoom-label {
+        min-width: 34px;
+        text-align: center;
+        color: var(--accent);
+        font-size: 8px;
+        letter-spacing: 0.1em;
       }
       .local-county {
         fill: rgba(115,255,154,0.105);
@@ -214,6 +267,12 @@
       '</div>',
       '<div class="local-map-stage">',
       '<svg class="local-map-svg" data-local-map-svg role="img" aria-label="Georgia county map"></svg>',
+      '<div class="local-zoom-controls" data-local-zoom-controls>',
+      '<button type="button" data-local-zoom-in aria-label="Zoom local map in">+</button>',
+      '<div class="local-zoom-rail"><div class="local-zoom-tick" data-local-zoom-tick></div></div>',
+      '<button type="button" data-local-zoom-out aria-label="Zoom local map out">-</button>',
+      '<div class="local-zoom-label" data-local-zoom-label>1.0x</div>',
+      '</div>',
       '</div>',
       '<div class="local-map-foot">',
       '<span>COUNTY LEVEL VIEW</span>',
@@ -221,7 +280,41 @@
       '</div>',
     ].join('');
     wrap.appendChild(overlay);
+    wireLocalZoom(overlay);
+    applyLocalZoom();
     return overlay;
+  }
+
+  function clampZoom(value) {
+    return Math.max(MIN_LOCAL_ZOOM, Math.min(MAX_LOCAL_ZOOM, Number(value) || MIN_LOCAL_ZOOM));
+  }
+
+  function applyLocalZoom() {
+    const overlay = document.querySelector('[data-local-map-overlay]');
+    const svg = overlay?.querySelector('[data-local-map-svg]');
+    if (svg) svg.style.transform = `scale(${localZoom})`;
+    const tick = overlay?.querySelector('[data-local-zoom-tick]');
+    const label = overlay?.querySelector('[data-local-zoom-label]');
+    const progress = (localZoom - MIN_LOCAL_ZOOM) / (MAX_LOCAL_ZOOM - MIN_LOCAL_ZOOM);
+    if (tick) tick.style.top = `${(1 - progress) * 100}%`;
+    if (label) label.textContent = `${localZoom.toFixed(1)}x`;
+  }
+
+  function zoomLocalBy(factor) {
+    localZoom = clampZoom(localZoom * factor);
+    applyLocalZoom();
+  }
+
+  function wireLocalZoom(overlay) {
+    if (!overlay || overlay.dataset.localZoomWired) return;
+    overlay.dataset.localZoomWired = '1';
+    overlay.querySelector('[data-local-zoom-in]')?.addEventListener('click', () => zoomLocalBy(1.25));
+    overlay.querySelector('[data-local-zoom-out]')?.addEventListener('click', () => zoomLocalBy(0.8));
+    overlay.querySelector('.local-map-stage')?.addEventListener('wheel', event => {
+      if (!document.querySelector('.globe-wrap.local-map-mode')) return;
+      event.preventDefault();
+      zoomLocalBy(event.deltaY < 0 ? 1.18 : 0.85);
+    }, { passive: false });
   }
 
   function countyBounds(counties) {
@@ -322,6 +415,7 @@
     if (!wrap || !overlay) return;
     wrap.classList.toggle('local-map-mode', active);
     overlay.hidden = !active;
+    if (active) applyLocalZoom();
     if (active && !overlayReady) {
       loadGeorgiaCounties().then(drawCountyMap);
     }
@@ -400,14 +494,25 @@
   window.GlobalDataLocalLayer = {
     setActive: applyLocal,
     redraw: () => loadGeorgiaCounties().then(drawCountyMap),
+    setZoom: value => {
+      localZoom = clampZoom(value);
+      applyLocalZoom();
+    },
+    getZoom: () => localZoom,
   };
 
   window.addEventListener('keydown', event => {
     if (event.target?.tagName === 'INPUT' || event.target?.tagName === 'TEXTAREA') return;
+    if (document.querySelector('.globe-wrap.local-map-mode') && ['+', '=', '-', '_'].includes(event.key)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      zoomLocalBy(event.key === '+' || event.key === '=' ? 1.25 : 0.8);
+      return;
+    }
     if (event.key !== 'l' && event.key !== 'L') return;
     const engine = window.__globalDataEngine;
     applyLocal(!engine?.layerGroups?.local?.visible);
-  });
+  }, true);
 
   window.addEventListener('resize', () => {
     if (document.querySelector('.globe-wrap.local-map-mode')) {
