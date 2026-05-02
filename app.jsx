@@ -974,18 +974,32 @@ function App() {
   useEffect(() => { localStorage.setItem('gd_tweaks', JSON.stringify(tweaks)); }, [tweaks]);
   useEffect(() => { localStorage.setItem('gd_density_limit', String(densityValue)); }, [densityValue]);
 
-  // Init engine once
-  useEffect(() => {
-   const e = window.GlobeEngine.create(globeRef.current, theme);
+useEffect(() => {
+  const e = window.GlobeEngine.create(globeRef.current, theme);
+  e.buildAll?.();
+  e.onPick?.(p => {
+    setPick(p);
+    if (p?.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
+  });
+  engineRef.current = e;
 
-e.buildAll?.();
-e.onPick?.(p => {
-  setPick(p);
-  if (p?.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
-});
+  const id = setInterval(() => {
+    if (!engineRef.current || engineRef.current._stopped) return;
+    const eng = engineRef.current;
+    const lat = Math.round(-eng.rotationX * 180 / Math.PI * 100) / 100;
+    const lon = Math.round(((-90 - eng.rotationY * 180 / Math.PI) % 360 + 540) % 360 - 180);
+    setCamInfo({ lat, lon, zoom: (320 / eng.currentZ).toFixed(2) });
+  }, 250);
+  
+  return () => {
+    clearInterval(id);
+    e.dispose?.();
+    engineRef.current = null;
+  };
+}, []);
 
 engineRef.current = e;
-    engineRef.current = e;
+  
 
     // Camera info updater
     const id = setInterval(() => {
@@ -1114,30 +1128,32 @@ engineRef.current = e;
   }, [theme]);
 
   // Rebuild engine if theme actually changes colors — simplest is to reload layers with new materials
-  useEffect(() => {
-    if (!engineRef.current) return;
-    const e = engineRef.current;
-    e.theme = theme;
-    // Rebuild color-dependent static parts (landmass + grid)
-    // For simplicity, do a small rebuild:
-    e.root.remove(e.grid);
-    e.root.remove(e.landmasses);
-    e.scene.remove(e.glowMesh);
-    e.root.remove(e.depthMaskMesh);
-    e.root.remove(e.coreMesh);
-    e._buildGlow?.();
-    e._buildCore?.();
-    e._buildGrid?.();
-    e._buildLandmasses?.();
-    // e.setGridVisible(tweaks.grid);
-    if (e.landmasses) e.landmasses.visible = tweaks.projection !== 'wireframe';
-    // e.buildAll();
-    LAYERS.forEach(l => {
-      if (e.setLayerVisible) e.setLayerVisible(l.id, active[l.id]);
-      if (e.setLayerOpacity) e.setLayerOpacity(l.id, opacity[l.id]);
-    });
-  }, [tweaks.theme]);
-
+ useEffect(() => {
+  if (!engineRef.current) return;
+  const e = engineRef.current;
+  e.theme = theme;
+  
+  // Dispose before rebuilding (prevents Leak F)
+  const dispose = window.GlobeEnginePerfFix?.disposeMesh;
+  if (dispose) {
+    [e.grid, e.landmasses, e.glowMesh, e.depthMaskMesh, e.coreMesh].forEach(dispose);
+  }
+  
+  e.root.remove(e.grid);
+  e.root.remove(e.landmasses);
+  e.scene.remove(e.glowMesh);
+  e.root.remove(e.depthMaskMesh);
+  e.root.remove(e.coreMesh);
+  e._buildGlow?.();
+  e._buildCore?.();
+  e._buildGrid?.();
+  e._buildLandmasses?.();
+  if (e.landmasses) e.landmasses.visible = tweaks.projection !== 'wireframe';
+  LAYERS.forEach(l => {
+    if (e.setLayerVisible) e.setLayerVisible(l.id, active[l.id]);
+    if (e.setLayerOpacity) e.setLayerOpacity(l.id, opacity[l.id]);
+  });
+}, [tweaks.theme]);
   return (
     <div className="app">
       <TopBar
