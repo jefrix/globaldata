@@ -98,52 +98,80 @@
     }
   }
 
-  function updateLabel(assetNode) {
+  function updateLabel(assetNode, center) {
     const label = assetNode.querySelector('.ameripro-marker-label');
-    const center = markerCenter(assetNode);
     if (!label || !center) return;
-    label.setAttribute('x', center.x.toFixed(2));
-    label.setAttribute('y', (center.y + 0.8).toFixed(2));
+    const x = center.x.toFixed(2);
+    const y = (center.y + 0.8).toFixed(2);
+    if (label.getAttribute('x') !== x) label.setAttribute('x', x);
+    if (label.getAttribute('y') !== y) label.setAttribute('y', y);
   }
 
-  function addClusterRing(group, centers) {
-    if (!centers.length || group.querySelector('[data-ameripro-cluster-ring]')) return;
+  function upsertClusterRing(group, centers) {
+    if (!centers.length) {
+      group.querySelectorAll('[data-ameripro-cluster-ring]').forEach(node => node.remove());
+      return;
+    }
+
     const cx = centers.reduce((sum, item) => sum + item.x, 0) / centers.length;
     const cy = centers.reduce((sum, item) => sum + item.y, 0) / centers.length;
-    const ring = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-    ring.dataset.ameriproClusterRing = '1';
-    ring.setAttribute('class', 'ameripro-cluster-ring');
-    ring.setAttribute('cx', cx.toFixed(2));
-    ring.setAttribute('cy', cy.toFixed(2));
-    ring.setAttribute('rx', '55');
-    ring.setAttribute('ry', '39');
-    group.insertBefore(ring, group.firstChild);
+    const x = cx.toFixed(2);
+    const y = cy.toFixed(2);
 
-    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.dataset.ameriproClusterRing = '1';
-    label.setAttribute('class', 'ameripro-cluster-label');
-    label.setAttribute('x', cx.toFixed(2));
-    label.setAttribute('y', (cy - 44).toFixed(2));
-    label.textContent = 'AMERIPRO BASE';
-    group.insertBefore(label, group.firstChild.nextSibling);
+    let ring = group.querySelector('[data-ameripro-cluster-ring="ring"]');
+    if (!ring) {
+      ring = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      ring.dataset.ameriproClusterRing = 'ring';
+      ring.setAttribute('class', 'ameripro-cluster-ring');
+      ring.setAttribute('rx', '55');
+      ring.setAttribute('ry', '39');
+      group.insertBefore(ring, group.firstChild);
+    }
+    if (ring.getAttribute('cx') !== x) ring.setAttribute('cx', x);
+    if (ring.getAttribute('cy') !== y) ring.setAttribute('cy', y);
+
+    let label = group.querySelector('[data-ameripro-cluster-ring="label"]');
+    if (!label) {
+      label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      label.dataset.ameriproClusterRing = 'label';
+      label.setAttribute('class', 'ameripro-cluster-label');
+      label.textContent = 'AMERIPRO BASE';
+      group.insertBefore(label, ring.nextSibling);
+    }
+    if (label.getAttribute('x') !== x) label.setAttribute('x', x);
+    const labelY = (cy - 44).toFixed(2);
+    if (label.getAttribute('y') !== labelY) label.setAttribute('y', labelY);
   }
 
   function fixCluster() {
     ensureStyle();
     document.querySelectorAll('[data-ameripro-assets]').forEach(group => {
       const centers = [];
+      const signatureParts = [];
+
       group.querySelectorAll('.ameripro-asset').forEach(assetNode => {
         const id = assetNode.dataset.ameriproAsset;
         const offset = OFFSETS[id] || { x: 0, y: 0 };
-        assetNode.setAttribute('transform', `translate(${offset.x} ${offset.y})`);
-        updateLabel(assetNode);
         const center = markerCenter(assetNode);
-        if (center) centers.push({ x: center.x + offset.x, y: center.y + offset.y });
+        signatureParts.push(`${id}:${offset.x}:${offset.y}:${center ? center.x.toFixed(1) : 'x'}:${center ? center.y.toFixed(1) : 'y'}`);
+        if (center) centers.push({ x: center.x + offset.x, y: center.y + offset.y, node: assetNode, center });
       });
-      group.querySelectorAll('[data-ameripro-cluster-ring]').forEach(node => node.remove());
-      addClusterRing(group, centers);
+
+      const signature = signatureParts.join('|');
+      if (group.dataset.ameriproClusterSignature === signature) return;
+      group.dataset.ameriproClusterSignature = signature;
+
+      centers.forEach(item => {
+        const id = item.node.dataset.ameriproAsset;
+        const offset = OFFSETS[id] || { x: 0, y: 0 };
+        const transform = `translate(${offset.x} ${offset.y})`;
+        if (item.node.getAttribute('transform') !== transform) item.node.setAttribute('transform', transform);
+        updateLabel(item.node, item.center);
+      });
+      upsertClusterRing(group, centers);
     });
   }
 
-  setInterval(fixCluster, 250);
+  fixCluster();
+  setInterval(fixCluster, 900);
 })();
