@@ -39,8 +39,49 @@
         stroke-width: 2.2;
         pointer-events: none;
       }
+      .feed.ameripro-feed-mode {
+        min-height: 0;
+        overflow: hidden;
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-board {
+        display: flex !important;
+        flex-direction: column;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        grid-template-rows: none !important;
+        scrollbar-width: thin;
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-head {
+        flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: rgba(3,12,24,0.96);
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-row {
+        flex: 0 0 auto;
+        min-height: 82px;
+        align-content: start;
+        padding-top: 9px;
+        padding-bottom: 9px;
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-name,
+      .feed.ameripro-feed-mode .ameripro-tank-kind {
+        line-height: 1.25;
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-control {
+        margin-top: 3px;
+      }
+      .feed.ameripro-feed-mode .ameripro-tank-step {
+        min-width: 28px;
+        min-height: 24px;
+      }
       @media (max-width: 900px), (pointer: coarse) {
         .ameripro-marker-label { font-size: 8px !important; }
+        .feed.ameripro-feed-mode .ameripro-tank-row { min-height: 92px; }
+        .feed.ameripro-feed-mode .ameripro-tank-control { grid-template-columns: 30px minmax(0, 1fr) 30px; }
+        .feed.ameripro-feed-mode .ameripro-tank-step { width: 30px; height: 28px; }
       }
     `;
     document.head.appendChild(style);
