@@ -7,9 +7,9 @@
     if (!nav) return false;
 
     const links = Array.from(nav.querySelectorAll('a'));
-    let almanacLink = links.find(link => {
+    const almanacLink = links.find(link => {
       const label = link.textContent.trim().toUpperCase();
-      return label === 'TIMELINE' || link.href.replace(/index\.html$/, '') === ALMANAC_URL;
+      return label === 'TIMELINE' || label === 'ALMANAC' || link.href.replace(/index\.html$/, '') === ALMANAC_URL;
     });
 
     if (almanacLink) {
@@ -30,12 +30,10 @@
       }
     }
 
-    nav.dataset.timelinePatch = '1';
     return true;
   }
 
-  if (patchTopLinks()) return;
-  const timer = setInterval(() => {
-    if (patchTopLinks()) clearInterval(timer);
-  }, 250);
+  patchTopLinks();
+  const observer = new MutationObserver(() => patchTopLinks());
+  observer.observe(document.body, { childList: true, subtree: true });
 })();
