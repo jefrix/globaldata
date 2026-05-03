@@ -1,21 +1,6 @@
 (function () {
   const MAX_NEWS_AGE_DAYS = 30;
   const MAX_NEWS_AGE_MS = MAX_NEWS_AGE_DAYS * 24 * 60 * 60 * 1000;
-  const SERVICE_TERMS = [
-    'Georgia', 'Atlanta', 'Savannah', 'Augusta', 'Columbus', 'Macon', 'Athens',
-    'Warner Robins', 'Dublin', 'Statesboro', 'Valdosta', 'Brunswick', 'Albany',
-    'Vidalia', 'Swainsboro', 'Metter', 'Perry', 'Tifton', 'Waycross',
-    'Chatham County', 'Fulton County', 'Cobb County', 'Gwinnett County',
-    'Bibb County', 'Houston County', 'Laurens County', 'Bulloch County',
-    'Toombs County', 'Emanuel County', 'Candler County', 'Glynn County',
-    'Middle Georgia', 'Coastal Georgia', 'South Georgia', 'Central Georgia',
-  ];
-  const GDELT_SERVICE_TERMS = [
-    'Georgia', 'Savannah', 'Macon', 'Warner Robins', 'Dublin', 'Statesboro',
-    'Augusta', 'Columbus', 'Atlanta', 'Brunswick', 'Vidalia', 'Swainsboro',
-    'Chatham County', 'Bibb County', 'Houston County', 'Laurens County',
-    'Bulloch County', 'Middle Georgia', 'Coastal Georgia', 'South Georgia',
-  ];
   const TOPICS = [
     {
       id: 'restaurants',
@@ -75,10 +60,6 @@
   let cachedItems = [];
   let lastLoadedAt = 0;
   let lastErrorCount = 0;
-
-  function escapeRegExp(value) {
-    return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
 
   function ensureStyle() {
     if (document.querySelector('[data-local-news-style]')) return;
@@ -188,7 +169,7 @@
     layer.innerHTML = [
       '<div class="local-news-panel">',
       '<div class="local-news-head">',
-      '<div class="local-news-title">GEORGIA NEWS / RESTAURANTS + ROADS / 30D</div>',
+      '<div class="local-news-title">NEWS TEST / RESTAURANTS + ROADS / 30D</div>',
       '<div class="local-news-status" data-local-news-status>READY</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
@@ -203,7 +184,7 @@
   }
 
   function topicQuery(topic) {
-    return `((${phraseList(topic.terms)}) (${phraseList(GDELT_SERVICE_TERMS)}) sourcelang:english sourcecountry:unitedstates)`;
+    return `(${phraseList(topic.terms)}) sourcelang:english`;
   }
 
   function gdeltUrl(topic) {
@@ -248,7 +229,7 @@
     if (Date.now() - seen > MAX_NEWS_AGE_MS) return null;
     if (!title || rejectWords.test(text)) return null;
 
-    const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
+    const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'News', lat: 32.8407, lon: -83.6324 };
     return {
       id: `local-news-${topic.id}-${hash(`${title}-${url}`)}`,
       topic: topic.id,
@@ -261,7 +242,7 @@
       lat: point.lat,
       lon: point.lon,
       ts: seen,
-      source: 'GDELT / targeted Georgia feed',
+      source: 'GDELT / broad topical test feed',
     };
   }
 
@@ -370,7 +351,7 @@
     }
     if (!list) return;
     if (!items.length) {
-      list.innerHTML = '<div class="local-news-empty">NO MATCHING GEORGIA RESTAURANT, HEALTH INSPECTION, GREASE TRAP, EXHAUST HOOD, OR ROAD CLOSURE NEWS FOUND IN THE LAST 30 DAYS.</div>';
+      list.innerHTML = '<div class="local-news-empty">NO MATCHING RESTAURANT, HEALTH INSPECTION, GREASE TRAP, EXHAUST HOOD, OR ROAD CLOSURE NEWS FOUND IN THE LAST 30 DAYS.</div>';
       return;
     }
     list.replaceChildren(...items.map(item => {
@@ -444,7 +425,7 @@
     const next = Boolean(localMode && marker && marker.style.display !== 'none');
     setActive(next);
     const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
-    if (rowSub) rowSub.textContent = 'RESTAURANTS / HEALTH / ROADS / 30D';
+    if (rowSub) rowSub.textContent = 'BROAD TEST / HEALTH / ROADS / 30D';
   }
 
   setInterval(syncFromLocalMenu, 500);
