@@ -1,6 +1,11 @@
 (function () {
   const ALMANAC_URL = 'https://jefrix.github.io/History-Timeline/';
   const TIMELINE_URL = 'https://jefrix.github.io/History-Timeline/history-timeline.html';
+  const MAX_ATTEMPTS = 40;
+
+  function sameUrl(a, b) {
+    return String(a || '').replace(/index\.html$/, '') === String(b || '').replace(/index\.html$/, '');
+  }
 
   function patchTopLinks() {
     const nav = document.querySelector('.top-links');
@@ -9,12 +14,12 @@
     const links = Array.from(nav.querySelectorAll('a'));
     const almanacLink = links.find(link => {
       const label = link.textContent.trim().toUpperCase();
-      return label === 'TIMELINE' || label === 'ALMANAC' || link.href.replace(/index\.html$/, '') === ALMANAC_URL;
+      return label === 'TIMELINE' || label === 'ALMANAC' || sameUrl(link.href, ALMANAC_URL);
     });
 
     if (almanacLink) {
-      almanacLink.textContent = 'ALMANAC';
-      almanacLink.href = ALMANAC_URL;
+      if (almanacLink.textContent.trim() !== 'ALMANAC') almanacLink.textContent = 'ALMANAC';
+      if (!sameUrl(almanacLink.href, ALMANAC_URL)) almanacLink.href = ALMANAC_URL;
     }
 
     if (!nav.querySelector('[data-fieldnotes-timeline-link]')) {
@@ -23,17 +28,17 @@
       timelineLink.href = TIMELINE_URL;
       timelineLink.textContent = 'TIMELINE';
 
-      if (almanacLink) {
-        almanacLink.insertAdjacentElement('afterend', timelineLink);
-      } else {
-        nav.appendChild(timelineLink);
-      }
+      if (almanacLink) almanacLink.insertAdjacentElement('afterend', timelineLink);
+      else nav.appendChild(timelineLink);
     }
 
     return true;
   }
 
+  let attempts = 0;
+  const timer = setInterval(() => {
+    attempts += 1;
+    if (patchTopLinks() || attempts >= MAX_ATTEMPTS) clearInterval(timer);
+  }, 250);
   patchTopLinks();
-  const observer = new MutationObserver(() => patchTopLinks());
-  observer.observe(document.body, { childList: true, subtree: true });
 })();
