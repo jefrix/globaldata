@@ -1,48 +1,51 @@
 (function () {
-  const MAX_NEWS_AGE_MS = 5 * 24 * 60 * 60 * 1000;
+  const MAX_NEWS_AGE_DAYS = 30;
+  const MAX_NEWS_AGE_MS = MAX_NEWS_AGE_DAYS * 24 * 60 * 60 * 1000;
   const SERVICE_TERMS = [
     'Georgia', 'Atlanta', 'Savannah', 'Augusta', 'Columbus', 'Macon', 'Athens',
     'Warner Robins', 'Dublin', 'Statesboro', 'Valdosta', 'Brunswick', 'Albany',
-    'Rome', 'Gainesville', 'Dalton', 'Chatham County', 'Fulton County',
-    'Cobb County', 'Gwinnett County', 'Bibb County', 'Houston County',
-    'Laurens County', 'Bulloch County',
+    'Vidalia', 'Swainsboro', 'Metter', 'Perry', 'Tifton', 'Waycross',
+    'Chatham County', 'Fulton County', 'Cobb County', 'Gwinnett County',
+    'Bibb County', 'Houston County', 'Laurens County', 'Bulloch County',
+    'Toombs County', 'Emanuel County', 'Candler County', 'Glynn County',
+    'Middle Georgia', 'Coastal Georgia', 'South Georgia', 'Central Georgia',
+  ];
+  const GDELT_SERVICE_TERMS = [
+    'Georgia', 'Savannah', 'Macon', 'Warner Robins', 'Dublin', 'Statesboro',
+    'Augusta', 'Columbus', 'Atlanta', 'Brunswick', 'Vidalia', 'Swainsboro',
+    'Chatham County', 'Bibb County', 'Houston County', 'Laurens County',
+    'Bulloch County', 'Middle Georgia', 'Coastal Georgia', 'South Georgia',
   ];
   const TOPICS = [
     {
-      id: 'business',
-      label: 'BUSINESS',
+      id: 'restaurants',
+      label: 'RESTAURANTS',
       color: '#f58a42',
-      terms: ['business', 'company', 'companies', 'corporate', 'headquarters', 'investment', 'expansion', 'layoffs', 'jobs', 'workforce', 'plant', 'facility', 'factory', 'warehouse', 'distribution center'],
+      terms: ['restaurant', 'new restaurant', 'restaurant opens', 'restaurant opening', 'restaurant closes', 'restaurant closed', 'restaurant closure', 'food hall', 'franchise restaurant', 'drive-thru', 'commercial kitchen'],
     },
     {
-      id: 'economy',
-      label: 'ECONOMY',
+      id: 'inspections',
+      label: 'INSPECTIONS',
       color: '#73ff9a',
-      terms: ['economy', 'economic development', 'revenue', 'budget', 'tax', 'taxes', 'tariff', 'trade', 'inflation', 'housing market', 'labor market', 'unemployment', 'port traffic', 'supply chain'],
+      terms: ['restaurant inspection', 'health inspection', 'health score', 'health department', 'food service inspection', 'food safety inspection', 'restaurant score'],
     },
     {
-      id: 'industry',
-      label: 'INDUSTRY',
+      id: 'greasehoods',
+      label: 'FOG / HOODS',
       color: '#5bd7ff',
-      terms: ['manufacturing', 'industrial', 'logistics', 'shipping', 'port', 'rail', 'freight', 'semiconductor', 'battery plant', 'EV plant', 'automotive', 'aerospace', 'agriculture', 'energy'],
+      terms: ['grease trap', 'fats oils grease', 'FOG program', 'wastewater grease', 'exhaust hood', 'hood cleaning', 'commercial kitchen hood', 'NFPA 96'],
     },
     {
-      id: 'government',
-      label: 'GOV / POLICY',
-      color: '#ff3d8d',
-      terms: ['governor', 'legislature', 'state senate', 'state house', 'mayor', 'commission', 'agency', 'regulation', 'policy', 'lawmakers', 'bill', 'permit', 'contract', 'procurement'],
-    },
-    {
-      id: 'infrastructure',
-      label: 'INFRA',
+      id: 'roads',
+      label: 'ROADS',
       color: '#f5d142',
-      terms: ['infrastructure', 'transportation', 'GDOT', 'road project', 'bridge', 'highway', 'airport', 'port of savannah', 'power grid', 'utility', 'water system', 'broadband'],
+      terms: ['road closure', 'lane closure', 'detour', 'traffic shift', 'bridge closure', 'GDOT', 'road construction', 'interstate closure', 'highway closure'],
     },
     {
-      id: 'weather',
-      label: 'MAJOR WEATHER',
-      color: '#9fb7ff',
-      terms: ['hurricane', 'tropical storm', 'tornado', 'flooding', 'severe weather', 'storm damage', 'state of emergency', 'disaster declaration'],
+      id: 'foodservice',
+      label: 'FOODSERVICE',
+      color: '#ff3d8d',
+      terms: ['foodservice', 'hospitality', 'restaurant group', 'franchise', 'retail development', 'shopping center restaurant', 'restaurant permit', 'liquor license'],
     },
   ];
   const CITY_POINTS = [
@@ -60,15 +63,18 @@
     { match: /albany|dougherty/i, city: 'Albany', lat: 31.5785, lon: -84.1557 },
     { match: /vidalia|toombs/i, city: 'Vidalia', lat: 32.2177, lon: -82.4135 },
     { match: /swainsboro|emanuel/i, city: 'Swainsboro', lat: 32.5974, lon: -82.3337 },
+    { match: /metter|candler/i, city: 'Metter', lat: 32.3971, lon: -82.0601 },
+    { match: /perry/i, city: 'Perry', lat: 32.4582, lon: -83.7316 },
+    { match: /tifton/i, city: 'Tifton', lat: 31.4505, lon: -83.5085 },
+    { match: /waycross/i, city: 'Waycross', lat: 31.2136, lon: -82.3540 },
   ];
-  const rejectWords = /\b(sports|football|basketball|baseball|soccer|golf|tennis|recruiting|playoff|championship|obituary|recipe|review|movie|music|concert|coupon|best restaurants|dating|celebrity|festival|arts?|theater|theatre|dance|lifestyle|fashion|wedding|podcast|book club|foodie|dining guide)\b/i;
-  const relevanceWords = /\b(business|company|corporate|economic|economy|financial|finance|bank|investment|expansion|jobs|workforce|layoffs|plant|facility|factory|warehouse|industrial|manufacturing|logistics|shipping|port|rail|freight|supply chain|tariff|trade|budget|tax|revenue|governor|legislature|lawmakers|policy|regulation|bill|contract|procurement|infrastructure|transportation|GDOT|bridge|highway|airport|utility|power grid|hurricane|tropical storm|tornado|flooding|severe weather|disaster)\b/i;
-  const gaScopeWords = new RegExp(`\\b(${SERVICE_TERMS.map(escapeRegExp).join('|')})\\b`, 'i');
+  const rejectWords = /\b(sports|football|basketball|baseball|soccer|golf|tennis|recruiting|playoff|championship|obituary|recipe|movie|music|concert|coupon|dating|celebrity|festival|arts?|theater|theatre|dance|fashion|wedding|podcast|book club)\b/i;
   let active = false;
   let loaded = false;
   let loading = false;
   let cachedItems = [];
   let lastLoadedAt = 0;
+  let lastErrorCount = 0;
 
   function escapeRegExp(value) {
     return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -90,7 +96,7 @@
         position: absolute;
         right: 22px;
         top: 58px;
-        width: min(410px, calc(100vw - 390px));
+        width: min(430px, calc(100vw - 390px));
         max-height: calc(100% - 118px);
         overflow: auto;
         border: 1px solid rgba(245,138,66,0.45);
@@ -121,9 +127,7 @@
         font-size: 8.5px;
         white-space: nowrap;
       }
-      .local-news-list {
-        display: grid;
-      }
+      .local-news-list { display: grid; }
       .local-news-item {
         display: grid;
         gap: 5px;
@@ -132,9 +136,7 @@
         color: var(--text);
         text-decoration: none;
       }
-      .local-news-item:hover {
-        background: rgba(245,138,66,0.10);
-      }
+      .local-news-item:hover { background: rgba(245,138,66,0.10); }
       .local-news-meta {
         display: flex;
         justify-content: space-between;
@@ -144,13 +146,8 @@
         letter-spacing: 0.12em;
         color: var(--text-dim);
       }
-      .local-news-topic {
-        color: var(--topic-color, #f58a42);
-      }
-      .local-news-text {
-        font-size: 12px;
-        line-height: 1.32;
-      }
+      .local-news-topic { color: var(--topic-color, #f58a42); }
+      .local-news-text { font-size: 12px; line-height: 1.32; }
       .local-news-source {
         font-family: var(--mono);
         font-size: 8px;
@@ -165,9 +162,7 @@
         letter-spacing: 0.12em;
         line-height: 1.45;
       }
-      .local-placeholder-layer[data-local-placeholder="localNews"] .local-placeholder-badge {
-        display: none;
-      }
+      .local-placeholder-layer[data-local-placeholder="localNews"] .local-placeholder-badge { display: none; }
       @media (max-width: 900px) {
         .local-news-panel {
           left: 12px;
@@ -193,7 +188,7 @@
     layer.innerHTML = [
       '<div class="local-news-panel">',
       '<div class="local-news-head">',
-      '<div class="local-news-title">GEORGIA NEWS / BUSINESS + POLICY / 5D</div>',
+      '<div class="local-news-title">GEORGIA NEWS / RESTAURANTS + ROADS / 30D</div>',
       '<div class="local-news-status" data-local-news-status>READY</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
@@ -203,10 +198,12 @@
     return layer;
   }
 
+  function phraseList(items) {
+    return items.map(term => `"${term}"`).join(' OR ');
+  }
+
   function topicQuery(topic) {
-    const service = SERVICE_TERMS.map(term => `"${term}"`).join(' OR ');
-    const terms = topic.terms.map(term => `"${term}"`).join(' OR ');
-    return `((${terms}) (${service}) sourcecountry:US sourcelang:English)`;
+    return `((${phraseList(topic.terms)}) (${phraseList(GDELT_SERVICE_TERMS)}) sourcelang:english sourcecountry:unitedstates)`;
   }
 
   function gdeltUrl(topic) {
@@ -215,8 +212,8 @@
       mode: 'artlist',
       format: 'json',
       sort: 'datedesc',
-      maxrecords: '35',
-      timespan: '5d',
+      maxrecords: '75',
+      timespan: `${MAX_NEWS_AGE_DAYS}d`,
     });
     return `https://api.gdeltproject.org/api/v2/doc/doc?${params}`;
   }
@@ -247,11 +244,10 @@
     const url = article.url || '';
     const domain = article.domain || sourceDomain(url);
     const seen = Date.parse(article.seendate || article.datetime || article.date || '') || Date.now();
-    const text = `${title} ${domain}`;
+    const text = `${title} ${domain} ${url}`;
     if (Date.now() - seen > MAX_NEWS_AGE_MS) return null;
     if (!title || rejectWords.test(text)) return null;
-    if (!isCompanyRelevant(text, topic.id)) return null;
-    if (!gaScopeWords.test(text)) return null;
+
     const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
     return {
       id: `local-news-${topic.id}-${hash(`${title}-${url}`)}`,
@@ -265,19 +261,8 @@
       lat: point.lat,
       lon: point.lon,
       ts: seen,
-      source: 'GDELT / Georgia business-policy filter',
+      source: 'GDELT / targeted Georgia feed',
     };
-  }
-
-  function isCompanyRelevant(text, topicId) {
-    if (!relevanceWords.test(text)) return false;
-    if (topicId === 'business') return /\b(business|company|corporate|headquarters|investment|expansion|jobs|workforce|layoffs|plant|facility|factory|warehouse|distribution center)\b/i.test(text);
-    if (topicId === 'economy') return /\b(economy|economic development|revenue|budget|tax|tariff|trade|inflation|housing market|labor market|unemployment|port traffic|supply chain)\b/i.test(text);
-    if (topicId === 'industry') return /\b(manufacturing|industrial|logistics|shipping|port|rail|freight|semiconductor|battery plant|EV plant|automotive|aerospace|agriculture|energy)\b/i.test(text);
-    if (topicId === 'government') return /\b(governor|legislature|state senate|state house|mayor|commission|agency|regulation|policy|lawmakers|bill|permit|contract|procurement)\b/i.test(text);
-    if (topicId === 'infrastructure') return /\b(infrastructure|transportation|GDOT|road project|bridge|highway|airport|port of savannah|power grid|utility|water system|broadband)\b/i.test(text);
-    if (topicId === 'weather') return /\b(hurricane|tropical storm|tornado|flooding|severe weather|storm damage|state of emergency|disaster declaration)\b/i.test(text);
-    return relevanceWords.test(text);
   }
 
   function compact(value) {
@@ -318,8 +303,8 @@
       const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
       return {
         id: `ga511-${event.ID || hash(text)}`,
-        topic: 'infrastructure',
-        topicLabel: 'INFRA',
+        topic: 'roads',
+        topicLabel: 'ROADS',
         color: '#f5d142',
         title: `${road || 'Georgia road'}: ${desc || 'Traffic event'}`,
         url: 'https://511ga.org/',
@@ -339,19 +324,23 @@
     loading = true;
     try {
       const batches = [];
+      let errors = 0;
       for (const topic of TOPICS) {
         try {
           batches.push(await loadTopicWithRetry(topic));
         } catch {
+          errors += 1;
           batches.push([]);
         }
-        await wait(360);
+        await wait(280);
       }
       try {
         batches.push(await loadGeorgia511());
       } catch {
+        errors += 1;
         batches.push([]);
       }
+      lastErrorCount = errors;
       const byUrl = new Map();
       batches.forEach(batch => {
         batch.forEach(item => {
@@ -362,7 +351,7 @@
       cachedItems = [...byUrl.values()]
         .filter(item => Date.now() - (Number(item.ts) || 0) <= MAX_NEWS_AGE_MS)
         .sort((a, b) => b.ts - a.ts)
-        .slice(0, 80);
+        .slice(0, 90);
       loaded = true;
       lastLoadedAt = Date.now();
       return cachedItems;
@@ -376,10 +365,12 @@
     if (!layer) return;
     const list = layer.querySelector('[data-local-news-list]');
     const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = items.length ? `${items.length} MATCHES / 5D` : 'NO MATCHES / 5D';
+    if (status) {
+      status.textContent = items.length ? `${items.length} MATCHES / 30D` : (lastErrorCount ? 'SOURCE LIMITED / 30D' : 'NO MATCHES / 30D');
+    }
     if (!list) return;
     if (!items.length) {
-      list.innerHTML = '<div class="local-news-empty">NO MATCHING GEORGIA BUSINESS, POLICY, INDUSTRIAL, OR MAJOR WEATHER NEWS FOUND IN THE LAST 5 DAYS.</div>';
+      list.innerHTML = '<div class="local-news-empty">NO MATCHING GEORGIA RESTAURANT, HEALTH INSPECTION, GREASE TRAP, EXHAUST HOOD, OR ROAD CLOSURE NEWS FOUND IN THE LAST 30 DAYS.</div>';
       return;
     }
     list.replaceChildren(...items.map(item => {
@@ -425,7 +416,7 @@
     layer.style.display = active ? 'block' : 'none';
     if (!active) return;
     const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = loaded ? `${cachedItems.length} MATCHES` : 'LOADING';
+    if (status) status.textContent = loaded ? `${cachedItems.length} MATCHES / 30D` : 'LOADING';
     render(cachedItems);
     loadItems().then(items => {
       if (active) render(items);
@@ -453,8 +444,8 @@
     const next = Boolean(localMode && marker && marker.style.display !== 'none');
     setActive(next);
     const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
-    if (rowSub) rowSub.textContent = 'GA BUSINESS / POLICY / INDUSTRY / 5D';
+    if (rowSub) rowSub.textContent = 'RESTAURANTS / HEALTH / ROADS / 30D';
   }
 
-  setInterval(syncFromLocalMenu, 300);
+  setInterval(syncFromLocalMenu, 500);
 })();
