@@ -2,9 +2,13 @@
   const COUNTY_URL = 'https://cdn.jsdelivr.net/gh/plotly/datasets@master/geojson-counties-fips.json';
   const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
   const FALLBACK_BOUNDS = { minLon: -85.62, maxLon: -80.84, minLat: 30.36, maxLat: 35.01 };
+  const MAX_ROADS = 420;
+  const MAX_POINTS_PER_ROAD = 48;
   let boundsPromise = null;
   let highwayPromise = null;
   let drawing = false;
+  let lastViewBox = '';
+  let resizeTimer = null;
 
   function isGeorgiaCounty(feature) {
     const props = feature.properties || {};
@@ -76,7 +80,7 @@
 
   function highwayQuery() {
     return [
-      '[out:json][timeout:28];',
+      '[out:json][timeout:24];',
       '(',
       '  way["highway"~"^(motorway|trunk|primary)$"](30.30,-85.70,35.08,-80.75);',
       ');',
@@ -92,6 +96,16 @@
     return 'primary';
   }
 
+  function simplifyPoints(points, maxPoints = MAX_POINTS_PER_ROAD) {
+    if (points.length <= maxPoints) return points;
+    const step = Math.ceil(points.length / maxPoints);
+    const sampled = points.filter((_, index) => index % step === 0);
+    const last = points[points.length - 1];
+    const sampleLast = sampled[sampled.length - 1];
+    if (!sampleLast || sampleLast[0] !== last[0] || sampleLast[1] !== last[1]) sampled.push(last);
+    return sampled;
+  }
+
   function normalizeWay(way) {
     const tags = way.tags || {};
     const points = (way.geometry || [])
@@ -102,8 +116,21 @@
       ref: tags.ref || tags.name || 'HWY',
       name: tags.name || tags.ref || 'Georgia Highway',
       kind: highwayKind(tags),
-      points,
+      points: simplifyPoints(points),
     };
+  }
+
+  function roadPriority(road) {
+    if (road.kind === 'interstate') return 0;
+    if (road.kind === 'interstate-loop') return 1;
+    if (road.kind === 'major') return 2;
+    return 3;
+  }
+
+  function boundRoads(roads) {
+    return [...roads]
+      .sort((a, b) => roadPriority(a) - roadPriority(b) || String(a.ref).localeCompare(String(b.ref)))
+      .slice(0, MAX_ROADS);
   }
 
   function loadHighways() {
@@ -122,7 +149,7 @@
             .filter(element => element.type === 'way')
             .map(normalizeWay)
             .filter(Boolean);
-          return roads.length ? roads : fallbackHighways();
+          return roads.length ? boundRoads(roads) : fallbackHighways();
         })
         .catch(() => fallbackHighways());
     }
@@ -205,6 +232,18 @@
     else foot.prepend(legend);
   }
 
+  function highwaysActive() {
+    const apiValue = window.GlobalDataLocalMenu?.getLayer?.('highways');
+    if (typeof apiValue === 'boolean') return apiValue;
+    return Boolean(document.querySelector('[data-local-menu-layer="highways"].active'));
+  }
+
+  function setExistingVisible(active) {
+    document.querySelectorAll('[data-local-highways]').forEach(group => {
+      group.style.display = active ? '' : 'none';
+    });
+  }
+
   function projection(bounds, width, height) {
     const pad = Math.max(16, Math.min(width, height) * 0.04);
     const spanLon = bounds.maxLon - bounds.minLon || 1;
@@ -228,17 +267,35 @@
     }).join(' ');
   }
 
-  async function drawRoads() {
+  async function drawRoads(force = false) {
     const wrap = document.querySelector('.globe-wrap.local-map-mode');
     const overlay = wrap?.querySelector('[data-local-map-overlay]');
     const svg = overlay?.querySelector('[data-local-map-svg]');
+    const active = highwaysActive();
+    if (!active) {
+      setExistingVisible(false);
+      return;
+    }
     if (!wrap || !overlay || !svg || drawing) return;
+
+    const viewBox = svg.getAttribute('viewBox') || '';
+    const existing = svg.querySelector('[data-local-highways]');
+    if (!force && existing && lastViewBox === viewBox) {
+      setExistingVisible(true);
+      return;
+    }
+
     drawing = true;
     ensureStyles();
     installLegend(overlay);
 
     try {
       const [bounds, roads] = await Promise.all([loadBounds(), loadHighways()]);
+      if (!highwaysActive()) {
+        setExistingVisible(false);
+        return;
+      }
+
       const box = svg.viewBox?.baseVal;
       const width = Math.max(320, box?.width || svg.getBoundingClientRect().width || 900);
       const height = Math.max(320, box?.height || svg.getBoundingClientRect().height || 620);
@@ -249,20 +306,27 @@
       const order = { primary: 1, major: 2, 'interstate-loop': 3, interstate: 4 };
 
       group.dataset.localHighways = '1';
+      group.addEventListener('mouseover', event => {
+        const path = event.target?.closest?.('.local-road');
+        if (!path || !readout) return;
+        readout.textContent = `${String(path.dataset.ref || '').toUpperCase()} / ${String(path.dataset.name || '').toUpperCase()}`;
+      });
+      group.addEventListener('mouseout', event => {
+        if (!event.target?.closest?.('.local-road') || !readout) return;
+        readout.textContent = 'STATEWIDE';
+      });
+
       svg.querySelectorAll('[data-local-highways]').forEach(node => node.remove());
       [...roads].sort((a, b) => (order[a.kind] || 0) - (order[b.kind] || 0)).forEach(road => {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('class', `local-road ${road.kind || 'primary'}`);
         path.setAttribute('d', pathFor(road.points, project));
-        path.addEventListener('mouseenter', () => {
-          if (readout) readout.textContent = `${String(road.ref || road.name).toUpperCase()} / ${String(road.name || '').toUpperCase()}`;
-        });
-        path.addEventListener('mouseleave', () => {
-          if (readout) readout.textContent = 'STATEWIDE';
-        });
+        path.dataset.ref = road.ref || road.name || 'HWY';
+        path.dataset.name = road.name || road.ref || 'Georgia Highway';
         group.appendChild(path);
       });
       svg.appendChild(group);
+      lastViewBox = viewBox;
       if (status) {
         const countyText = String(status.textContent || '').split('/')[0].trim() || '159 COUNTIES';
         status.textContent = `${countyText} / ${roads.length} ROAD SEGMENTS`;
@@ -274,9 +338,20 @@
 
   function maybeDraw() {
     const svg = document.querySelector('.globe-wrap.local-map-mode [data-local-map-svg]');
-    if (svg && !svg.querySelector('[data-local-highways]')) drawRoads();
+    if (!svg) return;
+    if (!highwaysActive()) {
+      setExistingVisible(false);
+      return;
+    }
+    if (!svg.querySelector('[data-local-highways]')) drawRoads();
+    else setExistingVisible(true);
   }
 
-  setInterval(maybeDraw, 900);
-  window.addEventListener('resize', () => setTimeout(drawRoads, 150));
+  setInterval(maybeDraw, 1200);
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (document.querySelector('.globe-wrap.local-map-mode') && highwaysActive()) drawRoads(true);
+    }, 250);
+  });
 })();
