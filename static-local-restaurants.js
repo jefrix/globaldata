@@ -28,6 +28,10 @@
         pointer-events: all;
         cursor: pointer;
       }
+      .local-restaurant-hit {
+        fill: transparent;
+        pointer-events: all;
+      }
       .local-restaurant-dot {
         fill: rgba(91,215,255,0.94);
         stroke: rgba(207,226,255,0.95);
@@ -239,6 +243,7 @@
       existing.querySelectorAll('.local-restaurant-marker').forEach(node => {
         node.classList.toggle('selected', node.dataset.customerId === selectedId);
       });
+      svg.appendChild(existing);
       return;
     }
     svg.querySelectorAll('[data-local-restaurants]').forEach(node => node.remove());
@@ -257,6 +262,7 @@
       marker.setAttribute('role', 'button');
       marker.setAttribute('aria-label', item.name || 'Restaurant customer');
       marker.innerHTML = [
+        '<circle class="local-restaurant-hit" r="9"></circle>',
         '<rect class="local-restaurant-select" x="-7" y="-7" width="14" height="14"></rect>',
         '<circle class="local-restaurant-dot" r="3.4"></circle>',
         '<path class="local-restaurant-plus" d="M-1.8 0H1.8M0 -1.8V1.8"></path>',
@@ -326,8 +332,12 @@
   function renderBoard() {
     const feed = document.querySelector('.rail-right .feed');
     if (!feed || !placeholderActive()) return;
+    if (window.GlobalDataLocalEventOwner && window.GlobalDataLocalEventOwner !== 'restaurants') return;
     ensureStyle();
-    feed.classList.remove('ameripro-feed-mode', 'restaurant-feed-mode');
+    feed.classList.remove('ameripro-feed-mode', 'restaurant-feed-mode', 'county-drilldown-mode', 'opportunity-feed-mode');
+    feed.querySelector('[data-county-drilldown-board]')?.remove();
+    feed.querySelector('[data-opportunity-board]')?.remove();
+    feed.querySelector('[data-ameripro-tank-board]')?.remove();
     feed.classList.add('restaurant-feed-mode');
     let board = feed.querySelector('[data-restaurant-feed-board]');
     if (!board) {
@@ -389,6 +399,8 @@
 
   function selectCustomer(id, options = {}) {
     if (id) selectedId = id;
+    window.GlobalDataLocalEventOwner = 'restaurants';
+    window.GlobalDataCountyDrilldown?.clearSelection?.();
     drawRestaurants();
     renderBoard();
     if (options.focusPanel) focusEventPanel();
@@ -396,6 +408,8 @@
 
   function setActive(next) {
     active = Boolean(next);
+    if (active) window.GlobalDataLocalEventOwner = 'restaurants';
+    if (!active && window.GlobalDataLocalEventOwner === 'restaurants') window.GlobalDataLocalEventOwner = '';
     if (active && !selectedId) selectedId = CUSTOMERS[0]?.id || null;
     drawRestaurants();
     if (active) renderBoard();
@@ -408,7 +422,7 @@
     if (rowSub) rowSub.textContent = `${CUSTOMERS.length} CLIENT POINTS / ${DATA.metadata?.ameriproScheduleMatchedCustomers || 0} SCHEDULED`;
     if (next !== active) active = next;
     drawRestaurants();
-    if (next) renderBoard();
+    if (next && (!window.GlobalDataLocalEventOwner || window.GlobalDataLocalEventOwner === 'restaurants')) renderBoard();
     if (!next) resetBoard();
   }
 

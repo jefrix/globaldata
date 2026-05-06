@@ -258,12 +258,13 @@
   function selectRestaurant(item) {
     if (!item?.id) return;
     window.GlobalDataLocalMenu?.setLayer?.('restaurants', true);
-    window.GlobalDataRestaurants?.selectCustomer?.(item.id);
+    window.GlobalDataRestaurants?.selectCustomer?.(item.id, { focusPanel: true });
   }
 
   function renderBoard(countyName, path) {
     const feed = document.querySelector('.rail-right .feed');
     if (!feed) return;
+    if (window.GlobalDataLocalEventOwner && window.GlobalDataLocalEventOwner !== 'county') return;
     ensureStyle();
     const list = countyRestaurants(countyName, path).sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
     const key = `${countyName}:${list.map(item => item.id).join('|')}`;
@@ -329,6 +330,7 @@
       .find(node => String(node.dataset.countyName || '').toLowerCase() === String(detail.name || '').toLowerCase());
     if (!path) return;
     ensureStyle();
+    window.GlobalDataLocalEventOwner = 'county';
     selectedCounty = detail.name;
     document.querySelectorAll('.county-drilldown-selected').forEach(node => node.classList.remove('county-drilldown-selected'));
     path.classList.add('county-drilldown-selected');
@@ -348,15 +350,27 @@
       return;
     }
     if (!selectedCounty) return;
+    if (window.GlobalDataLocalEventOwner && window.GlobalDataLocalEventOwner !== 'county') return;
     const path = [...document.querySelectorAll('.local-county')]
       .find(node => String(node.dataset.countyName || '').toLowerCase() === String(selectedCounty).toLowerCase());
     if (path) renderBoard(selectedCounty, path);
+  }
+
+  function clearSelection() {
+    if (window.GlobalDataLocalEventOwner === 'county') window.GlobalDataLocalEventOwner = '';
+    selectedCounty = null;
+    renderKey = '';
+    document.querySelectorAll('.county-drilldown-selected').forEach(node => node.classList.remove('county-drilldown-selected'));
+    const feed = document.querySelector('.rail-right .feed.county-drilldown-mode');
+    feed?.classList.remove('county-drilldown-mode');
+    feed?.querySelector('[data-county-drilldown-board]')?.remove();
   }
 
   window.addEventListener('globaldata:local-select', event => handleCounty(event.detail));
   window.GlobalDataCountyDrilldown = {
     renderCounty: handleCounty,
     getSelectedCounty: () => selectedCounty,
+    clearSelection,
   };
   setInterval(sync, 1000);
 })();

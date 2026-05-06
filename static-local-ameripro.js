@@ -467,6 +467,7 @@
   function selectAsset(id) {
     const asset = ASSETS.find(item => item.id === id);
     if (!asset) return;
+    window.GlobalDataLocalEventOwner = 'ameripro';
     selectedId = id;
     resetSelectedClass();
     renderAsset(asset);
@@ -490,6 +491,7 @@
   function renderTankBoard() {
     const feed = document.querySelector('.rail-right .feed');
     if (!feed || !placeholderActive()) return;
+    if (window.GlobalDataLocalEventOwner && window.GlobalDataLocalEventOwner !== 'ameripro') return;
     ensureStyle();
     feed.classList.add('ameripro-feed-mode');
     let board = feed.querySelector('[data-ameripro-tank-board]');
@@ -512,6 +514,7 @@
     board.querySelectorAll('[data-ameripro-level-step]').forEach(button => {
       button.addEventListener('click', event => {
         event.stopPropagation();
+        window.GlobalDataLocalEventOwner = 'ameripro';
         selectedId = event.currentTarget.dataset.ameriproLevelId;
         resetSelectedClass();
         renderAsset(ASSETS.find(asset => asset.id === selectedId));
@@ -522,6 +525,7 @@
     board.querySelectorAll('[data-ameripro-tank-row]').forEach(rowNode => {
       rowNode.addEventListener('click', event => {
         if (event.target?.matches?.('button')) return;
+        window.GlobalDataLocalEventOwner = 'ameripro';
         selectedId = rowNode.dataset.ameriproTankRow;
         resetSelectedClass();
         renderAsset(ASSETS.find(asset => asset.id === selectedId));
@@ -571,6 +575,8 @@
 
   function setActive(next) {
     active = Boolean(next);
+    if (active) window.GlobalDataLocalEventOwner = 'ameripro';
+    if (!active && window.GlobalDataLocalEventOwner === 'ameripro') window.GlobalDataLocalEventOwner = '';
     drawAssets();
     if (active) {
       renderOverview();
