@@ -21,7 +21,27 @@ window.AMERIPRO_RESTAURANTS = {
     "greaseTrapAddressMatchesAdded": 23,
     "greaseTrapAddressReplacements": 0,
     "greaseTrapAddressConflictsSkipped": 9,
-    "greaseTrapAddressMatchRule": "normalized street address plus matching city or ZIP"
+    "greaseTrapAddressMatchRule": "normalized street address plus matching city or ZIP",
+    "ameriproScheduleSource": "Exterior/Interior Grease and Hood Customer Schedule Admin.xlsx",
+    "ameriproScheduleRowsParsed": 241,
+    "ameriproScheduleMatchedCustomers": 96,
+    "ameriproScheduleMatchedRows": 119,
+    "ameriproScheduleAddressMatches": 99,
+    "ameriproScheduleNameCityMatches": 20,
+    "ameriproScheduleUnmatchedRows": 122,
+    "ameriproSchedulePublicFields": [
+      "service type",
+      "frequency",
+      "next scheduled period",
+      "trap/hood size"
+    ],
+    "ameriproScheduleOmittedPrivateFields": [
+      "phone",
+      "contact",
+      "pricing",
+      "lockbox/key/alarm/access codes",
+      "payment notes"
+    ]
   },
   "customers": [
     {
@@ -78,7 +98,28 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "235 E GRANADE ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1500",
+            "matchedName": "Action Pact, Inc"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0005",
@@ -152,7 +193,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 2500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "ADDINGTON PLACE"
+      "greaseTrapMatchedName": "ADDINGTON PLACE",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "2000",
+            "matchedName": "Addington Place"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0010",
@@ -194,7 +258,45 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "114 BARNARD ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "300",
+            "matchedName": "Alligator Soul"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "day": "Sunday & Tuesday",
+            "size": "250 gallons; 1 hood, 1 fan, 8 filters",
+            "matchedName": "Alligator Soul"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "300",
+            "count": 1
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "250 gallons; 1 hood, 1 fan, 8 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0013",
@@ -282,7 +384,42 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2485 N COLUMBIA ST, MILLEDGEVILLE, GA, 31061",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "50",
+            "matchedName": "Cantina Letty"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "size": "50",
+            "matchedName": "Cantina Letty"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "50",
+            "count": 1
+          },
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "50",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0019",
@@ -366,7 +503,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "310 WRIGHTSVILLE AVE, EAST DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Every 6 Months",
+            "period": "August 2026",
+            "size": "30",
+            "matchedName": "B&H Quick Stop"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "August 2026",
+            "frequency": "Every 6 Months",
+            "size": "30",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0025",
@@ -436,7 +596,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "405 STATE RTE 96, BONAIRE, GA, 31005",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-Monthly",
+            "period": "June 2026",
+            "size": "50",
+            "matchedName": "Marco's Pizza #8066"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "June 2026",
+            "frequency": "Bi-Monthly",
+            "size": "50",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0031",
@@ -539,7 +722,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "CAPTAIN D'S",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Captain D's - Cochran"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0038",
@@ -571,7 +777,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CARTER'S FRIED CHICKEN"
+      "greaseTrapMatchedName": "CARTER'S FRIED CHICKEN",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "October 2026",
+            "size": "1000",
+            "matchedName": "Carter's Fried Chicken"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "October 2026",
+            "frequency": "Semi-annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0040",
@@ -673,7 +902,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "ZAXBY'S"
+      "greaseTrapMatchedName": "ZAXBY'S",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Zaxby's - Cordele"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0047",
@@ -761,7 +1013,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1300,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CHICK-FIL-A"
+      "greaseTrapMatchedName": "CHICK-FIL-A",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Chick-Fil-A 00813 Macon"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0055",
@@ -811,7 +1086,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2242 US HWY 441, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Salsa's Mexican Restaurant - 441"
+          },
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Pickle Barrel Dublin"
+          },
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Teen Challenge"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 3
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0058",
@@ -825,7 +1137,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Chick-Fil-A Americus"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0059",
@@ -839,7 +1174,28 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "2002 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "2000",
+            "matchedName": "Chick-Fil-A at Dublin"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0060",
@@ -853,7 +1209,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "101 INDUSTRIAL PARK RD, FORSYTH, GA, 31029",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "4000",
+            "matchedName": "Chick-Fil-A Forsyth"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "4000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0061",
@@ -871,7 +1250,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1200,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CHICK-FIL-A"
+      "greaseTrapMatchedName": "CHICK-FIL-A",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1500",
+            "matchedName": "Chick-Fil-A Milledgeville"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0062",
@@ -889,7 +1289,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1200,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CHICK-FIL-A"
+      "greaseTrapMatchedName": "CHICK-FIL-A",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Bi-Monthly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Chick-Fil-A of Vidalia"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Bi-Monthly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0063",
@@ -963,7 +1386,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CHINA BUFFET"
+      "greaseTrapMatchedName": "CHINA BUFFET",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "China Buffett - Hazlehurst"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0068",
@@ -1069,7 +1513,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "day": "Saturday/Sunday",
+            "size": "13 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "Claxton Poultry"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "13 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0075",
@@ -1153,7 +1621,51 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "118 E BROUGHTON ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-weekly",
+            "period": "May 2026",
+            "size": "120",
+            "matchedName": "Common Restaurant"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-weekly",
+            "period": "May 2026",
+            "size": "100",
+            "matchedName": "Common Restaurant"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "2 traps - 125 gallons and 80 gallons; 16 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "Common Restaurant"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Bi-weekly",
+            "size": "120",
+            "count": 2
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "2 traps - 125 gallons and 80 gallons; 16 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0081",
@@ -1217,7 +1729,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "CORNBREAD CAFE"
+      "greaseTrapMatchedName": "CORNBREAD CAFE",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-Annual",
+            "period": "August 2026",
+            "size": "1000",
+            "matchedName": "Cornbread Cafe"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "August 2026",
+            "frequency": "Semi-Annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0091",
@@ -1245,7 +1780,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "226 S JEFFERSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "size": "50 gallons; 8 Filters, 1 Hood, 2 Fans",
+            "matchedName": "Crooked Finger"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallons; 8 Filters, 1 Hood, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0093",
@@ -1305,7 +1863,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "DAIRY QUEEN"
+      "greaseTrapMatchedName": "DAIRY QUEEN",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Friendly Gus #32 (Old Neighbor's Express 65)"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0099",
@@ -1569,7 +2150,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1605 E LAMAR ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "30",
+            "matchedName": "Days Inn - Americus"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "30",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0117",
@@ -1620,7 +2224,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "DODGE COUNTY SHERIFFS OFFICE",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Every 4 Months",
+            "period": "August 2026",
+            "size": "1500",
+            "matchedName": "Dodge County Jail"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "August 2026",
+            "frequency": "Every 4 Months",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0120",
@@ -1648,7 +2275,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "201 E SUMTER ST, EATONTON, GA, 31024",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "65",
+            "matchedName": "Domino's - Eatonton"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "65",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0122",
@@ -1662,7 +2312,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "116 N JEFFERSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "size": "Pizza oven?",
+            "matchedName": "Dough Bros"
+          },
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Dough Bros"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "Pizza oven?",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0123",
@@ -1809,7 +2496,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 50,
       "greaseTrapLocation": "Interior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "EASTMAN HEALTHCARE AND REHAB"
+      "greaseTrapMatchedName": "EASTMAN HEALTHCARE AND REHAB",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "June 2026",
+            "size": "50",
+            "matchedName": "Eastman Healthcare & Rehab"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Semi-annual",
+            "size": "50",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0132",
@@ -1837,7 +2547,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "5406 5TH AVE, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "day": "Sunday",
+            "size": "1 hood, 1 fan, 18 filters",
+            "matchedName": "El Rancho"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1 hood, 1 fan, 18 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0134",
@@ -1869,7 +2603,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "FAIRVIEW PARK HOSPITAL"
+      "greaseTrapMatchedName": "FAIRVIEW PARK HOSPITAL",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Fairview Park Hospital"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0136",
@@ -1933,7 +2690,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 200,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "FINGTOWN"
+      "greaseTrapMatchedName": "FINGTOWN",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "300",
+            "matchedName": "Fing Town I (HS United, LLC)"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "300",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0140",
@@ -1947,7 +2725,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "108 N MAIN ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-Annual",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "First Baptist Church of Statesboro"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-Annual",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0141",
@@ -2366,7 +3167,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "800 GSW STATE UNIVERSITY DR, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "3000",
+            "matchedName": "Georgia Southwestern University"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "3000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0170",
@@ -2380,7 +3204,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "41 N 5TH ST, GLENWOOD, GA, 30428",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Glenwood Healthcare"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0171",
@@ -2417,7 +3264,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "GOLDEN CORRAL",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Every 4 Months",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Golden Coral"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Every 4 Months",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0173",
@@ -2506,7 +3376,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "318 INDUSTRIAL BLVD, HAWKINSVILLE, GA, 31036",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Bi-Monthly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Hardy's Peanuts"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Bi-Monthly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0180",
@@ -2580,7 +3473,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "427 S MAIN ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "30",
+            "matchedName": "Holiday Inn Express"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "30",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0185",
@@ -2677,7 +3593,45 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "232 S MAIN ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Huey's on Main"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "day": "Monday",
+            "size": "1 hood, 1 fan, 16 filters",
+            "matchedName": "Huey's on Main"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1 hood, 1 fan, 16 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0191",
@@ -2709,7 +3663,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "I HEART TACOS"
+      "greaseTrapMatchedName": "I HEART TACOS",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "I Heart Taco"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0193",
@@ -2797,7 +3774,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "JAMES PLACE SENIOR LIVING"
+      "greaseTrapMatchedName": "JAMES PLACE SENIOR LIVING",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "James Place Senior Living"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0199",
@@ -2876,7 +3874,28 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "8292 S MARCUS ST, WRIGHTSVILLE, GA, 31096",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1500",
+            "matchedName": "Jet Food Store #47 - Wrightsville"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0204",
@@ -3104,7 +4123,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2103 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-Annual",
+            "period": "September 2026",
+            "size": "50",
+            "matchedName": "Kobe"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "September 2026",
+            "frequency": "Bi-Annual",
+            "size": "50",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0221",
@@ -3168,7 +4210,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1624 VETERANS BLVD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "2000",
+            "matchedName": "Krystal - Dublin"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0226",
@@ -3182,7 +4247,59 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1100 HILLCREST PKWY, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "50",
+            "matchedName": "Holy Smokes"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "50",
+            "matchedName": "Little Tokyo"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "day": "Sunday",
+            "size": "50 gallons; 14 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "Holy Smokes"
+          },
+          {
+            "type": "Hood",
+            "frequency": "4 months",
+            "period": "July 2026",
+            "size": "All hoods in kitchen; filters only in dining room",
+            "matchedName": "Little Tokyo"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "50",
+            "count": 2
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallons; 14 Filters, 2 Hoods, 2 Fans",
+            "count": 2
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0227",
@@ -3228,7 +4345,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "LA HACIENDA"
+      "greaseTrapMatchedName": "LA HACIENDA",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "La Hacienda Mexican Restaurant"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0230",
@@ -3242,7 +4382,45 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "1006 HILLCREST PKWY, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "day": "Sunday",
+            "size": "30 gallon; 4 Filters, 1 Fan, Flue",
+            "matchedName": "La Michoacana"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "50",
+            "matchedName": "La Michoacana #2"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "50",
+            "count": 1
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "30 gallon; 4 Filters, 1 Fan, Flue",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0231",
@@ -3382,7 +4560,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "511 SOUTHERN PINES RD, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Laurens County Jail"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0241",
@@ -3396,7 +4597,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2823 NORTHSIDE DR W, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "size": "50 gallons",
+            "matchedName": "Little Ceasers"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallons",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0242",
@@ -3428,7 +4652,42 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1500",
+            "matchedName": "Locos Grill"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "8 Filters, 1 Hood, 1 Fan",
+            "matchedName": "Loco's Grill & Pub"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1500",
+            "count": 1
+          },
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "8 Filters, 1 Hood, 1 Fan",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0244",
@@ -3478,7 +4737,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "LOS CHILES"
+      "greaseTrapMatchedName": "LOS CHILES",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Los Chiles"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0247",
@@ -3492,7 +4774,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "621 FAIRFIELD DR, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "day": "Sunday",
+            "size": "50 gallons; 3 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "Lou Ann's"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallons; 3 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0248",
@@ -3618,7 +4924,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "806 BEN HALL LAKE RD, EAST DUBLIN, GA, 31027",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "40",
+            "matchedName": "Ma Deb's"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "40",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0257",
@@ -3650,7 +4979,37 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2001 S LEE ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Magnolia Manor, Inc:Magnolia Manor Nursing Center"
+          },
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "350",
+            "matchedName": "Magnolia Manor, Inc:Magnolia Manor Retirement Center"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 2
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0259",
@@ -3678,7 +5037,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "349 GENEVA RD, BUENA VISTA, GA, 31803",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Magnolia Manor, Inc:Magnolia Manor of Marion County"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0261",
@@ -3877,7 +5259,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "180 POOLER PKWY, POOLER, GA, 31322",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Every 4 months",
+            "period": "August 2026",
+            "size": "3000",
+            "matchedName": "Chick-Fil-A Pooler 01486"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "August 2026",
+            "frequency": "Every 4 months",
+            "size": "3000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0274",
@@ -3942,7 +5347,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Interior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "PIZZA HUT",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "80",
+            "matchedName": "Ming Garden"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "80",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0279",
@@ -3970,7 +5398,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "106 E JACKSON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Bi-annually",
+            "period": "September 2026",
+            "day": "Monday",
+            "size": "650",
+            "matchedName": "Minute Grill"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "September 2026",
+            "frequency": "Bi-annually",
+            "size": "650",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0281",
@@ -3984,7 +5436,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "109 W MADISON ST, DUBLIN, GA, 31021",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "day": "Monday",
+            "size": "50 gallon; 1 hood, 1 fan, 12 filters",
+            "matchedName": "Moe's on Madison"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallon; 1 hood, 1 fan, 12 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0282",
@@ -4101,7 +5577,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "MRS WINNER'S",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Mrs.Winners Chicken & Biscuits"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0291",
@@ -4258,7 +5757,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "135 BROAD ST, HAWKINSVILLE, GA, 31036",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Call before scheduling",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Peking Restaurant"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Call before scheduling",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0301",
@@ -4276,7 +5798,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "PERFECT CARE"
+      "greaseTrapMatchedName": "PERFECT CARE",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1500",
+            "matchedName": "Perfect Care, Inc"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0302",
@@ -4434,7 +5977,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Pickle Barrell - Vidalia"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0313",
@@ -4508,7 +6074,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "1102 FAIR RD, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Annual",
+            "period": "January 2027",
+            "size": "1 hood, 1 fan, 6 filters",
+            "matchedName": "Pittman Park Church"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "January 2027",
+            "frequency": "Annual",
+            "size": "1 hood, 1 fan, 6 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0318",
@@ -4522,7 +6111,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "312 MAIN ST, EASTMAN, GA, 31023",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-Annual",
+            "period": "October 2026",
+            "size": "1000",
+            "matchedName": "Pittman Sidetrack"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "October 2026",
+            "frequency": "Semi-Annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0319",
@@ -4662,7 +6274,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "QUALITY INN",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Month & Half",
+            "period": "June 2026",
+            "size": "750",
+            "matchedName": "Quality Inn - Americus"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Month & Half",
+            "size": "750",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0330",
@@ -4860,7 +6495,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "HUDDLE HOUSE"
+      "greaseTrapMatchedName": "HUDDLE HOUSE",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1500",
+            "matchedName": "Treutlen County Schools"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0343",
@@ -4911,7 +6569,42 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "SALSA'S MEXICAN RESTAURANT"
+      "greaseTrapMatchedName": "SALSA'S MEXICAN RESTAURANT",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "Salsa's Mexican Restaurant - Mall Rd"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Bi-Monthly",
+            "period": "June 2026",
+            "size": "2 hoods, 2 fans, 9 filters",
+            "matchedName": "Salsa's Mexican Restaurant - Dublin - Mall"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Bi-Monthly",
+            "size": "2 hoods, 2 fans, 9 filters",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0346",
@@ -4925,7 +6618,31 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "738 RUSSELL PKWY, WARNER ROBINS, GA, 31088",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "day": "Monday",
+            "size": "11 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "Salsa's Mexican Restaurant - WR"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "11 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0347",
@@ -5059,7 +6776,51 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "7 SYLVESTER C FORMEY DR, SAVANNAH, GA, 31408",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "3 Hoods, 17 filters, 3 Fans, 4 A/C Coils",
+            "matchedName": "Sam Snead's Tavern"
+          },
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "5500",
+            "matchedName": "Sam Sneads"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "3 Hoods, 17 filters, 3 Fans, 4 A/C Coils",
+            "matchedName": "Sam Snead's Tavern"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "5500",
+            "count": 1
+          },
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "3 Hoods, 17 filters, 3 Fans, 4 A/C Coils",
+            "count": 2
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0358",
@@ -5226,7 +6987,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "5615 ZEBULON RD, MACON, GA, 31210",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "size": "11 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "SL Sausage"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "11 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0369",
@@ -5263,7 +7047,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "SMITH'S NURSING HOME",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "Smith Medical Nursing Care Center"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0371",
@@ -5411,7 +7216,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "900 S GEORGIA TECH PKWY, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "2000",
+            "matchedName": "South Georgia Technical College"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0381",
@@ -5453,7 +7281,37 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-Weekly",
+            "period": "May 2026",
+            "size": "200",
+            "matchedName": "Doki Doki"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Bi-Weekly",
+            "period": "May 2026",
+            "size": "200",
+            "matchedName": "Doki Doki"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Bi-Weekly",
+            "size": "200",
+            "count": 2
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0384",
@@ -5467,7 +7325,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "2000",
+            "matchedName": "Fishbar"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0385",
@@ -5481,7 +7362,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "The Collins Quarter at Forsyth (CQF)"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Bi-monthly",
+            "period": "June 2026",
+            "size": "10 Filters, 2 Hoods, 2 Fans",
+            "matchedName": "The Collins Quarter at Forsyth (CQF)"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Bi-monthly",
+            "size": "10 Filters, 2 Hoods, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0386",
@@ -5495,7 +7413,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "300",
+            "matchedName": "The Collins Quarter Cafe (CQB)"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Bi-monthly",
+            "period": "June 2026",
+            "size": "7 Filters, 1 Hood, 1 Fan",
+            "matchedName": "The Collins Quarter Cafe (CQB)"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "300",
+            "count": 1
+          },
+          "Hood": {
+            "next": "June 2026",
+            "frequency": "Bi-monthly",
+            "size": "7 Filters, 1 Hood, 1 Fan",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0387",
@@ -5523,7 +7478,45 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "day": "Sunday - closed",
+            "size": "10 Filters, 2 Hoods, 1 Fan",
+            "matchedName": "The Fitzroy"
+          },
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "250",
+            "matchedName": "The Fitzroy"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "250",
+            "count": 1
+          },
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "10 Filters, 2 Hoods, 1 Fan",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood",
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0389",
@@ -5537,7 +7530,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "143 BULL ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "2000",
+            "matchedName": "Ukiyo"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "16 Filters, 2 Hoods, 1 Fan",
+            "matchedName": "Ukiyo"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "2000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "16 Filters, 2 Hoods, 1 Fan",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0390",
@@ -5615,7 +7645,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "2455 STATE RTE 49, BYRON, GA, 31008",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Every 4 Months",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Star Taco"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Every 4 Months",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0396",
@@ -5661,7 +7714,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "FRESH START ACADEMY HEAD START"
+      "greaseTrapMatchedName": "FRESH START ACADEMY HEAD START",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "350",
+            "matchedName": "Sumter County Board of Education:Fresh Start Academy - Head Start"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "350",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0399",
@@ -5679,7 +7755,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "SUMTER COUNTY ELEMENTARY SCHOOL"
+      "greaseTrapMatchedName": "SUMTER COUNTY ELEMENTARY SCHOOL",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Sumter County Board of Education:Sumter County Elementary School"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0400",
@@ -5693,7 +7792,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "2000",
+            "matchedName": "Sumter County Board of Education:Sumter County High School"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "2000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0401",
@@ -5707,7 +7829,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "city-estimated",
       "matchedAddress": "",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Sumter County Board of Education:Sumter County Intermediate School"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0402",
@@ -5725,7 +7870,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "SUMTER COUNTY MIDDLE SCHOOL"
+      "greaseTrapMatchedName": "SUMTER COUNTY MIDDLE SCHOOL",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "1000",
+            "matchedName": "Sumter County Board of Education:Sumter County Middle School"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0403",
@@ -5743,7 +7911,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1500,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "SUMTER COUNTY PRIMARY SCHOOL"
+      "greaseTrapMatchedName": "SUMTER COUNTY PRIMARY SCHOOL",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Semi-annual",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Sumter County Board of Education:Sumter County Primary School"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Semi-annual",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0404",
@@ -5836,7 +8027,31 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 100,
       "greaseTrapLocation": "Interior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "TANDOOR AND TAP"
+      "greaseTrapMatchedName": "TANDOOR AND TAP",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "May 2026",
+            "day": "Monday",
+            "size": "50 gallons; -2 hoods, 9 filters, 2 fans",
+            "matchedName": "Tandoor Taproom"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "May 2026",
+            "frequency": "Quarterly",
+            "size": "50 gallons; -2 hoods, 9 filters, 2 fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0410",
@@ -5928,7 +8143,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "319 W BROUGHTON ST, SAVANNAH, GA, 31401",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "100",
+            "matchedName": "The Baked Bear"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "100",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0417",
@@ -6124,7 +8362,44 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "201 JAMES B BLACKBURN DR, SAVANNAH, GA, 31408",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "4000",
+            "matchedName": "Toasted Yolk"
+          },
+          {
+            "type": "Hood",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "2 Hoods, 22 Filters, 2 Fans",
+            "matchedName": "The Toasted Yoke Cafe"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "4000",
+            "count": 1
+          },
+          "Hood": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "2 Hoods, 22 Filters, 2 Fans",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease",
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0431",
@@ -6409,7 +8684,30 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 100,
       "greaseTrapLocation": "Interior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "WELCH'S COUNTRY SMOKEHOUSE"
+      "greaseTrapMatchedName": "WELCH'S COUNTRY SMOKEHOUSE",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "30",
+            "matchedName": "Domino's #4118"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "30",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0449",
@@ -6437,7 +8735,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "4700 E US HWY 80, SAVANNAH, GA, 31410",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Interior Grease",
+            "frequency": "Monthly",
+            "period": "May 2026",
+            "size": "100",
+            "matchedName": "Wiley's Championship BBQ"
+          }
+        ],
+        "summary": {
+          "Interior Grease": {
+            "next": "May 2026",
+            "frequency": "Monthly",
+            "size": "100",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Interior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0451",
@@ -6465,7 +8786,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "311 JONES MILL RD, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "Willingway Hospital"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0453",
@@ -6484,7 +8828,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List address match",
       "greaseTrapMatchedName": "HUDDLE HOUSE",
-      "greaseTrapMatchType": "address"
+      "greaseTrapMatchType": "address",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "Wing Master"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0454",
@@ -6516,7 +8881,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "101 W JEFFERSON ST, AMERICUS, GA, 31709",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Bi-Monthly",
+            "period": "June 2026",
+            "size": "50",
+            "matchedName": "Wok N Wings"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Bi-Monthly",
+            "size": "50",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0456",
@@ -6553,7 +8941,28 @@ window.AMERIPRO_RESTAURANTS = {
       "greaseTrapSizeGal": 1000,
       "greaseTrapLocation": "Exterior",
       "greaseTrapSource": "Jeff Sorted Restaurant List",
-      "greaseTrapMatchedName": "WRIGHTSVILLE MANOR"
+      "greaseTrapMatchedName": "WRIGHTSVILLE MANOR",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "period": "May 2026",
+            "size": "1000",
+            "matchedName": "Wrightsville Manor Health & Rehab"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "May 2026",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0458",
@@ -6609,7 +9018,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "910 RIVERSIDE DR, MACON, GA, 31201",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "July 2026",
+            "size": "1500",
+            "matchedName": "Zaxby's"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "July 2026",
+            "frequency": "Quarterly",
+            "size": "1500",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0462",
@@ -6623,7 +9055,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "exact",
       "matchedAddress": "224 S MAIN ST, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Exterior Grease",
+            "frequency": "Quarterly",
+            "period": "June 2026",
+            "size": "1000",
+            "matchedName": "ZBest"
+          }
+        ],
+        "summary": {
+          "Exterior Grease": {
+            "next": "June 2026",
+            "frequency": "Quarterly",
+            "size": "1000",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Exterior Grease"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0463",
@@ -6637,7 +9092,30 @@ window.AMERIPRO_RESTAURANTS = {
       "locationQuality": "non-exact",
       "matchedAddress": "106 OLYMPIC BLVD, STATESBORO, GA, 30458",
       "type": "Restaurant / food service customer",
-      "serviceFocus": "Grease trap / exhaust hood service"
+      "serviceFocus": "Grease trap / exhaust hood service",
+      "ameriproSchedule": {
+        "services": [
+          {
+            "type": "Hood",
+            "frequency": "Bi-Annual",
+            "period": "September 2026",
+            "size": "750",
+            "matchedName": "ZTA House"
+          }
+        ],
+        "summary": {
+          "Hood": {
+            "next": "September 2026",
+            "frequency": "Bi-Annual",
+            "size": "750",
+            "count": 1
+          }
+        },
+        "serviceTypes": [
+          "Hood"
+        ],
+        "source": "Ameripro 2026 schedule spreadsheets"
+      }
     },
     {
       "id": "cust-0464",

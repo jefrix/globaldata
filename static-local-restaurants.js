@@ -274,6 +274,8 @@
     const quality = item.locationQuality === 'city-estimated'
       ? 'City-estimated location'
       : 'Street-matched location';
+    const schedule = item.ameriproSchedule || {};
+    const summary = schedule.summary || {};
     const rows = [
       ['ADDRESS', locationText(item)],
       ['SERVICE', item.serviceFocus || 'Grease trap / exhaust hood service'],
@@ -284,6 +286,23 @@
       : 'Not found in older list']);
     if (item.greaseTrapSizeGal || item.greaseTrapLocation) {
       rows.push(['TRAP SRC', item.greaseTrapMatchedName ? `${item.greaseTrapMatchedName} / older list` : 'Older restaurant list']);
+    }
+    const scheduleRows = [
+      ['EXT SCHED', summary['Exterior Grease']],
+      ['INT SCHED', summary['Interior Grease']],
+      ['HOOD', summary.Hood],
+    ];
+    scheduleRows.forEach(([label, service]) => {
+      if (!service) return;
+      const parts = [
+        service.next,
+        service.frequency,
+        service.size ? `${service.size}${/gal|hood|filter|fan/i.test(String(service.size)) ? '' : ' gal'}` : '',
+      ].filter(Boolean);
+      rows.push([label, parts.join(' / ')]);
+    });
+    if (schedule.serviceTypes?.length) {
+      rows.push(['AMERIPRO', schedule.serviceTypes.join(' + ')]);
     }
     rows.push(['SOURCE', quality]);
     return rows.map(([label, value]) => `<div class="restaurant-info-row"><span>${label}</span><b>${escapeHtml(value)}</b></div>`).join('');
@@ -303,13 +322,13 @@
     }
     const selected = selectedCustomer();
     const meta = DATA.metadata || {};
-    const renderKey = `${selected?.id || 'none'}:${CUSTOMERS.length}:${meta.streetMatches || 0}`;
+    const renderKey = `${selected?.id || 'none'}:${CUSTOMERS.length}:${meta.streetMatches || 0}:${meta.ameriproScheduleMatchedRows || 0}`;
     if (board.dataset.renderKey === renderKey) return;
     board.dataset.renderKey = renderKey;
     board.innerHTML = [
       '<div class="restaurant-feed-head">',
       '<span>RESTAURANT CLIENTS</span>',
-      `<span class="restaurant-feed-count">${CUSTOMERS.length} PLOTTED / ${meta.streetMatches || 0} STREET</span>`,
+      `<span class="restaurant-feed-count">${CUSTOMERS.length} PLOTTED / ${meta.ameriproScheduleMatchedCustomers || 0} SCHEDULED</span>`,
       '</div>',
       '<div class="restaurant-selected-card">',
       `<div class="restaurant-selected-title">${escapeHtml(selected?.name || 'SELECT A RESTAURANT')}</div>`,
@@ -320,7 +339,7 @@
         `<button class="restaurant-feed-row ${item.id === selectedId ? 'active' : ''}" data-restaurant-row="${escapeHtml(item.id)}">`,
         '<span>',
         `<strong>${escapeHtml(item.name)}</strong>`,
-        `<small>${escapeHtml([item.city, item.state].filter(Boolean).join(', '))}${item.greaseTrapSizeGal ? ` / ${item.greaseTrapSizeGal} gal ${item.greaseTrapLocation || ''}` : ''}</small>`,
+        `<small>${escapeHtml([item.city, item.state].filter(Boolean).join(', '))}${item.ameriproSchedule?.serviceTypes?.length ? ` / ${escapeHtml(item.ameriproSchedule.serviceTypes.join(' + '))}` : item.greaseTrapSizeGal ? ` / ${item.greaseTrapSizeGal} gal ${item.greaseTrapLocation || ''}` : ''}</small>`,
         '</span>',
         `<span class="restaurant-quality">${qualityLabel(item)}</span>`,
         '</button>',
@@ -357,7 +376,7 @@
   function sync() {
     const next = placeholderActive();
     const rowSub = document.querySelector('[data-local-menu-layer="restaurants"] .layer-sub');
-    if (rowSub) rowSub.textContent = `${CUSTOMERS.length} CLIENT POINTS / GREASE / HOODS`;
+    if (rowSub) rowSub.textContent = `${CUSTOMERS.length} CLIENT POINTS / ${DATA.metadata?.ameriproScheduleMatchedCustomers || 0} SCHEDULED`;
     if (next !== active) active = next;
     drawRestaurants();
     if (next) renderBoard();
