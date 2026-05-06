@@ -231,10 +231,41 @@
     return CUSTOMERS.find(item => item.id === selectedId) || CUSTOMERS[0] || null;
   }
 
+  function nearestMarkerFromPointer(svg, event) {
+    let nearest = null;
+    let nearestDistance = Infinity;
+    svg.querySelectorAll('[data-local-restaurants] .local-restaurant-marker').forEach(marker => {
+      const matrix = marker.getScreenCTM?.();
+      if (!matrix || typeof DOMPoint === 'undefined') return;
+      const point = new DOMPoint(0, 0).matrixTransform(matrix);
+      const distance = Math.hypot(point.x - event.clientX, point.y - event.clientY);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearest = marker;
+      }
+    });
+    return nearestDistance <= 18 ? nearest : null;
+  }
+
+  function installMapClickFallback(svg) {
+    if (svg.dataset.localRestaurantClickFallback) return;
+    svg.dataset.localRestaurantClickFallback = '1';
+    svg.addEventListener('click', event => {
+      if (!placeholderActive()) return;
+      const directMarker = event.target?.closest?.('.local-restaurant-marker');
+      const marker = directMarker || nearestMarkerFromPointer(svg, event);
+      if (!marker?.dataset?.customerId) return;
+      event.preventDefault();
+      event.stopPropagation();
+      selectCustomer(marker.dataset.customerId, { focusPanel: true });
+    }, true);
+  }
+
   function drawRestaurants() {
     const svg = document.querySelector('.globe-wrap.local-map-mode [data-local-map-svg]');
     if (!svg) return;
     ensureStyle();
+    installMapClickFallback(svg);
     const isActive = placeholderActive();
     const viewBox = svg.getAttribute('viewBox') || '';
     const existing = svg.querySelector('[data-local-restaurants]');

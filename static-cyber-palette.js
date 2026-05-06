@@ -58,10 +58,14 @@
   }
 
   function pointOnPath(points, progress) {
-    const scaled = progress * (points.length - 1);
+    if (!Array.isArray(points) || points.length < 1) return new THREE.Vector3();
+    const safeProgress = Number.isFinite(Number(progress)) ? Math.max(0, Math.min(1, Number(progress))) : 0;
+    const scaled = safeProgress * (points.length - 1);
     const index = Math.floor(scaled);
     const next = Math.min(points.length - 1, index + 1);
-    return points[index].clone().lerp(points[next], scaled - index);
+    const current = points[index] || points[points.length - 1] || points[0];
+    const target = points[next] || current;
+    return current.clone().lerp(target, scaled - index);
   }
 
   function paletteColor(engine, eventColor) {
@@ -127,7 +131,7 @@
       const dt = Math.min(0.08, (now - last) / 1000);
       last = now;
       (engine.cyberPackets || []).forEach(packet => {
-        if (!packet.sprite || !packet.points) return;
+        if (!packet.sprite || !Array.isArray(packet.points) || packet.points.length < 2) return;
         packet.progress = (packet.progress + packet.speed * dt) % 1;
         packet.sprite.position.copy(pointOnPath(packet.points, packet.progress));
         const pulse = 1 + Math.sin(now * 0.009 + packet.phase) * 0.2;
