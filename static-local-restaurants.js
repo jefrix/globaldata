@@ -109,6 +109,16 @@
         padding: 8px;
         box-shadow: inset 0 0 18px rgba(115,255,154,0.06);
       }
+      .restaurant-selected-card.attention {
+        border-color: rgba(115,255,154,0.95);
+        box-shadow: 0 0 18px rgba(115,255,154,0.22), inset 0 0 20px rgba(115,255,154,0.10);
+        animation: restaurant-selected-pulse 1.05s ease-out 2;
+      }
+      @keyframes restaurant-selected-pulse {
+        0% { transform: translateX(0); }
+        35% { transform: translateX(-2px); }
+        70% { transform: translateX(0); }
+      }
       .restaurant-selected-title {
         color: #73ff9a;
         font-size: 11px;
@@ -257,11 +267,16 @@
       label.setAttribute('y', '-7');
       label.textContent = String(item.name || '').toUpperCase();
       marker.appendChild(label);
-      marker.addEventListener('click', () => selectCustomer(item.id));
+      marker.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectCustomer(item.id, { focusPanel: true });
+      });
       marker.addEventListener('keydown', event => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          selectCustomer(item.id);
+          event.stopPropagation();
+          selectCustomer(item.id, { focusPanel: true });
         }
       });
       group.appendChild(marker);
@@ -312,6 +327,7 @@
     const feed = document.querySelector('.rail-right .feed');
     if (!feed || !placeholderActive()) return;
     ensureStyle();
+    feed.classList.remove('ameripro-feed-mode', 'restaurant-feed-mode');
     feed.classList.add('restaurant-feed-mode');
     let board = feed.querySelector('[data-restaurant-feed-board]');
     if (!board) {
@@ -352,6 +368,18 @@
     board.querySelector('.restaurant-feed-row.active')?.scrollIntoView({ block: 'nearest' });
   }
 
+  function focusEventPanel() {
+    const board = document.querySelector('[data-restaurant-feed-board]');
+    const card = board?.querySelector('.restaurant-selected-card');
+    const row = board?.querySelector('.restaurant-feed-row.active');
+    if (!board || !card) return;
+    card.classList.remove('attention');
+    void card.offsetWidth;
+    card.classList.add('attention');
+    card.scrollIntoView({ block: 'start', inline: 'nearest' });
+    row?.scrollIntoView({ block: 'center', inline: 'nearest' });
+  }
+
   function resetBoard() {
     const feed = document.querySelector('.rail-right .feed.restaurant-feed-mode');
     if (!feed) return;
@@ -359,10 +387,11 @@
     feed.querySelector('[data-restaurant-feed-board]')?.remove();
   }
 
-  function selectCustomer(id) {
+  function selectCustomer(id, options = {}) {
     if (id) selectedId = id;
     drawRestaurants();
     renderBoard();
+    if (options.focusPanel) focusEventPanel();
   }
 
   function setActive(next) {
