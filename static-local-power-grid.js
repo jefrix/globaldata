@@ -2,7 +2,7 @@
   const BOUNDS = { minLon: -85.70, maxLon: -80.75, minLat: 30.30, maxLat: 35.08 };
   const SERVICE_URL = 'https://services2.arcgis.com/LYMgRMwHfrWWEg3s/ArcGIS/rest/services/HIFLD_US_Electric_Power_Transmission_Lines/FeatureServer/0/query';
   const MAX_FEATURES = 2800;
-  const MAX_PULSES = 130;
+  const MAX_PULSES = 240;
   const PAGE_SIZE = 2000;
   const FIELD_LIST = 'ID,TYPE,STATUS,SOURCE,SOURCEDATE,OWNER,VOLTAGE,VOLT_CLASS,INFERRED,SUB_1,SUB_2';
   const FALLBACK_LINES = [
@@ -35,13 +35,31 @@
         stroke-linecap: round;
         stroke-linejoin: round;
         vector-effect: non-scaling-stroke;
-        opacity: 0.82;
+        opacity: 0.74;
         cursor: pointer;
-        filter: drop-shadow(0 0 2.6px var(--power-glow, rgba(255,77,95,0.65)));
+        filter: drop-shadow(0 0 2px var(--power-glow, rgba(255,77,95,0.65)));
       }
       .local-power-line.inferred {
         stroke-dasharray: 4 4;
-        opacity: 0.58;
+        opacity: 0.48;
+      }
+      .local-power-flow {
+        fill: none;
+        stroke: var(--power-flow-color, #fff8c9);
+        stroke-width: var(--power-flow-width, 2.2);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1.5 14;
+        stroke-dashoffset: 0;
+        vector-effect: non-scaling-stroke;
+        opacity: 0.72;
+        pointer-events: none;
+        mix-blend-mode: screen;
+        filter: drop-shadow(0 0 5px var(--power-flow-glow, rgba(255,248,201,0.58)));
+        animation: local-power-flow-move 1.55s linear infinite;
+      }
+      @keyframes local-power-flow-move {
+        to { stroke-dashoffset: -62; }
       }
       .local-power-line:hover,
       .local-power-line.selected {
@@ -52,27 +70,27 @@
       }
       .local-power-pulse {
         fill: #fff8c9;
-        opacity: 0.46;
+        opacity: 0.76;
         pointer-events: none;
         mix-blend-mode: screen;
-        filter: drop-shadow(0 0 5px rgba(255,248,201,0.46));
+        filter: drop-shadow(0 0 8px rgba(255,248,201,0.70));
       }
       .local-power-pulse-core {
         fill: #ffffff;
-        opacity: 0.58;
+        opacity: 0.78;
         pointer-events: none;
         mix-blend-mode: screen;
       }
       .local-power-pulse-tail {
         fill: none;
         stroke: #fff8c9;
-        stroke-width: 1.05;
+        stroke-width: 1.35;
         stroke-linecap: round;
         vector-effect: non-scaling-stroke;
-        opacity: 0.32;
+        opacity: 0.48;
         pointer-events: none;
         mix-blend-mode: screen;
-        filter: drop-shadow(0 0 4px rgba(255,248,201,0.28));
+        filter: drop-shadow(0 0 6px rgba(255,248,201,0.42));
       }
       .local-power-hub {
         fill: #ff4d5f;
@@ -165,7 +183,7 @@
         id: `${props.ID || index}-${part}`,
         hifldId: props.ID,
         owner: props.OWNER || 'Unknown owner',
-        voltage: Number(props.VOLTAGE) || 0,
+        voltage: parseVoltage(props.VOLTAGE, props.VOLT_CLASS),
         voltageClass: props.VOLT_CLASS || '',
         type: props.TYPE || 'Transmission line',
         status: props.STATUS || '',
@@ -202,6 +220,14 @@
       .sort((a, b) => (a.voltage - b.voltage));
   }
 
+  function parseVoltage(value, voltageClass) {
+    const text = `${value || ''} ${voltageClass || ''}`;
+    const values = (text.match(/\d+(?:\.\d+)?/g) || [])
+      .map(Number)
+      .filter(number => Number.isFinite(number) && number > 0);
+    return values.length ? Math.max(...values) : 0;
+  }
+
   function projectFactory(svg) {
     const box = (svg.getAttribute('viewBox') || '0 0 900 620').split(/\s+/).map(Number);
     const width = box[2] || 900;
@@ -235,11 +261,11 @@
   }
 
   function powerStyle(voltage) {
-    if (voltage >= 500) return { color: '#ff3d8d', glow: 'rgba(255,61,141,0.78)', width: 1.7 };
-    if (voltage >= 345) return { color: '#ff5c2e', glow: 'rgba(255,92,46,0.72)', width: 1.45 };
-    if (voltage >= 230) return { color: '#f5d142', glow: 'rgba(245,209,66,0.66)', width: 1.2 };
-    if (voltage >= 115) return { color: '#5bd7ff', glow: 'rgba(91,215,255,0.48)', width: 0.9 };
-    return { color: '#7a94b8', glow: 'rgba(122,148,184,0.34)', width: 0.65 };
+    if (voltage >= 500) return { color: '#ff2f86', glow: 'rgba(255,47,134,0.82)', flow: '#fff5a8', width: 1.55, flowWidth: 2.7 };
+    if (voltage >= 345) return { color: '#ff8c1a', glow: 'rgba(255,140,26,0.78)', flow: '#fff2a1', width: 1.35, flowWidth: 2.45 };
+    if (voltage >= 230) return { color: '#f5d142', glow: 'rgba(245,209,66,0.72)', flow: '#ffffb8', width: 1.12, flowWidth: 2.15 };
+    if (voltage >= 115) return { color: '#9cff57', glow: 'rgba(156,255,87,0.62)', flow: '#ecffd0', width: 0.88, flowWidth: 1.9 };
+    return { color: '#7cffd6', glow: 'rgba(124,255,214,0.45)', flow: '#d7fff4', width: 0.62, flowWidth: 1.6 };
   }
 
   function installLegend(overlay, count) {
@@ -308,10 +334,28 @@
         group.appendChild(path);
       });
 
+      const energizedLines = pulseLines(lines);
+      const flowGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      flowGroup.dataset.localPowerFlows = '1';
+      flowGroup.style.display = isActive ? '' : 'none';
+      energizedLines.forEach((line, index) => {
+        const style = powerStyle(line.voltage);
+        const flowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        flowPath.setAttribute('class', 'local-power-flow');
+        flowPath.setAttribute('d', pathFor(line.points, project));
+        flowPath.style.setProperty('--power-flow-color', style.flow);
+        flowPath.style.setProperty('--power-flow-glow', style.glow);
+        flowPath.style.setProperty('--power-flow-width', String(style.flowWidth));
+        flowPath.style.animationDelay = `${-(index % 13) * 0.11}s`;
+        flowPath.style.animationDuration = `${1.15 + (index % 5) * 0.18}s`;
+        flowGroup.appendChild(flowPath);
+      });
+      group.appendChild(flowGroup);
+
       const pulseGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       pulseGroup.dataset.localPowerPulses = '1';
       pulseGroup.style.display = isActive ? '' : 'none';
-      pulseLines(lines).forEach((line, index) => {
+      energizedLines.forEach((line, index) => {
         const style = powerStyle(line.voltage);
         const points = projectedPoints(line.points, project);
         const tail = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -320,11 +364,11 @@
         tail.setAttribute('class', 'local-power-pulse-tail');
         pulse.setAttribute('class', 'local-power-pulse');
         core.setAttribute('class', 'local-power-pulse-core');
-        pulse.setAttribute('rx', line.voltage >= 345 ? '3.3' : '2.4');
-        pulse.setAttribute('ry', line.voltage >= 345 ? '1.18' : '0.86');
-        core.setAttribute('r', line.voltage >= 345 ? '0.95' : '0.68');
+        pulse.setAttribute('rx', line.voltage >= 345 ? '4.4' : '3.1');
+        pulse.setAttribute('ry', line.voltage >= 345 ? '1.45' : '1.05');
+        core.setAttribute('r', line.voltage >= 345 ? '1.1' : '0.78');
         tail.style.stroke = style.color;
-        pulse.style.fill = style.color;
+        pulse.style.fill = style.flow;
         pulse.__powerPoints = points;
         pulse.dataset.phase = String((index * 0.137) % 1);
         pulse.dataset.speed = String(0.000055 + Math.min(0.000085, Math.max(0, line.voltage) / 7000000));
@@ -348,7 +392,13 @@
   function pulseLines(lines) {
     const high = lines.filter(line => line.voltage >= 230);
     const medium = lines.filter(line => line.voltage >= 115 && line.voltage < 230);
-    return [...high, ...medium.filter((_, index) => index % 9 === 0)].slice(0, MAX_PULSES);
+    const selected = [...high, ...medium.filter((_, index) => index % 5 === 0)];
+    if (selected.length) return selected.slice(0, MAX_PULSES);
+    return [...lines]
+      .filter(line => line.points.length > 1)
+      .filter(line => !/abandoned|retired|removed/i.test(String(line.status || '')))
+      .filter((_, index) => index % 6 === 0)
+      .slice(0, MAX_PULSES);
   }
 
   function pointAtProgress(points, progress) {
