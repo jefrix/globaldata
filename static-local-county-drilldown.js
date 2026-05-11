@@ -15,8 +15,7 @@
         filter: drop-shadow(0 0 6px rgba(255,138,66,0.62));
       }
       .feed.county-drilldown-mode > .feed-head,
-      .feed.county-drilldown-mode > .feed-list,
-      .feed.county-drilldown-mode > [data-opportunity-board] {
+      .feed.county-drilldown-mode > .feed-list {
         display: none;
       }
       .county-drilldown-board {
