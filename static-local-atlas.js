@@ -51,23 +51,6 @@
     return `<div class="insp-row"><span>${escapeHtml(label)}</span><b${style}>${escapeHtml(value || '--')}</b></div>`;
   }
 
-  function restaurantAmenityQuery(areaName, featureType) {
-    if (!areaName || !['city', 'county'].includes(featureType)) return null;
-    const safeName = String(areaName).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const targetName = featureType === 'county' && !/county$/i.test(safeName) ? `${safeName} County` : safeName;
-    return [
-      '[out:json][timeout:25];',
-      'area["ISO3166-2"="US-GA"]["boundary"="administrative"]["admin_level"="4"]->.ga;',
-      `area["name"="${targetName}"]["boundary"="administrative"](area.ga)->.target;`,
-      '(',
-      '  node["amenity"~"^(restaurant|fast_food|cafe|food_court)$"](area.target);',
-      '  way["amenity"~"^(restaurant|fast_food|cafe|food_court)$"](area.target);',
-      '  relation["amenity"~"^(restaurant|fast_food|cafe|food_court)$"](area.target);',
-      ');',
-      'out count;',
-    ].join('\n');
-  }
-
   function resetInspector(panel) {
     panel.className = 'inspector empty';
     panel.innerHTML = [
@@ -80,11 +63,7 @@
     const panel = document.querySelector('.rail-right .inspector');
     if (!panel) return;
     const featureType = detail.featureType || 'feature';
-    const hasRestaurantArea = featureType === 'city' || featureType === 'county';
-    const estimate = detail.population ? Math.max(4, Math.round(Number(detail.population) / 850)) : null;
-    const restaurantText = hasRestaurantArea
-      ? (estimate ? `~${formatNumber(estimate)} EST. / COUNTING` : 'COUNTING LIVE MAP DATA')
-      : 'NOT A RESTAURANT AREA';
+    const hasLocalArea = featureType === 'city' || featureType === 'county';
 
     panel.className = 'inspector active local-atlas-inspector';
     panel.innerHTML = [
@@ -101,49 +80,13 @@
       detail.routeRef ? row('ROUTE', detail.routeRef) : '',
       detail.lat && detail.lon ? row('COORD', `${Number(detail.lat).toFixed(3)}, ${Number(detail.lon).toFixed(3)}`) : '',
       detail.area ? row('AREA', detail.area) : '',
-      row('RESTAURANTS', restaurantText, hasRestaurantArea ? '#f5d142' : '#7a94b8'),
-      row('AMERIPRO', 'CLIENT LIST PENDING', '#5bd7ff'),
-      row('SERVICED', '0 LOADED', '#5bd7ff'),
-      row('SALES USE', hasRestaurantArea ? 'TARGETABLE MARKET AREA' : 'REFERENCE LAYER'),
+      row('LOCAL USE', hasLocalArea ? 'TERRITORY REFERENCE' : 'REFERENCE LAYER'),
       row('SOURCE', detail.source || 'LOCAL ATLAS'),
       detail.note ? `<div class="insp-note">${escapeHtml(detail.note)}</div>` : '',
       '</div>',
     ].join('');
 
     panel.querySelector('[data-local-atlas-close]')?.addEventListener('click', () => resetInspector(panel));
-    if (hasRestaurantArea) updateRestaurantCount(detail, panel);
-  }
-
-  function updateRestaurantCount(detail, panel) {
-    const query = restaurantAmenityQuery(detail.name, detail.featureType);
-    const valueNode = [...panel.querySelectorAll('.insp-row')]
-      .find(node => node.querySelector('span')?.textContent === 'RESTAURANTS')
-      ?.querySelector('b');
-    if (!query || !valueNode) return;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 14000);
-    fetch('https://overpass-api.de/api/interpreter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
-      body: new URLSearchParams({ data: query }).toString(),
-      signal: controller.signal,
-    })
-      .then(response => {
-        if (!response.ok) throw new Error(`restaurant count HTTP ${response.status}`);
-        return response.json();
-      })
-      .then(payload => {
-        const total = (payload.elements || []).reduce((sum, element) => {
-          const tags = element.tags || {};
-          return sum + Number(tags.total || tags.nodes || tags.ways || tags.relations || 0);
-        }, 0);
-        valueNode.textContent = formatNumber(total);
-        valueNode.style.color = '#7bd6a8';
-      })
-      .catch(() => {
-        if (!valueNode.textContent.includes('EST.')) valueNode.textContent = 'COUNT UNAVAILABLE';
-      })
-      .finally(() => clearTimeout(timeout));
   }
 
   function dataFromTarget(target) {
@@ -157,7 +100,7 @@
         lat: numberOrNull(city.dataset.lat),
         lon: numberOrNull(city.dataset.lon),
         source: 'LOCAL CITY LAYER',
-        note: city.dataset.serviceArea === 'true' ? 'AmeriPro service-area hub highlighted for sales planning.' : 'Municipality with population above 3,000.',
+        note: city.dataset.serviceArea === 'true' ? 'Regional reference hub for territory planning.' : 'Municipality with population above 3,000.',
       };
     }
 
@@ -186,7 +129,7 @@
 
     if (featureType === 'county') {
       detail.fips = target.dataset.fips || '';
-      detail.note = 'County boundary from the Georgia county map. Restaurant count uses live OpenStreetMap business listings when available.';
+      detail.note = 'County boundary from the Georgia county map.';
     } else if (featureType === 'lake') {
       detail.area = target.dataset.area || 'Lake / reservoir feature';
       detail.note = 'Water reference layer for local route and territory planning.';

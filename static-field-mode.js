@@ -122,8 +122,6 @@
           font-size: 16px;
         }
         .local-zoom-label { font-size: 7px; }
-        .restaurant-feed-board { padding: 8px 10px; gap: 6px; }
-        .restaurant-info-row { grid-template-columns: 62px minmax(0, 1fr); }
       }
 
       @media (max-width: 620px) {
@@ -147,8 +145,7 @@
         .opSlider::-webkit-slider-thumb { width: 16px; height: 16px; }
         .opSlider::-moz-range-thumb { width: 16px; height: 16px; }
         .local-county, .local-road, .local-lake, .local-water-line,
-        .local-park-zone, .local-city-dot, .local-restaurant-marker,
-        .local-power-line { touch-action: manipulation; }
+        .local-park-zone, .local-city-dot, .local-power-line { touch-action: manipulation; }
       }
     `;
     document.head.appendChild(style);

@@ -1,55 +1,96 @@
 (function () {
   const MAX_NEWS_AGE_DAYS = 30;
   const MAX_NEWS_AGE_MS = MAX_NEWS_AGE_DAYS * 24 * 60 * 60 * 1000;
-  const MODE_KEY = 'gd_local_news_mode';
+  const REQUEST_PAUSE_MS = 700;
+
+  const COUNTY_NAMES = [
+    'Appling', 'Atkinson', 'Bacon', 'Baker', 'Baldwin', 'Banks', 'Barrow', 'Bartow', 'Ben Hill', 'Berrien',
+    'Bibb', 'Bleckley', 'Brantley', 'Brooks', 'Bryan', 'Bulloch', 'Burke', 'Butts', 'Calhoun', 'Camden',
+    'Candler', 'Carroll', 'Catoosa', 'Charlton', 'Chatham', 'Chattahoochee', 'Chattooga', 'Cherokee', 'Clarke',
+    'Clay', 'Clayton', 'Clinch', 'Cobb', 'Coffee', 'Colquitt', 'Columbia', 'Cook', 'Coweta', 'Crawford',
+    'Crisp', 'Dade', 'Dawson', 'Decatur', 'DeKalb', 'Dodge', 'Dooly', 'Dougherty', 'Douglas', 'Early',
+    'Echols', 'Effingham', 'Elbert', 'Emanuel', 'Evans', 'Fannin', 'Fayette', 'Floyd', 'Forsyth', 'Franklin',
+    'Fulton', 'Gilmer', 'Glascock', 'Glynn', 'Gordon', 'Grady', 'Greene', 'Gwinnett', 'Habersham', 'Hall',
+    'Hancock', 'Haralson', 'Harris', 'Hart', 'Heard', 'Henry', 'Houston', 'Irwin', 'Jackson', 'Jasper',
+    'Jeff Davis', 'Jefferson', 'Jenkins', 'Johnson', 'Jones', 'Lamar', 'Lanier', 'Laurens', 'Lee', 'Liberty',
+    'Lincoln', 'Long', 'Lowndes', 'Lumpkin', 'Macon', 'Madison', 'Marion', 'McDuffie', 'McIntosh', 'Meriwether',
+    'Miller', 'Mitchell', 'Monroe', 'Montgomery', 'Morgan', 'Murray', 'Muscogee', 'Newton', 'Oconee', 'Oglethorpe',
+    'Paulding', 'Peach', 'Pickens', 'Pierce', 'Pike', 'Polk', 'Pulaski', 'Putnam', 'Quitman', 'Rabun',
+    'Randolph', 'Richmond', 'Rockdale', 'Schley', 'Screven', 'Seminole', 'Spalding', 'Stephens', 'Stewart',
+    'Sumter', 'Talbot', 'Taliaferro', 'Tattnall', 'Taylor', 'Telfair', 'Terrell', 'Thomas', 'Tift', 'Toombs',
+    'Towns', 'Treutlen', 'Troup', 'Turner', 'Twiggs', 'Union', 'Upson', 'Walker', 'Walton', 'Ware',
+    'Warren', 'Washington', 'Wayne', 'Webster', 'Wheeler', 'White', 'Whitfield', 'Wilcox', 'Wilkes', 'Wilkinson',
+    'Worth',
+  ];
+
+  const CITY_TO_COUNTY = [
+    ['atlanta', 'Fulton'], ['sandy springs', 'Fulton'], ['roswell', 'Fulton'], ['alpharetta', 'Fulton'],
+    ['savannah', 'Chatham'], ['pooler', 'Chatham'], ['garden city', 'Chatham'],
+    ['augusta', 'Richmond'], ['columbus', 'Muscogee'], ['macon', 'Bibb'], ['athens', 'Clarke'],
+    ['warner robins', 'Houston'], ['dublin', 'Laurens'], ['statesboro', 'Bulloch'], ['brunswick', 'Glynn'],
+    ['valdosta', 'Lowndes'], ['albany', 'Dougherty'], ['gainesville', 'Hall'], ['rome', 'Floyd'],
+    ['newnan', 'Coweta'], ['peachtree city', 'Fayette'], ['marietta', 'Cobb'], ['smyrna', 'Cobb'],
+    ['kennesaw', 'Cobb'], ['lawrenceville', 'Gwinnett'], ['norcross', 'Gwinnett'], ['duluth', 'Gwinnett'],
+    ['decatur', 'DeKalb'], ['stonecrest', 'DeKalb'], ['tucker', 'DeKalb'], ['brookhaven', 'DeKalb'],
+    ['hinesville', 'Liberty'], ['vidalia', 'Toombs'], ['swainsboro', 'Emanuel'], ['metter', 'Candler'],
+    ['perry', 'Houston'], ['tifton', 'Tift'], ['waycross', 'Ware'], ['cartersville', 'Bartow'],
+    ['dalton', 'Whitfield'], ['douglasville', 'Douglas'], ['griffin', 'Spalding'], ['stockbridge', 'Henry'],
+    ['mcdonough', 'Henry'], ['thomasville', 'Thomas'], ['milledgeville', 'Baldwin'], ['americus', 'Sumter'],
+    ['covington', 'Newton'], ['carrollton', 'Carroll'], ['lagrange', 'Troup'], ['calhoun', 'Gordon'],
+    ['bainbridge', 'Decatur'], ['moultrie', 'Colquitt'], ['jesup', 'Wayne'], ['eastman', 'Dodge'],
+    ['jefferson', 'Jackson'], ['madison', 'Morgan'], ['blue ridge', 'Fannin'],
+  ];
+
   const GEORGIA_TERMS = [
-    'Georgia', 'Atlanta', 'Savannah', 'Augusta', 'Columbus', 'Macon', 'Athens',
-    'Warner Robins', 'Dublin', 'Statesboro', 'Valdosta', 'Brunswick', 'Albany',
-    'Vidalia', 'Swainsboro', 'Metter', 'Perry', 'Tifton', 'Waycross',
-    'Chatham County', 'Fulton County', 'Cobb County', 'Gwinnett County',
-    'Bibb County', 'Houston County', 'Laurens County', 'Bulloch County',
-    'Toombs County', 'Emanuel County', 'Candler County', 'Glynn County',
-    'Middle Georgia', 'Coastal Georgia', 'South Georgia', 'Central Georgia',
+    'Georgia', 'GA', 'Atlanta', 'Savannah', 'Augusta', 'Columbus', 'Macon', 'Athens', 'Warner Robins',
+    'Dublin', 'Statesboro', 'Valdosta', 'Brunswick', 'Albany', 'Gainesville', 'Rome', 'Newnan',
+    'Marietta', 'Lawrenceville', 'Gwinnett', 'Cobb', 'DeKalb', 'Fulton', 'Chatham', 'Bibb', 'Bulloch',
+    'Georgia Power', 'Georgia DOT', 'GDOT', 'Georgia ports', 'Port of Savannah', 'Gov. Brian Kemp',
+    'Georgia lawmakers', 'Georgia General Assembly', 'Atlanta Fed',
   ];
-  const NARROW_TOPICS = [
-    { id: 'restaurants', label: 'RESTAURANTS', color: '#f58a42', terms: ['restaurant', 'new restaurant', 'restaurant opens', 'restaurant opening', 'restaurant closes', 'restaurant closed', 'restaurant closure', 'food hall', 'franchise restaurant', 'drive-thru', 'commercial kitchen'] },
-    { id: 'inspections', label: 'INSPECTIONS', color: '#73ff9a', terms: ['restaurant inspection', 'health inspection', 'health score', 'health department', 'food service inspection', 'food safety inspection', 'restaurant score'] },
-    { id: 'greasehoods', label: 'FOG / HOODS', color: '#5bd7ff', terms: ['grease trap', 'fats oils grease', 'FOG program', 'wastewater grease', 'exhaust hood', 'hood cleaning', 'commercial kitchen hood', 'NFPA 96'] },
-    { id: 'roads', label: 'ROADS', color: '#f5d142', terms: ['road closure', 'lane closure', 'detour', 'traffic shift', 'bridge closure', 'GDOT', 'road construction', 'interstate closure', 'highway closure'] },
-    { id: 'regulation', label: 'REGULATION', color: '#ff3d8d', terms: ['restaurant permit', 'food service permit', 'liquor license', 'health department', 'wastewater', 'grease trap ordinance', 'commercial kitchen'] },
+
+  const GDELT_QUERIES = [
+    {
+      label: 'GEORGIA SOURCES',
+      query: [
+        'domain:ajc.com', 'domain:gpb.org', 'domain:wabe.org', 'domain:georgiarecorder.com',
+        'domain:wsbtv.com', 'domain:11alive.com', 'domain:fox5atlanta.com', 'domain:savannahnow.com',
+        'domain:macon.com', 'domain:ledger-enquirer.com', 'domain:augustachronicle.com',
+        'domain:valdostadailytimes.com', 'domain:albanyherald.com',
+      ].join(' OR '),
+    },
+    {
+      label: 'GEORGIA TERMS',
+      query: [
+        '"Georgia economy"', '"Georgia business"', '"Georgia jobs"', '"Georgia layoffs"', '"Georgia plant"',
+        '"Georgia port"', '"Port of Savannah"', '"Georgia Power"', '"Georgia DOT"', '"Georgia lawmakers"',
+        '"Atlanta business"', '"Savannah port"', '"Macon"', '"Augusta"', '"Columbus Georgia"',
+      ].join(' OR '),
+    },
   ];
-  const BROAD_TOPICS = [
-    { id: 'georgia', label: 'GEORGIA', color: '#f58a42', terms: GEORGIA_TERMS },
+  const RSS_JSON_SOURCES = [
+    { label: 'Google News / Economy', url: googleNewsRss('Georgia economy OR Georgia business OR Georgia jobs OR Atlanta business OR Savannah port when:30d') },
+    { label: 'Google News / Civic', url: googleNewsRss('Georgia governor OR Georgia lawmakers OR Georgia budget OR Georgia election OR Georgia policy when:30d') },
+    { label: 'Google News / Infrastructure', url: googleNewsRss('Georgia DOT OR GDOT OR Georgia infrastructure OR Atlanta traffic OR Savannah port when:30d') },
+    { label: 'Google News / Safety', url: googleNewsRss('Georgia crime OR Georgia weather OR Georgia hospital OR Georgia public safety when:30d') },
+    { label: 'Georgia Recorder', url: 'https://georgiarecorder.com/feed/' },
   ];
-  const CITY_POINTS = [
-    { match: /atlanta|fulton|cobb|gwinnett|dekalb/i, city: 'Atlanta', lat: 33.7490, lon: -84.3880 },
-    { match: /savannah|chatham/i, city: 'Savannah', lat: 32.0809, lon: -81.0912 },
-    { match: /augusta|richmond/i, city: 'Augusta', lat: 33.4735, lon: -82.0105 },
-    { match: /columbus|muscogee/i, city: 'Columbus', lat: 32.4609, lon: -84.9877 },
-    { match: /statesboro|bulloch/i, city: 'Statesboro', lat: 32.4488, lon: -81.7832 },
-    { match: /dublin|laurens/i, city: 'Dublin', lat: 32.5404, lon: -82.9038 },
-    { match: /warner robins|houston/i, city: 'Warner Robins', lat: 32.6130, lon: -83.6242 },
-    { match: /macon|bibb/i, city: 'Macon', lat: 32.8407, lon: -83.6324 },
-    { match: /athens|clarke/i, city: 'Athens', lat: 33.9519, lon: -83.3576 },
-    { match: /valdosta|lowndes/i, city: 'Valdosta', lat: 30.8327, lon: -83.2785 },
-    { match: /brunswick|glynn/i, city: 'Brunswick', lat: 31.1499, lon: -81.4915 },
-    { match: /albany|dougherty/i, city: 'Albany', lat: 31.5785, lon: -84.1557 },
-    { match: /vidalia|toombs/i, city: 'Vidalia', lat: 32.2177, lon: -82.4135 },
-    { match: /swainsboro|emanuel/i, city: 'Swainsboro', lat: 32.5974, lon: -82.3337 },
-    { match: /metter|candler/i, city: 'Metter', lat: 32.3971, lon: -82.0601 },
-    { match: /perry/i, city: 'Perry', lat: 32.4582, lon: -83.7316 },
-    { match: /tifton/i, city: 'Tifton', lat: 31.4505, lon: -83.5085 },
-    { match: /waycross/i, city: 'Waycross', lat: 31.2136, lon: -82.3540 },
-  ];
-  const georgiaWords = new RegExp(`\\b(${GEORGIA_TERMS.map(escapeRegExp).join('|')})\\b`, 'i');
-  const rejectWords = /\b(sports|football|basketball|baseball|soccer|golf|tennis|recruiting|playoff|championship|obituary|recipe|movie|music|concert|coupon|dating|celebrity|festival|arts?|theater|theatre|dance|fashion|wedding|podcast|book club)\b/i;
+
+  const LOCAL_SOURCE_DOMAINS = /\b(ajc\.com|gpb\.org|wabe\.org|georgiarecorder\.com|wsbtv\.com|11alive\.com|fox5atlanta\.com|savannahnow\.com|macon\.com|ledger-enquirer\.com|augustachronicle\.com|valdostadailytimes\.com|albanyherald\.com|mdjonline\.com|georgia\.gov)\b/i;
+  const COUNTRY_GEORGIA_REJECT = /(^georgia:\s|\b(tbilisi|batumi|kutaisi|abkhazia|south ossetia|caucasus|georgian dream|georgia border|near georgia|border with georgia|republic of georgia)\b)/i;
+  const SPORTS_REJECT = /\b(sports?|football|basketball|baseball|soccer|golf|tennis|softball|volleyball|wrestling|lacrosse|track and field|cross country|swimming|playoff|championship|tournament|coach|quarterback|touchdown|recruiting|signing day|nfl|nba|mlb|nhl|wnba|ncaa|sec)\b/i;
+  const YOUTH_REJECT = /\b(graduat(?:e|es|ion|ing)|commencement|honor roll|dean'?s list|student of the month|student athlete|valedictorian|salutatorian|scholarship winners?|youth sports|little league|high school(?:er|s)? (?:wins?|earns?|named|signs|graduates?)|academic achievement|academic accomplishments?|perfect attendance|prom)\b/i;
+  const FRIVOLOUS_REJECT = /\b(recipe|things to do|weekend guide|concert|movie|celebrity|wedding|engagement|podcast|book club|fashion|coupon|horoscope|lottery numbers|pet of the week|restaurant review|best brunch|where to eat)\b/i;
+  const NEWSWORTHY = /\b(econom(?:y|ic|ics)|business|jobs?|layoffs?|hiring|plant|factory|warehouse|manufactur(?:e|ing)|investment|development|construction|housing|real estate|port|shipping|logistics|supply chain|airport|rail|transit|traffic|road|bridge|interstate|closure|detour|infrastructure|energy|power|utility|water|wastewater|rate hike|tariff|trade|bank|federal reserve|inflation|budget|tax|revenue|grant|contract|policy|lawmakers?|legislature|governor|mayor|council|commission|election|lawsuit|court|judge|indict(?:ed|ment)|sentenc(?:ed|ing)|investigation|fraud|corruption|crime|shooting|homicide|arrest|police|sheriff|public safety|fire|ems|hospital|health|disease|outbreak|school board|university system|college closure|teacher pay|environment|weather|storm|tornado|flood|drought|hurricane|evacuation|emergency|disaster|fatal|dead|killed|damage|recall|cyberattack|data breach)\b/i;
+  const STATE_CONTEXT = new RegExp(`\\b(${GEORGIA_TERMS.map(escapeRegExp).join('|')})\\b`, 'i');
+
   let active = false;
   let loaded = false;
-  let loading = false;
+  let loadingPromise = null;
   let cachedItems = [];
   let lastLoadedAt = 0;
   let lastErrorCount = 0;
-  let mode = localStorage.getItem(MODE_KEY) === 'broad' ? 'broad' : 'narrow';
+  let selectedId = '';
 
   function escapeRegExp(value) {
     return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -61,17 +102,16 @@
     style.dataset.localNewsStyle = '1';
     style.textContent = `
       .local-news-layer { position: absolute; inset: 0; z-index: 7; display: none; pointer-events: none; }
-      .local-news-panel { position: absolute; right: 22px; top: 58px; width: min(430px, calc(100vw - 390px)); max-height: calc(100% - 118px); overflow: auto; border: 1px solid rgba(245,138,66,0.45); background: rgba(2,10,18,0.88); box-shadow: 0 0 22px rgba(245,138,66,0.18); pointer-events: auto; }
-      .local-news-head { position: sticky; top: 0; z-index: 2; display: grid; gap: 8px; padding: 10px 12px; border-bottom: 1px solid rgba(245,138,66,0.28); background: rgba(2,10,18,0.95); font-family: var(--mono); letter-spacing: 0.14em; }
+      .local-news-panel { position: absolute; right: 22px; top: 58px; width: min(460px, calc(100vw - 390px)); max-height: calc(100% - 118px); overflow: auto; border: 1px solid rgba(245,138,66,0.45); background: rgba(2,10,18,0.91); box-shadow: 0 0 22px rgba(245,138,66,0.18); pointer-events: auto; }
+      .local-news-head { position: sticky; top: 0; z-index: 2; display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid rgba(245,138,66,0.28); background: rgba(2,10,18,0.96); font-family: var(--mono); letter-spacing: 0.14em; }
       .local-news-headline { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
       .local-news-title { color: #f58a42; font-size: 10px; font-weight: 600; }
       .local-news-status { color: var(--text-dim); font-size: 8.5px; white-space: nowrap; }
-      .local-news-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-      .local-news-mode button { border: 1px solid rgba(245,138,66,0.38); background: rgba(0,0,0,0.28); color: var(--text-dim); font: inherit; font-size: 8px; letter-spacing: 0.14em; padding: 5px 6px; cursor: pointer; }
-      .local-news-mode button.active { background: rgba(245,138,66,0.22); color: #f58a42; border-color: #f58a42; }
+      .local-news-sub { color: var(--text-dim); font-size: 8px; line-height: 1.35; }
       .local-news-list { display: grid; }
-      .local-news-item { display: grid; gap: 5px; padding: 10px 12px; border-bottom: 1px solid rgba(26,49,83,0.45); color: var(--text); text-decoration: none; }
-      .local-news-item:hover { background: rgba(245,138,66,0.10); }
+      .local-news-item { appearance: none; border: 0; display: grid; gap: 5px; width: 100%; padding: 10px 12px; border-bottom: 1px solid rgba(26,49,83,0.45); background: transparent; color: var(--text); text-align: left; font: inherit; cursor: pointer; }
+      .local-news-item:hover, .local-news-item.selected { background: rgba(245,138,66,0.11); }
+      .local-news-item.selected { box-shadow: inset 3px 0 0 var(--topic-color, #f58a42); }
       .local-news-meta { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-dim); }
       .local-news-topic { color: var(--topic-color, #f58a42); }
       .local-news-text { font-size: 12px; line-height: 1.32; }
@@ -96,119 +136,365 @@
       '<div class="local-news-panel">',
       '<div class="local-news-head">',
       '<div class="local-news-headline">',
-      '<div class="local-news-title" data-local-news-title>LOCAL NEWS / NARROW / 30D</div>',
+      '<div class="local-news-title" data-local-news-title>LOCAL NEWS / GEORGIA / 30D</div>',
       '<div class="local-news-status" data-local-news-status>READY</div>',
       '</div>',
-      '<div class="local-news-mode">',
-      '<button type="button" data-local-news-mode="narrow">NARROW</button>',
-      '<button type="button" data-local-news-mode="broad">BROAD</button>',
-      '</div>',
+      '<div class="local-news-sub">NON-SPORTS / ECONOMY / CIVIC / SAFETY / INFRASTRUCTURE</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
       '</div>',
     ].join('');
     wrap.appendChild(layer);
-    wireModeButtons(layer);
-    updateModeButtons(layer);
     return layer;
   }
 
-  function wireModeButtons(layer) {
-    layer.querySelectorAll('[data-local-news-mode]').forEach(button => {
-      button.addEventListener('click', () => {
-        const next = button.dataset.localNewsMode === 'broad' ? 'broad' : 'narrow';
-        if (mode === next) return;
-        mode = next;
-        localStorage.setItem(MODE_KEY, mode);
-        loaded = false;
-        cachedItems = [];
-        updateModeButtons(layer);
-        render([]);
-        if (active) loadItems().then(items => { if (active) render(items); });
-      });
-    });
-  }
-
-  function updateModeButtons(layer = ensureLayer()) {
-    if (!layer) return;
-    layer.querySelectorAll('[data-local-news-mode]').forEach(button => {
-      button.classList.toggle('active', button.dataset.localNewsMode === mode);
-    });
-    const title = layer.querySelector('[data-local-news-title]');
-    if (title) title.textContent = mode === 'broad' ? 'LOCAL NEWS / GEORGIA BROAD / 30D' : 'LOCAL NEWS / RESTAURANT + REGULATION / 30D';
-  }
-
-  function phraseList(items) {
-    return items.map(term => `"${term}"`).join(' OR ');
-  }
-
-  function topicQuery(topic) {
-    if (mode === 'broad') return `(${phraseList(topic.terms)}) sourcelang:english`;
-    return `((${phraseList(topic.terms)}) (${phraseList(GEORGIA_TERMS)})) sourcelang:english`;
-  }
-
-  function gdeltUrl(topic) {
+  function gdeltUrl(query) {
     const params = new URLSearchParams({
-      query: topicQuery(topic),
+      query: `(${query}) sourcelang:english`,
       mode: 'artlist',
       format: 'json',
       sort: 'datedesc',
-      maxrecords: mode === 'broad' ? '100' : '75',
+      maxrecords: '120',
       timespan: `${MAX_NEWS_AGE_DAYS}d`,
     });
     return `https://api.gdeltproject.org/api/v2/doc/doc?${params}`;
   }
 
-  async function loadTopic(topic) {
-    const response = await fetch(gdeltUrl(topic));
-    if (!response.ok) throw new Error(`GDELT ${response.status}`);
-    const data = await response.json();
-    return (data.articles || []).map(article => normalizeArticle(article, topic)).filter(Boolean);
+  function googleNewsRss(query) {
+    const params = new URLSearchParams({
+      q: query,
+      hl: 'en-US',
+      gl: 'US',
+      ceid: 'US:en',
+    });
+    return `https://news.google.com/rss/search?${params}`;
   }
 
-  async function loadTopicWithRetry(topic) {
+  async function loadGdeltBatch(source) {
+    const response = await fetch(gdeltUrl(source.query));
+    if (!response.ok) throw new Error(`GDELT ${response.status}`);
+    const data = await response.json();
+    return (data.articles || [])
+      .map(article => normalizeArticle({
+        title: article.title,
+        url: article.url,
+        domain: article.domain,
+        ts: parseNewsDate(article.seendate || article.datetime || article.date),
+        source: `GDELT / ${source.label}`,
+      }))
+      .filter(Boolean);
+  }
+
+  async function loadRemoteNews() {
+    const batches = [];
+    let errors = 0;
+    for (const source of GDELT_QUERIES) {
+      try {
+        batches.push(await loadGdeltBatch(source));
+      } catch {
+        errors += 1;
+        batches.push([]);
+      }
+      await wait(REQUEST_PAUSE_MS);
+    }
+    return { items: batches.flat(), errors };
+  }
+
+  async function loadRssJsonNews() {
+    const batches = [];
+    let errors = 0;
+    for (const source of RSS_JSON_SOURCES) {
+      try {
+        const params = new URLSearchParams({ rss_url: source.url });
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?${params}`);
+        if (!response.ok) throw new Error(`RSS ${response.status}`);
+        const data = await response.json();
+        if (data.status && data.status !== 'ok') throw new Error(data.message || 'RSS source error');
+        batches.push((data.items || [])
+          .map(item => normalizeArticle({
+            title: item.title,
+            url: item.link || item.guid,
+            domain: sourceDomainFromRss(item, source),
+            ts: parseNewsDate(item.pubDate),
+            source: source.label,
+            description: item.description || item.content,
+          }))
+          .filter(Boolean));
+      } catch {
+        errors += 1;
+        batches.push([]);
+      }
+      await wait(REQUEST_PAUSE_MS);
+    }
+    return { items: batches.flat(), errors };
+  }
+
+  async function loadCacheNews() {
     try {
-      return await loadTopic(topic);
-    } catch (error) {
-      if (!/429/.test(String(error?.message || error))) throw error;
-      await wait(1400);
-      return loadTopic(topic);
+      const response = await fetch(`data/live-cache.json?ts=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`cache ${response.status}`);
+      const cache = await response.json();
+      return (cache.news || [])
+        .map(item => normalizeArticle({
+          title: item.title,
+          url: item.url,
+          domain: item.source || item.sourceName || sourceDomain(item.url),
+          ts: item.ts,
+          source: 'static live cache',
+          description: item.description,
+        }))
+        .filter(Boolean);
+    } catch {
+      return [];
     }
   }
 
-  function wait(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  async function loadItems() {
+    if (loadingPromise) return loadingPromise;
+    if (loaded && Date.now() - lastLoadedAt < 900000) return cachedItems;
+
+    loadingPromise = (async () => {
+      const [rss, cached] = await Promise.all([
+        loadRssJsonNews().catch(() => ({ items: [], errors: RSS_JSON_SOURCES.length })),
+        loadCacheNews(),
+      ]);
+      lastErrorCount = rss.errors || 0;
+      cachedItems = mergeItems([...rss.items, ...cached]);
+      loaded = true;
+      lastLoadedAt = Date.now();
+      loadRemoteNews()
+        .then(remote => {
+          lastErrorCount += remote.errors || 0;
+          cachedItems = mergeItems([...cachedItems, ...remote.items]);
+          if (active) render(cachedItems);
+        })
+        .catch(() => {
+          lastErrorCount += GDELT_QUERIES.length;
+        });
+      return cachedItems;
+    })().finally(() => {
+      loadingPromise = null;
+    });
+    return loadingPromise;
   }
 
-  function normalizeArticle(article, topic) {
-    const title = compact(article.title);
-    const url = article.url || '';
-    const domain = article.domain || sourceDomain(url);
-    const seen = Date.parse(article.seendate || article.datetime || article.date || '') || Date.now();
-    const text = `${title} ${domain} ${url}`;
-    if (Date.now() - seen > MAX_NEWS_AGE_MS) return null;
-    if (!title || rejectWords.test(text)) return null;
-    if (mode === 'broad' && !georgiaWords.test(text)) return null;
+  function mergeItems(items) {
+    const byUrl = new Map();
+    items.forEach(item => {
+      const key = item.url || item.id;
+      if (!byUrl.has(key)) byUrl.set(key, item);
+    });
+    return [...byUrl.values()]
+      .filter(item => Date.now() - (Number(item.ts) || 0) <= MAX_NEWS_AGE_MS)
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 80);
+  }
 
-    const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
+  function normalizeArticle(input) {
+    const title = compact(input.title);
+    const url = String(input.url || '');
+    const domain = compact(input.domain || sourceDomain(url));
+    const description = stripHtml(input.description || '');
+    const text = compact(`${title} ${description} ${domain} ${url}`);
+    if (!title || !passesFilters(text, domain)) return null;
+    const geo = resolveGeo(text, domain);
+    if (!geo) return null;
+    const ts = Number(input.ts) || Date.now();
+    if (Date.now() - ts > MAX_NEWS_AGE_MS) return null;
+    const category = categoryFor(text);
     return {
-      id: `local-news-${mode}-${topic.id}-${hash(`${title}-${url}`)}`,
-      topic: topic.id,
-      topicLabel: topic.label,
-      color: topic.color,
+      id: `local-news-${hash(`${title}-${url}`)}`,
+      category,
+      topicLabel: category,
+      color: colorFor(category),
       title,
       url,
-      domain,
-      city: point.city,
-      lat: point.lat,
-      lon: point.lon,
-      ts: seen,
-      source: mode === 'broad' ? 'GDELT / Georgia broad filter' : 'GDELT / Georgia restaurant-regulation filter',
+      domain: domain || 'source',
+      countyName: geo.countyName,
+      placeLabel: geo.placeLabel,
+      ts,
+      source: input.source || 'Georgia news',
     };
+  }
+
+  function passesFilters(text, domain) {
+    if (COUNTRY_GEORGIA_REJECT.test(text) && !LOCAL_SOURCE_DOMAINS.test(domain)) return false;
+    if (SPORTS_REJECT.test(text) || YOUTH_REJECT.test(text) || FRIVOLOUS_REJECT.test(text)) return false;
+    if (!NEWSWORTHY.test(text)) return false;
+    return hasGeorgiaContext(text, domain);
+  }
+
+  function hasGeorgiaContext(text, domain) {
+    if (STATE_CONTEXT.test(text)) return true;
+    if (resolveCountyName(text)) return true;
+    return CITY_TO_COUNTY.some(([city]) => new RegExp(`\\b${escapeRegExp(city)}\\b`, 'i').test(text));
+  }
+
+  function resolveGeo(text, domain) {
+    const countyName = resolveCountyName(text);
+    if (countyName) return { countyName, placeLabel: `${countyName} County` };
+
+    const city = CITY_TO_COUNTY.find(([name]) => new RegExp(`\\b${escapeRegExp(name)}\\b`, 'i').test(text));
+    if (city) return { countyName: city[1], placeLabel: `${titleCase(city[0])} / ${city[1]}` };
+
+    if (/\b(atlanta|state capitol|governor|lawmakers?|general assembly|georgia state|georgia power|georgia dot|gdot)\b/i.test(text) || STATE_CONTEXT.test(text)) {
+      return { countyName: 'Fulton', placeLabel: 'Statewide / Fulton' };
+    }
+    return null;
+  }
+
+  function resolveCountyName(text) {
+    const fromDom = [...document.querySelectorAll('.local-county')]
+      .map(node => node.dataset.countyName)
+      .filter(Boolean);
+    const counties = fromDom.length ? fromDom : COUNTY_NAMES;
+    const explicit = counties.find(name => new RegExp(`\\b${escapeRegExp(name)}\\s+County\\b`, 'i').test(text));
+    if (explicit) return explicit;
+    const safeBare = ['Fulton', 'Cobb', 'DeKalb', 'Gwinnett', 'Chatham', 'Clayton', 'Cherokee', 'Forsyth', 'Coweta', 'Henry', 'Hall', 'Dougherty', 'Lowndes'];
+    return safeBare.find(name => new RegExp(`\\b${escapeRegExp(name)}\\b`, 'i').test(text)) || '';
+  }
+
+  function categoryFor(text) {
+    if (/\b(port|shipping|logistics|supply chain|rail|airport|road|bridge|interstate|traffic|transit|gdot|closure|detour)\b/i.test(text)) return 'INFRA';
+    if (/\b(storm|tornado|flood|hurricane|weather|drought|evacuation|emergency|disaster|damage)\b/i.test(text)) return 'WEATHER';
+    if (/\b(crime|shooting|homicide|arrest|police|sheriff|fire|public safety|fraud|indict|sentenc|court|lawsuit|judge)\b/i.test(text)) return 'SAFETY';
+    if (/\b(governor|mayor|council|commission|lawmakers|legislature|election|policy|budget|tax|grant)\b/i.test(text)) return 'CIVIC';
+    if (/\b(health|hospital|disease|outbreak|medicaid|insurance)\b/i.test(text)) return 'HEALTH';
+    if (/\b(school board|teacher pay|university system|college closure)\b/i.test(text)) return 'ED POLICY';
+    return 'ECONOMY';
+  }
+
+  function colorFor(category) {
+    return {
+      ECONOMY: '#73ff9a',
+      CIVIC: '#f5d142',
+      SAFETY: '#ff7050',
+      INFRA: '#5bd7ff',
+      WEATHER: '#cfe2ff',
+      HEALTH: '#ff3d8d',
+      'ED POLICY': '#d9e4ef',
+    }[category] || '#f58a42';
+  }
+
+  function render(items) {
+    const layer = ensureLayer();
+    if (!layer) return;
+    const list = layer.querySelector('[data-local-news-list]');
+    const status = layer.querySelector('[data-local-news-status]');
+    if (status) {
+      if (items.length) status.textContent = `${items.length} MATCHES / 30D`;
+      else status.textContent = lastErrorCount ? 'SOURCE LIMITED / 30D' : 'NO MATCHES / 30D';
+    }
+    const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
+    if (rowSub) rowSub.textContent = 'NON-SPORTS GA NEWS / 30D';
+    if (!list) return;
+    if (!items.length) {
+      list.innerHTML = '<div class="local-news-empty">NO MATCHING NON-SPORTS GEORGIA NEWS FOUND YET. LIVE SOURCES MAY BE RATE LIMITED; TRY AGAIN SHORTLY.</div>';
+      return;
+    }
+    list.replaceChildren(...items.map(item => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `local-news-item${item.id === selectedId ? ' selected' : ''}`;
+      button.dataset.localNewsId = item.id;
+      button.style.setProperty('--topic-color', item.color);
+      button.innerHTML = [
+        '<div class="local-news-meta">',
+        `<span class="local-news-topic">${escapeHtml(item.topicLabel)}</span>`,
+        `<span>${escapeHtml(item.placeLabel)} / ${timeAgo(item.ts)}</span>`,
+        '</div>',
+        `<div class="local-news-text">${escapeHtml(item.title)}</div>`,
+        `<div class="local-news-source">${escapeHtml(item.domain)} / ${escapeHtml(item.source)}</div>`,
+      ].join('');
+      button.addEventListener('click', () => selectNewsItem(item));
+      return button;
+    }));
+  }
+
+  function selectNewsItem(item) {
+    selectedId = item.id;
+    render(cachedItems);
+    window.GlobalDataLocalMenu?.setLayer?.('counties', true);
+    const detail = {
+      featureType: 'county',
+      name: item.countyName,
+      title: `${item.countyName} County`,
+      source: item.domain,
+      note: item.title,
+      localNewsItem: item,
+    };
+    dispatchCountySelection(detail);
+  }
+
+  function dispatchCountySelection(detail, attempt = 0) {
+    const hasCountyPath = [...document.querySelectorAll('.local-county')]
+      .some(node => String(node.dataset.countyName || '').toLowerCase() === String(detail.name || '').toLowerCase());
+    if (!hasCountyPath && attempt < 10) {
+      setTimeout(() => dispatchCountySelection(detail, attempt + 1), 200);
+      return;
+    }
+    window.dispatchEvent(new CustomEvent('globaldata:local-select', { detail }));
+    setTimeout(() => window.GlobalDataCountyDrilldown?.renderCounty?.(detail), 80);
+  }
+
+  function setActive(next) {
+    const layer = ensureLayer();
+    if (!layer) return;
+    const nextActive = Boolean(next);
+    const changed = active !== nextActive || layer.style.display !== (nextActive ? 'block' : 'none');
+    active = nextActive;
+    if (!changed && (!active || loaded || loadingPromise)) return;
+    layer.style.display = active ? 'block' : 'none';
+    if (!active) return;
+    const status = layer.querySelector('[data-local-news-status]');
+    if (status) status.textContent = loaded ? `${cachedItems.length} MATCHES / 30D` : 'LOADING';
+    render(cachedItems);
+    loadItems()
+      .then(items => { if (active) render(items); })
+      .catch(() => {
+        lastErrorCount = GDELT_QUERIES.length;
+        if (active) render(cachedItems);
+      });
+  }
+
+  window.GlobalDataLocalNews = {
+    setActive,
+    getActive: () => active,
+    refresh: () => {
+      loaded = false;
+      return loadItems().then(items => {
+        if (active) render(items);
+        return items;
+      });
+    },
+  };
+
+  function syncFromLocalMenu() {
+    const marker = document.querySelector('[data-local-placeholder="localNews"]');
+    const localMode = Boolean(document.querySelector('.globe-wrap.local-map-mode'));
+    setActive(Boolean(localMode && marker && marker.style.display !== 'none'));
+    const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
+    if (rowSub) rowSub.textContent = 'NON-SPORTS GA NEWS / 30D';
   }
 
   function compact(value) {
     return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function stripHtml(value) {
+    return String(value || '').replace(/<[^>]+>/g, ' ').replace(/&[^;\s]+;/g, ' ');
+  }
+
+  function parseNewsDate(value) {
+    if (typeof value === 'number') return value;
+    const raw = String(value || '').trim();
+    const compactDate = raw.match(/^(\d{4})(\d{2})(\d{2})T?(\d{2})(\d{2})(\d{2})Z?$/);
+    if (compactDate) {
+      const [, y, mo, d, h, mi, s] = compactDate;
+      return Date.UTC(Number(y), Number(mo) - 1, Number(d), Number(h), Number(mi), Number(s));
+    }
+    const parsed = Date.parse(raw);
+    return Number.isFinite(parsed) ? parsed : Date.now();
   }
 
   function sourceDomain(url) {
@@ -219,96 +505,25 @@
     }
   }
 
+  function sourceDomainFromRss(item, source) {
+    const titleSource = String(item.title || '').match(/\s+-\s+([^-]{2,60})$/);
+    if (titleSource && /google news/i.test(source.label)) return titleSource[1].trim();
+    const domain = sourceDomain(item.link || item.guid);
+    return domain === 'news.google.com' ? source.label : domain;
+  }
+
   function hash(value) {
     let output = 0;
     for (let index = 0; index < value.length; index += 1) output = ((output << 5) - output + value.charCodeAt(index)) | 0;
     return Math.abs(output).toString(36);
   }
 
-  async function loadGeorgia511() {
-    const key = window.GLOBALDATA_GA511_KEY || localStorage.getItem('gd_ga511_key');
-    if (!key) return [];
-    const url = `https://511ga.org/api/v2/get/event?format=json&key=${encodeURIComponent(key)}`;
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`511GA ${response.status}`);
-    const data = await response.json();
-    const rows = Array.isArray(data) ? data : (data.Events || data.events || []);
-    return rows.map(event => {
-      const desc = compact(event.Description || event.description || event.EventDescription);
-      const road = compact(event.RoadwayName || event.roadwayName || event.route);
-      const text = `${road} ${desc}`;
-      const ts = Number(event.Reported || event.reported || 0) * 1000 || Date.now();
-      if (Date.now() - ts > MAX_NEWS_AGE_MS) return null;
-      if (!/\b(closure|closed|detour|lane|traffic shift|construction|bridge|interstate|highway)\b/i.test(text)) return null;
-      const point = CITY_POINTS.find(item => item.match.test(text)) || { city: 'Georgia', lat: 32.8407, lon: -83.6324 };
-      return { id: `ga511-${event.ID || hash(text)}`, topic: 'roads', topicLabel: 'ROADS', color: '#f5d142', title: `${road || 'Georgia road'}: ${desc || 'Traffic event'}`, url: 'https://511ga.org/', domain: '511ga.org', city: point.city, lat: point.lat, lon: point.lon, ts, source: 'Georgia 511 infrastructure events' };
-    }).filter(Boolean);
+  function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  async function loadItems() {
-    if (loading) return cachedItems;
-    if (loaded && Date.now() - lastLoadedAt < 900000) return cachedItems;
-    loading = true;
-    try {
-      const batches = [];
-      let errors = 0;
-      const topics = mode === 'broad' ? BROAD_TOPICS : NARROW_TOPICS;
-      for (const topic of topics) {
-        try { batches.push(await loadTopicWithRetry(topic)); }
-        catch { errors += 1; batches.push([]); }
-        await wait(280);
-      }
-      if (mode === 'narrow') {
-        try { batches.push(await loadGeorgia511()); }
-        catch { errors += 1; batches.push([]); }
-      }
-      lastErrorCount = errors;
-      const byUrl = new Map();
-      batches.forEach(batch => batch.forEach(item => {
-        const key = item.url || item.id;
-        if (!byUrl.has(key)) byUrl.set(key, item);
-      }));
-      cachedItems = [...byUrl.values()]
-        .filter(item => Date.now() - (Number(item.ts) || 0) <= MAX_NEWS_AGE_MS)
-        .sort((a, b) => b.ts - a.ts)
-        .slice(0, 90);
-      loaded = true;
-      lastLoadedAt = Date.now();
-      return cachedItems;
-    } finally {
-      loading = false;
-    }
-  }
-
-  function render(items) {
-    const layer = ensureLayer();
-    if (!layer) return;
-    updateModeButtons(layer);
-    const list = layer.querySelector('[data-local-news-list]');
-    const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = items.length ? `${items.length} MATCHES / 30D` : (lastErrorCount ? 'SOURCE LIMITED / 30D' : 'NO MATCHES / 30D');
-    if (!list) return;
-    if (!items.length) {
-      list.innerHTML = `<div class="local-news-empty">${mode === 'broad' ? 'NO MATCHING GEORGIA NEWS FOUND IN THE LAST 30 DAYS.' : 'NO MATCHING GEORGIA RESTAURANT, HEALTH INSPECTION, GREASE TRAP, EXHAUST HOOD, REGULATION, OR ROAD CLOSURE NEWS FOUND IN THE LAST 30 DAYS.'}</div>`;
-      return;
-    }
-    list.replaceChildren(...items.map(item => {
-      const anchor = document.createElement('a');
-      anchor.className = 'local-news-item';
-      anchor.href = item.url || '#';
-      anchor.target = '_blank';
-      anchor.rel = 'noopener noreferrer';
-      anchor.style.setProperty('--topic-color', item.color);
-      anchor.innerHTML = [
-        '<div class="local-news-meta">',
-        `<span class="local-news-topic">${escapeHtml(item.topicLabel)}</span>`,
-        `<span>${escapeHtml(item.city)} / ${timeAgo(item.ts)}</span>`,
-        '</div>',
-        `<div class="local-news-text">${escapeHtml(item.title)}</div>`,
-        `<div class="local-news-source">${escapeHtml(item.domain)} / ${escapeHtml(item.source)}</div>`,
-      ].join('');
-      return anchor;
-    }));
+  function titleCase(value) {
+    return String(value || '').replace(/\b\w/g, char => char.toUpperCase());
   }
 
   function escapeHtml(value) {
@@ -321,42 +536,6 @@
     if (hours < 1) return 'NOW';
     if (hours < 48) return `${hours}H`;
     return `${Math.floor(hours / 24)}D`;
-  }
-
-  function setActive(next) {
-    const layer = ensureLayer();
-    if (!layer) return;
-    const nextActive = Boolean(next);
-    const changed = active !== nextActive || layer.style.display !== (nextActive ? 'block' : 'none');
-    active = nextActive;
-    if (!changed && (!active || loaded || loading)) return;
-    layer.style.display = active ? 'block' : 'none';
-    if (!active) return;
-    const status = layer.querySelector('[data-local-news-status]');
-    if (status) status.textContent = loaded ? `${cachedItems.length} MATCHES / 30D` : 'LOADING';
-    render(cachedItems);
-    loadItems().then(items => { if (active) render(items); }).catch(() => {
-      if (status) status.textContent = 'SOURCE ERROR';
-      render(cachedItems);
-    });
-  }
-
-  window.GlobalDataLocalNews = {
-    setActive,
-    getActive: () => active,
-    refresh: () => {
-      loaded = false;
-      return loadItems().then(items => { if (active) render(items); return items; });
-    },
-  };
-
-  function syncFromLocalMenu() {
-    const marker = document.querySelector('[data-local-placeholder="localNews"]');
-    const localMode = Boolean(document.querySelector('.globe-wrap.local-map-mode'));
-    const next = Boolean(localMode && marker && marker.style.display !== 'none');
-    setActive(next);
-    const rowSub = document.querySelector('[data-local-menu-layer="localNews"] .layer-sub');
-    if (rowSub) rowSub.textContent = mode === 'broad' ? 'GEORGIA BROAD / 30D' : 'RESTAURANTS / REGULATION / ROADS / 30D';
   }
 
   setInterval(syncFromLocalMenu, 500);
