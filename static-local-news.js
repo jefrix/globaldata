@@ -101,24 +101,34 @@
     const style = document.createElement('style');
     style.dataset.localNewsStyle = '1';
     style.textContent = `
-      .local-news-layer { position: absolute; inset: 0; z-index: 7; display: none; pointer-events: none; }
-      .local-news-panel { position: absolute; right: 22px; top: 58px; width: min(460px, calc(100vw - 390px)); max-height: calc(100% - 118px); overflow: auto; border: 1px solid rgba(245,138,66,0.45); background: rgba(2,10,18,0.91); box-shadow: 0 0 22px rgba(245,138,66,0.18); pointer-events: auto; }
-      .local-news-head { position: sticky; top: 0; z-index: 2; display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid rgba(245,138,66,0.28); background: rgba(2,10,18,0.96); font-family: var(--mono); letter-spacing: 0.14em; }
+      .local-news-layer { display: none !important; }
+      .feed.local-news-feed-mode > .feed-head,
+      .feed.local-news-feed-mode > .feed-list {
+        display: none;
+      }
+      .local-news-board { height: 100%; min-height: 0; overflow-y: auto; font-family: var(--mono); color: var(--text); }
+      .local-news-board::-webkit-scrollbar { width: 4px; }
+      .local-news-board::-webkit-scrollbar-thumb { background: var(--edge); }
+      .local-news-head { position: sticky; top: 0; z-index: 2; display: grid; gap: 4px; padding: 10px 12px; border-bottom: 1px solid rgba(245,138,66,0.28); background: rgba(2,10,18,0.96); letter-spacing: 0.14em; }
       .local-news-headline { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
       .local-news-title { color: #f58a42; font-size: 10px; font-weight: 600; }
       .local-news-status { color: var(--text-dim); font-size: 8.5px; white-space: nowrap; }
       .local-news-sub { color: var(--text-dim); font-size: 8px; line-height: 1.35; }
       .local-news-list { display: grid; }
-      .local-news-item { appearance: none; border: 0; display: grid; gap: 5px; width: 100%; padding: 10px 12px; border-bottom: 1px solid rgba(26,49,83,0.45); background: transparent; color: var(--text); text-align: left; font: inherit; cursor: pointer; }
-      .local-news-item:hover, .local-news-item.selected { background: rgba(245,138,66,0.11); }
+      .local-news-item { display: grid; gap: 6px; width: 100%; padding: 10px 12px; border-bottom: 1px solid rgba(26,49,83,0.45); background: transparent; color: var(--text); text-align: left; cursor: pointer; outline: none; }
+      .local-news-item:hover, .local-news-item:focus-visible, .local-news-item.selected { background: rgba(245,138,66,0.11); }
       .local-news-item.selected { box-shadow: inset 3px 0 0 var(--topic-color, #f58a42); }
       .local-news-meta { display: flex; justify-content: space-between; gap: 8px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-dim); }
       .local-news-topic { color: var(--topic-color, #f58a42); }
       .local-news-text { font-size: 12px; line-height: 1.32; }
-      .local-news-source { font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-dim); }
+      .local-news-source-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+      .local-news-source { min-width: 0; font-family: var(--mono); font-size: 8px; letter-spacing: 0.12em; color: var(--text-dim); overflow-wrap: anywhere; }
+      .local-news-source-button { flex: 0 0 auto; appearance: none; border: 1px solid rgba(245,138,66,0.48); background: rgba(245,138,66,0.08); color: #ffd1a8; cursor: pointer; padding: 4px 7px; font-family: var(--mono); font-size: 8px; letter-spacing: 0.14em; }
+      .local-news-source-button:hover, .local-news-source-button:focus-visible { color: #050b17; background: #f58a42; outline: none; }
+      .local-news-source-button:disabled { border-color: rgba(122,148,184,0.35); color: var(--text-dim); background: transparent; cursor: not-allowed; }
       .local-news-empty { padding: 14px 12px; color: var(--text-dim); font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; line-height: 1.45; }
       .local-placeholder-layer[data-local-placeholder="localNews"] .local-placeholder-badge { display: none; }
-      @media (max-width: 900px) { .local-news-panel { left: 12px; right: 12px; top: 52px; width: auto; max-height: 42%; } }
+      @media (max-width: 900px) { .local-news-meta, .local-news-source-row { align-items: flex-start; flex-direction: column; } }
     `;
     document.head.appendChild(style);
   }
@@ -132,8 +142,22 @@
     layer = document.createElement('div');
     layer.className = 'local-news-layer';
     layer.dataset.localNewsLayer = '1';
-    layer.innerHTML = [
-      '<div class="local-news-panel">',
+    layer.setAttribute('aria-hidden', 'true');
+    wrap.appendChild(layer);
+    return layer;
+  }
+
+  function ensureFeedBoard() {
+    ensureStyle();
+    const feed = document.querySelector('.rail-right .feed');
+    if (!feed) return null;
+    feed.classList.add('local-news-feed-mode');
+    let board = feed.querySelector('[data-local-news-board]');
+    if (board) return board;
+    board = document.createElement('div');
+    board.className = 'local-news-board';
+    board.dataset.localNewsBoard = '1';
+    board.innerHTML = [
       '<div class="local-news-head">',
       '<div class="local-news-headline">',
       '<div class="local-news-title" data-local-news-title>LOCAL NEWS / GEORGIA / 30D</div>',
@@ -142,10 +166,20 @@
       '<div class="local-news-sub">NON-SPORTS / ECONOMY / CIVIC / SAFETY / INFRASTRUCTURE</div>',
       '</div>',
       '<div class="local-news-list" data-local-news-list></div>',
-      '</div>',
     ].join('');
-    wrap.appendChild(layer);
-    return layer;
+    feed.appendChild(board);
+    return board;
+  }
+
+  function removeFeedBoard() {
+    const feed = document.querySelector('.rail-right .feed.local-news-feed-mode');
+    if (!feed) {
+      if (window.GlobalDataLocalEventOwner === 'localNews') window.GlobalDataLocalEventOwner = '';
+      return;
+    }
+    feed.classList.remove('local-news-feed-mode');
+    feed.querySelector('[data-local-news-board]')?.remove();
+    if (window.GlobalDataLocalEventOwner === 'localNews') window.GlobalDataLocalEventOwner = '';
   }
 
   function gdeltUrl(query) {
@@ -377,10 +411,15 @@
   }
 
   function render(items) {
-    const layer = ensureLayer();
-    if (!layer) return;
-    const list = layer.querySelector('[data-local-news-list]');
-    const status = layer.querySelector('[data-local-news-status]');
+    ensureLayer();
+    if (!active) {
+      removeFeedBoard();
+      return;
+    }
+    const board = ensureFeedBoard();
+    if (!board) return;
+    const list = board.querySelector('[data-local-news-list]');
+    const status = board.querySelector('[data-local-news-status]');
     if (status) {
       if (items.length) status.textContent = `${items.length} MATCHES / 30D`;
       else status.textContent = lastErrorCount ? 'SOURCE LIMITED / 30D' : 'NO MATCHES / 30D';
@@ -393,26 +432,40 @@
       return;
     }
     list.replaceChildren(...items.map(item => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = `local-news-item${item.id === selectedId ? ' selected' : ''}`;
-      button.dataset.localNewsId = item.id;
-      button.style.setProperty('--topic-color', item.color);
-      button.innerHTML = [
+      const row = document.createElement('div');
+      row.className = `local-news-item${item.id === selectedId ? ' selected' : ''}`;
+      row.dataset.localNewsId = item.id;
+      row.role = 'button';
+      row.tabIndex = 0;
+      row.style.setProperty('--topic-color', item.color);
+      row.innerHTML = [
         '<div class="local-news-meta">',
         `<span class="local-news-topic">${escapeHtml(item.topicLabel)}</span>`,
         `<span>${escapeHtml(item.placeLabel)} / ${timeAgo(item.ts)}</span>`,
         '</div>',
         `<div class="local-news-text">${escapeHtml(item.title)}</div>`,
+        '<div class="local-news-source-row">',
         `<div class="local-news-source">${escapeHtml(item.domain)} / ${escapeHtml(item.source)}</div>`,
+        `<button type="button" class="local-news-source-button" data-local-news-source title="Open source article" ${item.url ? '' : 'disabled'}>SOURCE</button>`,
+        '</div>',
       ].join('');
-      button.addEventListener('click', () => selectNewsItem(item));
-      return button;
+      row.addEventListener('click', () => selectNewsItem(item));
+      row.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        selectNewsItem(item);
+      });
+      row.querySelector('[data-local-news-source]')?.addEventListener('click', event => {
+        event.stopPropagation();
+        openSource(item);
+      });
+      return row;
     }));
   }
 
   function selectNewsItem(item) {
     selectedId = item.id;
+    window.GlobalDataLocalEventOwner = 'localNews';
     render(cachedItems);
     window.GlobalDataLocalMenu?.setLayer?.('counties', true);
     const detail = {
@@ -422,8 +475,15 @@
       source: item.domain,
       note: item.title,
       localNewsItem: item,
+      owner: 'localNews',
+      suppressCountyBoard: true,
     };
     dispatchCountySelection(detail);
+  }
+
+  function openSource(item) {
+    if (!item?.url) return;
+    window.open(item.url, '_blank', 'noopener,noreferrer');
   }
 
   function dispatchCountySelection(detail, attempt = 0) {
@@ -442,11 +502,20 @@
     if (!layer) return;
     const nextActive = Boolean(next);
     const changed = active !== nextActive || layer.style.display !== (nextActive ? 'block' : 'none');
+    const hasFeedBoard = Boolean(document.querySelector('[data-local-news-board]'));
     active = nextActive;
-    if (!changed && (!active || loaded || loadingPromise)) return;
+    if (!changed && (!active || ((loaded || loadingPromise) && hasFeedBoard))) return;
     layer.style.display = active ? 'block' : 'none';
-    if (!active) return;
-    const status = layer.querySelector('[data-local-news-status]');
+    if (!active) {
+      const ownedSelection = window.GlobalDataLocalEventOwner === 'localNews';
+      selectedId = '';
+      removeFeedBoard();
+      if (ownedSelection) window.GlobalDataCountyDrilldown?.clearSelection?.();
+      return;
+    }
+    window.GlobalDataLocalEventOwner = 'localNews';
+    const board = ensureFeedBoard();
+    const status = board?.querySelector('[data-local-news-status]');
     if (status) status.textContent = loaded ? `${cachedItems.length} MATCHES / 30D` : 'LOADING';
     render(cachedItems);
     loadItems()

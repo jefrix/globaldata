@@ -143,7 +143,9 @@
       .find(node => String(node.dataset.countyName || '').toLowerCase() === String(detail.name || '').toLowerCase());
     if (!path) return;
     ensureStyle();
-    window.GlobalDataLocalEventOwner = 'county';
+    const owner = detail.owner || (detail.localNewsItem || detail.suppressCountyBoard ? 'localNews' : 'county');
+    const shouldRenderBoard = owner === 'county' && !detail.suppressCountyBoard;
+    window.GlobalDataLocalEventOwner = owner;
     selectedCounty = detail.name;
     selectedDetail = detail;
     document.querySelectorAll('.county-drilldown-selected').forEach(node => node.classList.remove('county-drilldown-selected'));
@@ -151,11 +153,19 @@
     const readout = document.querySelector('[data-local-map-readout]');
     if (readout) readout.textContent = `${String(detail.name || '').toUpperCase()} COUNTY`;
     zoomToCounty(path);
-    renderBoard(detail.name, path, detail);
+    if (shouldRenderBoard) {
+      renderBoard(detail.name, path, detail);
+    } else {
+      renderKey = '';
+      const feed = document.querySelector('.rail-right .feed.county-drilldown-mode');
+      feed?.classList.remove('county-drilldown-mode');
+      feed?.querySelector('[data-county-drilldown-board]')?.remove();
+    }
   }
 
   function sync() {
     if (!document.querySelector('.globe-wrap.local-map-mode')) {
+      if (window.GlobalDataLocalEventOwner === 'county' || window.GlobalDataLocalEventOwner === 'localNews') window.GlobalDataLocalEventOwner = '';
       selectedCounty = null;
       selectedDetail = null;
       renderKey = '';
@@ -172,7 +182,7 @@
   }
 
   function clearSelection() {
-    if (window.GlobalDataLocalEventOwner === 'county') window.GlobalDataLocalEventOwner = '';
+    if (window.GlobalDataLocalEventOwner === 'county' || window.GlobalDataLocalEventOwner === 'localNews') window.GlobalDataLocalEventOwner = '';
     selectedCounty = null;
     selectedDetail = null;
     renderKey = '';
