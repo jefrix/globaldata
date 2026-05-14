@@ -142,13 +142,13 @@ const LAYERS = [
   { id: 'geographic', label: 'GEOGRAPHIC',  sub: 'BORDERS · CITIES · POI',        hotkey: '2' },
   { id: 'climate',    label: 'NATURE',      sub: 'EARTHQUAKES · STORMS · ALERTS', hotkey: '3' },
   { id: 'news',       label: 'NEWS',        sub: 'EVENTS · SOURCE CONFIDENCE',    hotkey: '4' },
-  { id: 'infrastructure', label: 'INFRASTRUCTURE', sub: 'CABLES · CLOUD · POWER', hotkey: 'I' },
+  { id: 'infrastructure', label: 'INFRASTRUCTURE', sub: 'POWER GENERATION', hotkey: 'I' },
   { id: 'conflicts',  label: 'CONFLICTS',   sub: 'KINETIC · GRAY ZONE',           hotkey: '5' },
   { id: 'military',   label: 'MILITARY',    sub: 'BASES · NAVAL ASSETS',          hotkey: '6' },
   { id: 'logistics',  label: 'LOGISTICS',   sub: 'CONTAINER · OIL · LNG · TRUCK', hotkey: '7' },
   { id: 'flights',    label: 'FLIGHTS',     sub: 'ADS-B · ROUTES',                hotkey: '8' },
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
-  { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD / COLO / AI CAPACITY', hotkey: '0' },
+  { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD · COLO · CABLES', hotkey: '0' },
   { id: 'markets',    label: 'MARKETS',     sub: 'INDICES · METALS · CRYPTO',     hotkey: 'M' },
 ];
 
@@ -598,6 +598,41 @@ function infrastructurePayload(data) {
   };
 }
 
+function cableFeedPoint(cable) {
+  const path = cable?.pts || cable?.path || [];
+  if (!Array.isArray(path) || !path.length) return {};
+  const point = path[Math.floor(path.length / 2)] || path[0];
+  if (Array.isArray(point) && Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]))) {
+    return { lat: Number(point[0]), lon: Number(point[1]) };
+  }
+  if (Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lon))) {
+    return { lat: Number(point.lat), lon: Number(point.lon) };
+  }
+  return {};
+}
+
+function dataCenterNetworkKind(node) {
+  const type = String(node?.type || '').toLowerCase();
+  if (type === 'cloud') return 'CLD';
+  if (type === 'landing') return 'CAB';
+  if (type === 'exchange') return 'IXP';
+  if (type === 'hq') return 'HQ';
+  return 'NET';
+}
+
+function dataCenterCableRecord(cable) {
+  return {
+    ...cable,
+    ...cableFeedPoint(cable),
+    type: cable?.type || 'subsea cable',
+    city: cable?.city || cable?.region || cable?.name || 'Cable route',
+    country: cable?.country || cable?.region || '--',
+    operator: cable?.operator || cable?.owner || '--',
+    status: cable?.status || 'Mapped cable route',
+    source: cable?.source || 'GlobalData data center network layer',
+  };
+}
+
 function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAULT_POWER_FILTERS, marketItems = [], onSelect, selectedId }) {
   const items = useMemo(() => {
     const D = data || window.MOCK_DATA;
@@ -677,39 +712,9 @@ function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAUL
             data: plant,
           });
         });
-      infra.nodes.slice(0, 24).forEach((node, index) => feed.push({
-        id: node.id || node.name,
-        t: Date.now() - (index + 90) * 45000,
-        kind: 'INF',
-        cat: String(node.type || 'NODE').toUpperCase(),
-        city: node.city || node.name || '--',
-        country: node.country || '--',
-        title: node.name,
-        meta: node.operator || node.type || 'INFRASTRUCTURE',
-        color: node.color || '#5bd7ff',
-        inspectorKind: 'infrastructure',
-        data: node,
-      }));
-      infra.events.slice(0, 16).forEach((event, index) => feed.push({
-        id: event.id || event.title,
-        t: Date.now() - (index + 1000) * 45000,
-        kind: 'INF',
-        cat: event.severity || event.category || 'WATCH',
-        city: event.city || event.name || 'Infrastructure',
-        country: event.country || '--',
-        title: event.title,
-        meta: event.sourceName || event.source || 'INFRASTRUCTURE',
-        color: /watch|risk|high|outage/i.test(event.severity || event.title || '') ? '#ff5c2e' : '#f5d142',
-        inspectorKind: 'news',
-        data: {
-          ...event,
-          category: event.category || 'INFRASTRUCTURE',
-          sourceName: event.sourceName || event.source || 'Infrastructure',
-          ts: event.ts || Date.now(),
-        },
-      }));
     }
     if (active.dataCenters) {
+      const infra = infrastructurePayload(D);
       (D.dataCenters || []).forEach((dc, index) => feed.push({
         id: dc.id || dc.name,
         t: Date.now() - index * 60000,
@@ -722,6 +727,56 @@ function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAUL
         color: Number.isFinite(Number(dc.powerMw)) && Number(dc.powerMw) >= 200 ? '#5bd7ff' : '#73ff9a',
         inspectorKind: 'dataCenter',
         data: dc,
+      }));
+      infra.nodes.slice(0, 28).forEach((node, index) => feed.push({
+        id: node.id || node.name,
+        t: Date.now() - (index + 80) * 60000,
+        kind: dataCenterNetworkKind(node),
+        cat: String(node.type || 'NODE').toUpperCase(),
+        city: node.city || node.name || '--',
+        country: node.country || '--',
+        title: node.name,
+        meta: node.operator || node.type || 'DATA NETWORK',
+        color: node.color || '#5bd7ff',
+        inspectorKind: 'infrastructure',
+        data: {
+          ...node,
+          source: node.source || 'GlobalData data center network layer',
+        },
+      }));
+      infra.cables.slice(0, 18).forEach((cable, index) => {
+        const record = dataCenterCableRecord(cable);
+        feed.push({
+          id: record.id || record.name,
+          t: Date.now() - (index + 140) * 60000,
+          kind: 'CAB',
+          cat: 'ROUTE',
+          city: record.city || record.name || 'Cable route',
+          country: record.country || '--',
+          title: record.name,
+          meta: record.operator || record.owner || 'SUBSEA CABLE',
+          color: record.color || '#9ad4ff',
+          inspectorKind: 'infrastructure',
+          data: record,
+        });
+      });
+      infra.events.slice(0, 16).forEach((event, index) => feed.push({
+        id: event.id || event.title,
+        t: Date.now() - (index + 1000) * 45000,
+        kind: 'NET',
+        cat: event.severity || event.category || 'WATCH',
+        city: event.city || event.name || 'Data network',
+        country: event.country || '--',
+        title: event.title,
+        meta: event.sourceName || event.source || 'DATA NETWORK',
+        color: /watch|risk|high|outage/i.test(event.severity || event.title || '') ? '#ff5c2e' : '#f5d142',
+        inspectorKind: 'news',
+        data: {
+          ...event,
+          category: event.category || 'DATA CENTER NETWORK',
+          sourceName: event.sourceName || event.source || 'Data center network',
+          ts: event.ts || Date.now(),
+        },
       }));
     }
     if (active.conflicts) {
@@ -971,14 +1026,15 @@ function PortDetail({ d }) {
   </>);
 }
 function InfrastructureDetail({ d }) {
+  const location = [d.city || d.region || d.name || '--', d.country || null].filter(Boolean).join(', ');
   return (<>
     <div className="insp-title" style={{ color: '#5bd7ff' }}>{d.name}</div>
     <Row k="TYPE" v={String(d.type || 'NODE').toUpperCase()} color="#5bd7ff" />
-    <Row k="LOCATION" v={`${d.city || d.name || '--'}, ${d.country || '--'}`} />
+    <Row k="LOCATION" v={location} />
     <Row k="OPERATOR" v={d.operator || '--'} />
     <Row k="TIER" v={d.tier ? `T${d.tier}` : '--'} />
-    <Row k="STATUS" v={d.status || 'Mapped infrastructure node'} />
-    <Row k="SOURCE" v={d.source || 'GlobalData infrastructure layer'} />
+    <Row k="STATUS" v={d.status || 'Mapped data network node'} />
+    <Row k="SOURCE" v={d.source || 'GlobalData data center network layer'} />
   </>);
 }
 function PowerPlantDetail({ d }) {
@@ -1327,6 +1383,7 @@ function selectionColorForEvent(pick) {
     return powerMetaFor(pick.data?.generationType || pick.data?.primaryFuel || pick.data?.primary_fuel || pick.data?.fuel).color;
   }
   if (pick?.kind === 'infrastructure') return '#5bd7ff';
+  if (pick?.kind === 'dataCenter') return '#5bd7ff';
   return '#73ff9a';
 }
 
@@ -1560,6 +1617,7 @@ useEffect(() => {
   // Stats
   const stats = useMemo(() => {
     const D = data || window.MOCK_DATA;
+    const infra = infrastructurePayload(D);
     return {
       activeLayers: Object.values(active).filter(Boolean).length,
       flights: active.flights ? D.flights.length : 0,
@@ -1569,9 +1627,9 @@ useEffect(() => {
         : 0,
       news: active.news ? D.news.length : 0,
       cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
-      dataCenters: active.dataCenters ? (D.dataCenters?.length || 0) : 0,
+      dataCenters: active.dataCenters ? (D.dataCenters?.length || 0) + infra.nodes.length + infra.cables.length : 0,
       markets: active.markets ? marketItems.length : 0,
-      infrastructure: active.infrastructure ? infrastructurePayload(D).powerPlants
+      infrastructure: active.infrastructure ? infra.powerPlants
         .filter(plant => infraPowerTypes[powerTypeKey(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel)] !== false)
         .length : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,

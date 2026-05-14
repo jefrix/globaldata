@@ -366,6 +366,35 @@
     return engine.layerGroups.infrastructure;
   }
 
+  function ensureDataCenterNetworkGroup(engine) {
+    if (!engine.layerGroups) engine.layerGroups = {};
+    if (!engine.layerGroups.dataCenters) {
+      const parent = new THREE.Group();
+      parent.visible = false;
+      engine.layerGroups.dataCenters = parent;
+      engine.root?.add?.(parent);
+    }
+    const parent = engine.layerGroups.dataCenters;
+    if (!engine.dataCenterNetworkGroup || engine.dataCenterNetworkGroup.parent !== parent) {
+      const group = new THREE.Group();
+      group.userData = { layer: 'dataCenters', kind: 'data-center-network', dataCenterNetwork: true };
+      engine.dataCenterNetworkGroup = group;
+      parent.add(group);
+    }
+    return engine.dataCenterNetworkGroup;
+  }
+
+  function clearDataCenterNetwork(engine) {
+    const group = engine.dataCenterNetworkGroup;
+    if (group) {
+      engine._disposeObjectResources?.(group);
+      group.clear();
+    }
+    engine.dataCenterPackets = [];
+    engine.pickables = (engine.pickables || []).filter(obj => !obj?.userData?.dataCenterNetwork);
+    engine.zoomAdaptiveObjects = (engine.zoomAdaptiveObjects || []).filter(obj => !obj?.userData?.dataCenterNetwork);
+  }
+
   function pointOnPath(points, progress) {
     if (!points || points.length < 2) return null;
     const scaled = (((progress % 1) + 1) % 1) * (points.length - 1);
@@ -374,7 +403,7 @@
   }
 
   function addCable(engine, cable) {
-    const group = ensureLayer(engine);
+    const group = ensureDataCenterNetworkGroup(engine);
     const points = pathToVectors(cable.pts || cable.path || [], R + 1.55);
     if (points.length < 2) return;
     const color = cable.color || '#5bd7ff';
@@ -383,13 +412,13 @@
       new THREE.LineBasicMaterial({
         color,
         transparent: true,
-        opacity: 0.26 * (engine.layerOpacity.infrastructure ?? 1),
+        opacity: 0.26 * (engine.layerOpacity.dataCenters ?? 1),
         depthTest: true,
         depthWrite: false,
       })
     );
     line.renderOrder = 4;
-    line.userData = { layer: 'infrastructure', kind: 'infrastructure-cable', data: cable };
+    line.userData = { layer: 'dataCenters', kind: 'dataCenterCable', data: cable, dataCenterNetwork: true };
     group.add(line);
 
     const packetCount = Math.min(4, Math.max(1, Math.ceil(points.length / 26)));
@@ -406,9 +435,9 @@
       sprite.scale.set(1.35, 1.35, 1);
       sprite.renderOrder = 9;
       sprite.position.copy(pointOnPath(points, i / packetCount) || points[0]);
-      sprite.userData = { layer: 'infrastructure', kind: 'infrastructure-packet', data: cable, baseScale: 1.35 };
+      sprite.userData = { layer: 'dataCenters', kind: 'dataCenterPacket', data: cable, baseScale: 1.35, dataCenterNetwork: true };
       group.add(sprite);
-      engine.infrastructurePackets.push({
+      engine.dataCenterPackets.push({
         sprite,
         points,
         progress: i / packetCount + Math.random() * 0.05,
@@ -421,14 +450,14 @@
 
   function addNode(engine, node) {
     if (!Number.isFinite(Number(node.lat)) || !Number.isFinite(Number(node.lon))) return;
-    const group = ensureLayer(engine);
+    const group = ensureDataCenterNetworkGroup(engine);
     const color = node.color || colorForType(node.type);
     const size = 1.1 + Math.min(3, Number(node.tier || 1)) * 0.42;
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: textureFor(node.type, color),
       color: 0xffffff,
       transparent: true,
-      opacity: 0.78 * (engine.layerOpacity.infrastructure ?? 1),
+      opacity: 0.78 * (engine.layerOpacity.dataCenters ?? 1),
       depthTest: true,
       depthWrite: false,
     }));
@@ -436,8 +465,9 @@
     sprite.scale.set(size, size, 1);
     sprite.renderOrder = 8;
     sprite.userData = {
-      layer: 'infrastructure',
+      layer: 'dataCenters',
       kind: 'infrastructure',
+      dataCenterNetwork: true,
       data: {
         id: node.id,
         name: node.name,
@@ -449,7 +479,7 @@
         status: `${String(node.type || 'node').toUpperCase()}${node.operator ? ` / ${node.operator}` : ''}`,
         lat: Number(node.lat),
         lon: Number(node.lon),
-        source: node.source || 'GlobalData infrastructure layer',
+        source: node.source || 'GlobalData data center network layer',
       },
     };
     group.add(sprite);
@@ -515,13 +545,13 @@
 
   function addEvent(engine, event) {
     if (!Number.isFinite(Number(event.lat)) || !Number.isFinite(Number(event.lon))) return;
-    const group = ensureLayer(engine);
+    const group = ensureDataCenterNetworkGroup(engine);
     const color = /watch|risk|high|outage/i.test(event.severity || event.title || '') ? '#ff5c2e' : '#f5d142';
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: textureFor('event', color),
       color: 0xffffff,
       transparent: true,
-      opacity: 0.76,
+      opacity: 0.76 * (engine.layerOpacity.dataCenters ?? 1),
       depthTest: true,
       depthWrite: false,
     }));
@@ -529,15 +559,16 @@
     sprite.scale.set(1.85, 1.85, 1);
     sprite.renderOrder = 10;
     sprite.userData = {
-      layer: 'infrastructure',
+      layer: 'dataCenters',
       kind: 'news',
+      dataCenterNetwork: true,
       data: {
         ...event,
-        id: event.id || `infra-${event.title}`,
-        category: event.category || 'INFRASTRUCTURE',
-        sourceName: event.sourceName || event.source || 'Infrastructure',
-        source: event.source || event.sourceName || 'Infrastructure',
-        city: event.city || event.name || 'Infrastructure',
+        id: event.id || `network-${event.title}`,
+        category: event.category || 'DATA CENTER NETWORK',
+        sourceName: event.sourceName || event.source || 'Data center network',
+        source: event.source || event.sourceName || 'Data center network',
+        city: event.city || event.name || 'Data network',
         country: event.country || '--',
         ts: event.ts || Date.now(),
       },
@@ -565,7 +596,9 @@
 
   function renderInfrastructure(engine, data) {
     ensureLayer(engine);
+    ensureDataCenterNetworkGroup(engine);
     engine.infrastructurePackets = [];
+    clearDataCenterNetwork(engine);
     engine._clearGroup?.('infrastructure');
     const payload = combinedPayload(data);
     const infrastructureLimit = Math.max(engine.maxTrackedObjects || 0, 1400);
@@ -590,7 +623,7 @@
     const tick = now => {
       const dt = Math.min(0.08, (now - last) / 1000);
       last = now;
-      (engine.infrastructurePackets || []).forEach(packet => {
+      const animatePackets = packet => {
         packet.progress = (packet.progress + packet.speed * dt) % 1;
         const point = pointOnPath(packet.points, packet.progress);
         if (point) packet.sprite.position.copy(point);
@@ -598,8 +631,13 @@
         const base = packet.baseScale || packet.sprite.userData?.baseScale || 1.35;
         const scale = base * pulse * zoomFactor(engine, { minFactor: 0.52, maxFactor: 1.8, farShrink: 0.42, closeBoost: 0.7 });
         packet.sprite.scale.set(scale, scale, 1);
-        if (packet.sprite.material) packet.sprite.material.opacity = 0.34 + Math.max(0, pulse - 1) * 0.28;
-      });
+        if (packet.sprite.material) {
+          const layer = packet.sprite.userData?.layer || 'infrastructure';
+          packet.sprite.material.opacity = (0.34 + Math.max(0, pulse - 1) * 0.28) * (engine.layerOpacity[layer] ?? 1);
+        }
+      };
+      (engine.infrastructurePackets || []).forEach(animatePackets);
+      (engine.dataCenterPackets || []).forEach(animatePackets);
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -641,7 +679,7 @@
       '<div class="layer-idx">I</div>',
       '<div style="flex:1;min-width:0">',
       '<div class="layer-label">INFRASTRUCTURE</div>',
-      '<div class="layer-sub">CABLES / CLOUD / POWER</div>',
+      '<div class="layer-sub">POWER GENERATION</div>',
       '</div>',
       '<button data-infra-toggle aria-pressed="false" style="width:32px;height:16px;border-radius:2px;position:relative;cursor:pointer;background:transparent;border:1px solid var(--edge);padding:0;flex-shrink:0">',
       '<span data-infra-knob style="position:absolute;top:1px;left:1px;width:12px;height:12px;background:var(--text-dim);transition:left .15s"></span>',
@@ -694,6 +732,7 @@
     const originalUpdate = engine.updateLiveData?.bind(engine);
 
     engine.infrastructurePackets = [];
+    engine.dataCenterPackets = [];
     engine.infrastructurePowerFilters = window.GlobalDataInfrastructureFilters?.powerTypes || null;
     engine._ensureLayerGroups = function infrastructureEnsure() {
       originalEnsure?.();
@@ -702,6 +741,10 @@
     engine._clearGroup = function infrastructureClear(id) {
       originalClear?.(id);
       if (id === 'infrastructure') engine.infrastructurePackets = [];
+      if (id === 'dataCenters') {
+        engine.dataCenterPackets = [];
+        engine.dataCenterNetworkGroup = null;
+      }
     };
     engine.updateLiveData = function infrastructureUpdate(data) {
       engine.lastInfrastructureData = data || {};
