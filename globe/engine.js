@@ -1,7 +1,25 @@
 window.GlobeEngine = (function () {
   const R = 100;
   const DEG = Math.PI / 180;
+  const CAMERA_MIN_Z = 112;
+  const CAMERA_MAX_Z = 560;
+  const CAMERA_HOME_Z = 320;
   const WORLD_ATLAS_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json';
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function visualScaleForCameraZ(z, options = {}) {
+    const currentZ = Number(z) || CAMERA_HOME_Z;
+    const close = clamp((CAMERA_HOME_Z - currentZ) / (CAMERA_HOME_Z - CAMERA_MIN_Z), 0, 1);
+    const far = clamp((currentZ - CAMERA_HOME_Z) / (CAMERA_MAX_Z - CAMERA_HOME_Z), 0, 1);
+    const closeBoost = Number.isFinite(Number(options.closeBoost)) ? Number(options.closeBoost) : 1.05;
+    const farShrink = Number.isFinite(Number(options.farShrink)) ? Number(options.farShrink) : 0.5;
+    const minFactor = Number.isFinite(Number(options.minFactor)) ? Number(options.minFactor) : 0.42;
+    const maxFactor = Number.isFinite(Number(options.maxFactor)) ? Number(options.maxFactor) : 2.05;
+    return clamp(1 + close * closeBoost - far * farShrink, minFactor, maxFactor);
+  }
 
   function isTodayUtc(ts) {
     const d = new Date(Number(ts) || Date.now());
@@ -367,7 +385,7 @@ window.GlobeEngine = (function () {
       ctx.moveTo(32, 12);
       ctx.lineTo(32, 49);
       ctx.stroke();
-    } else if (kind === 'news' || kind === 'diplomacy' || kind === 'militaryBase' || kind === 'militaryShip') {
+    } else if (kind === 'news' || kind === 'diplomacy' || kind === 'militaryBase' || kind === 'militaryShip' || kind === 'dataCenter') {
       ctx.globalAlpha = 0.24;
       ctx.beginPath();
       ctx.arc(32, 32, 26, 0, Math.PI * 2);
@@ -385,7 +403,7 @@ window.GlobeEngine = (function () {
       ctx.textBaseline = 'middle';
       ctx.shadowColor = color;
       ctx.shadowBlur = 10;
-      const label = kind === 'news' ? 'N' : kind === 'diplomacy' ? 'D' : kind === 'militaryShip' ? 'm' : 'M';
+      const label = kind === 'news' ? 'N' : kind === 'diplomacy' ? 'D' : kind === 'militaryShip' ? 'm' : kind === 'dataCenter' ? 'C' : 'M';
       ctx.fillText(label, 32, 34);
       ctx.shadowBlur = 0;
     }
@@ -499,7 +517,7 @@ window.GlobeEngine = (function () {
   function GlobeEngine(container, theme) {
     this.container = container;
     this.theme = theme;
-    this.currentZ = 320;
+    this.currentZ = CAMERA_HOME_Z;
     this.rotationY = 0.3;
     this.rotationX = 0.15;
     this.autoSpin = true;
@@ -510,6 +528,7 @@ window.GlobeEngine = (function () {
     this.vesselObjects = [];
     this.pulseLines = [];
     this.cyberPackets = [];
+    this.zoomAdaptiveObjects = [];
     this.maxFlightMarkers = 5000;
     this.maxTrackedObjects = 5000;
     this.markerMaterials = {};
@@ -554,7 +573,7 @@ window.GlobeEngine = (function () {
   };
 
   GlobeEngine.prototype._ensureLayerGroups = function () {
-    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'flights', 'cyber', 'military', 'conflicts']
+    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'flights', 'cyber', 'military', 'conflicts', 'dataCenters']
       .forEach(id => {
         if (!this.layerGroups[id]) {
           const group = new THREE.Group();
@@ -735,6 +754,7 @@ window.GlobeEngine = (function () {
       this.cyberPackets = [];
     }
     this.pickables = this.pickables.filter(p => p.userData.layer !== id);
+    this.zoomAdaptiveObjects = (this.zoomAdaptiveObjects || []).filter(p => p.userData?.layer !== id);
   };
 
   GlobeEngine.prototype._getMarkerMaterial = function (kind, color, opacity = 1) {
@@ -840,6 +860,16 @@ window.GlobeEngine = (function () {
     mesh.userData = { layer, kind, data, preserveResources: true };
     this.layerGroups[layer].add(mesh);
     this.pickables.push(mesh);
+    if (layer === 'dataCenters') {
+      this.registerZoomAdaptiveObject?.(mesh, {
+        baseX: width,
+        baseY: height,
+        minFactor: 0.55,
+        maxFactor: 1.6,
+        farShrink: 0.32,
+        closeBoost: 0.65,
+      });
+    }
     return mesh;
   };
 
@@ -874,6 +904,17 @@ window.GlobeEngine = (function () {
     mesh.userData = { layer, kind, data };
     this.layerGroups[layer].add(mesh);
     this.pickables.push(mesh);
+    if (layer === 'cyber') {
+      this.registerZoomAdaptiveObject?.(mesh, {
+        baseX: 1,
+        baseY: 1,
+        baseZ: 1,
+        minFactor: 0.45,
+        maxFactor: 1.7,
+        farShrink: 0.5,
+        closeBoost: 0.75,
+      });
+    }
     return mesh;
   };
 
@@ -908,44 +949,42 @@ window.GlobeEngine = (function () {
 
     const geometry = new THREE.BufferGeometry().setFromPoints(pts);
     const material = layer === 'cyber'
-      ? new THREE.LineDashedMaterial({
+      ? new THREE.LineBasicMaterial({
         color,
         transparent: true,
-        opacity: Math.max(opacity, 0.58),
+        opacity: Math.max(0.1, Math.min(0.32, opacity * 0.56)),
         depthTest: true,
         depthWrite: false,
-        dashSize: 2.4,
-        gapSize: 9.5,
       })
       : new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthTest: true, depthWrite: false });
     const line = new THREE.Line(geometry, material);
     if (layer === 'cyber') {
-      line.computeLineDistances();
       line.userData.flowSpeed = 16 + Math.random() * 7;
       this.pulseLines.push(line);
       const packetTextureKey = `cyber-packet:${color}`;
       if (!this.markerTextures[packetTextureKey]) this.markerTextures[packetTextureKey] = makeGlowTexture(color);
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
           map: this.markerTextures[packetTextureKey],
           color: 0xffffff,
           transparent: true,
-          opacity: 0.95,
-          depthTest: false,
+          opacity: 0.66,
+          depthTest: true,
           depthWrite: false,
           blending: THREE.AdditiveBlending,
         }));
-        sprite.scale.set(7.5, 7.5, 1);
+        sprite.scale.set(2.25, 2.25, 1);
         sprite.renderOrder = 12;
-        sprite.position.copy(pointOnVectorPath(pts, i / 3) || pts[0]);
-        sprite.userData = { layer: 'cyber', kind: 'cyber-packet' };
+        sprite.position.copy(pointOnVectorPath(pts, i / 2) || pts[0]);
+        sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 2.25 };
         this.layerGroups.cyber.add(sprite);
         this.cyberPackets.push({
           sprite,
           points: pts,
-          progress: i / 3 + Math.random() * 0.08,
+          progress: i / 2 + Math.random() * 0.08,
           speed: 0.14 + Math.random() * 0.08,
           phase: Math.random() * Math.PI * 2,
+          baseScale: 2.25,
         });
       }
     }
@@ -1075,7 +1114,7 @@ window.GlobeEngine = (function () {
     this.lastLiveData = data || {};
     this._ensureLayerGroups();
     this.vesselObjects = [];
-    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'cyber', 'military', 'conflicts'].forEach(id => this._clearGroup(id));
+    ['diplomacy', 'geographic', 'climate', 'news', 'logistics', 'cyber', 'military', 'conflicts', 'dataCenters'].forEach(id => this._clearGroup(id));
 
     (this.mapCountryRings || []).forEach(country => {
       this._addLine('geographic', country.points, this.theme.gridStrong || this.theme.land || '#5ea9ff', 0.18);
@@ -1097,6 +1136,20 @@ window.GlobeEngine = (function () {
       const material = this._getMarkerMaterial('news', color, this.layerOpacity.news ?? 1);
       const marker = this._addSpritePoint('news', n.lat, n.lon, material, 3.2, 3.2, 'news', n);
       if (marker) marker.userData.pulse = 0.18 + Math.random() * Math.PI * 2;
+    });
+
+    (data.dataCenters || []).forEach(dc => {
+      const power = Number(dc.powerMw);
+      const color = Number.isFinite(power) && power >= 200 ? '#5bd7ff' : Number.isFinite(power) ? '#73ff9a' : '#d9e4ef';
+      const size = Number.isFinite(power)
+        ? Math.max(2.3, Math.min(5.6, 2.25 + Math.log10(power + 1) * 1.15))
+        : 2.4;
+      const material = this._getMarkerMaterial('dataCenter', color, this.layerOpacity.dataCenters ?? 1);
+      const marker = this._addSpritePoint('dataCenters', dc.lat, dc.lon, material, size, size, 'dataCenter', dc);
+      if (marker && Number.isFinite(power) && power >= 100) marker.userData.pulse = Math.random() * Math.PI * 2;
+      if (Number.isFinite(power) && power >= 200) {
+        this._addTextLabel('dataCenters', dc.lat, dc.lon, [dc.operator || dc.owner, `${Math.round(power)}MW`], color, 13, 4.2);
+      }
     });
 
     (data.earthquakes || []).forEach(q => {
@@ -1143,14 +1196,14 @@ window.GlobeEngine = (function () {
       });
     });
 
-    const cyberEvents = (data.kasperskyCyber?.length ? data.kasperskyCyber : data.cyber || []).slice(0, this.maxTrackedObjects);
+    const cyberEvents = (data.kasperskyCyber?.length ? data.kasperskyCyber : data.cyber || []).slice(0, Math.min(this.maxTrackedObjects || 180, 180));
     cyberEvents.forEach(c => {
       const origin = c.origin || c.source;
       const target = c.target || c;
       if (!origin || !target) return;
-      this._addArc('cyber', origin, target, c.color || '#ff5c2e', 0.34);
-      this._addPoint('cyber', origin.lat, origin.lon, c.color || '#ff5c2e', 0.38, 'cyber', c);
-      this._addPoint('cyber', target.lat, target.lon, c.color || '#ff5c2e', 0.62, 'cyber', c);
+      this._addArc('cyber', origin, target, c.color || '#ff5c2e', 0.3);
+      this._addPoint('cyber', origin.lat, origin.lon, c.color || '#ff5c2e', 0.2, 'cyber', c);
+      this._addPoint('cyber', target.lat, target.lon, c.color || '#ff5c2e', 0.28, 'cyber', c);
     });
 
     (data.militaryBases || []).slice(0, this.maxTrackedObjects).forEach(base => {
@@ -1261,6 +1314,47 @@ window.GlobeEngine = (function () {
     });
   };
 
+  GlobeEngine.prototype.visualScaleForZoom = function (options = {}) {
+    return visualScaleForCameraZ(this.currentZ, options);
+  };
+
+  GlobeEngine.prototype.registerZoomAdaptiveObject = function (object, options = {}) {
+    if (!object) return object;
+    const baseX = Number.isFinite(Number(options.baseX)) ? Number(options.baseX) : object.scale?.x || 1;
+    const baseY = Number.isFinite(Number(options.baseY)) ? Number(options.baseY) : object.scale?.y || baseX;
+    const baseZ = Number.isFinite(Number(options.baseZ)) ? Number(options.baseZ) : object.scale?.z || 1;
+    object.userData = {
+      ...(object.userData || {}),
+      zoomAdaptive: true,
+      zoomBaseX: baseX,
+      zoomBaseY: baseY,
+      zoomBaseZ: baseZ,
+      zoomScaleOptions: {
+        minFactor: options.minFactor,
+        maxFactor: options.maxFactor,
+        farShrink: options.farShrink,
+        closeBoost: options.closeBoost,
+      },
+    };
+    if (!this.zoomAdaptiveObjects) this.zoomAdaptiveObjects = [];
+    if (!this.zoomAdaptiveObjects.includes(object)) this.zoomAdaptiveObjects.push(object);
+    return object;
+  };
+
+  GlobeEngine.prototype._updateZoomAdaptiveObjects = function () {
+    if (!this.zoomAdaptiveObjects?.length) return;
+    this.zoomAdaptiveObjects = this.zoomAdaptiveObjects.filter(object => object?.parent && object.userData?.zoomAdaptive);
+    this.zoomAdaptiveObjects.forEach(object => {
+      const options = object.userData.zoomScaleOptions || {};
+      const factor = this.visualScaleForZoom(options);
+      object.scale.set(
+        (object.userData.zoomBaseX || 1) * factor,
+        (object.userData.zoomBaseY || object.userData.zoomBaseX || 1) * factor,
+        (object.userData.zoomBaseZ || 1) * (object.isSprite ? 1 : factor)
+      );
+    });
+  };
+
   GlobeEngine.prototype.setGridVisible = function (visible) {
     if (this.grid) this.grid.visible = visible;
   };
@@ -1272,7 +1366,7 @@ window.GlobeEngine = (function () {
   };
 
   GlobeEngine.prototype.zoomBy = function (factor) {
-    this.currentZ = Math.max(175, Math.min(520, this.currentZ * factor));
+    this.currentZ = Math.max(CAMERA_MIN_Z, Math.min(CAMERA_MAX_Z, this.currentZ * factor));
     this.camera.position.z = this.currentZ;
   };
 
@@ -1289,7 +1383,7 @@ window.GlobeEngine = (function () {
       sz: this.currentZ,
       tx: targetX,
       ty: this.rotationY + deltaY,
-      tz: Math.max(175, Math.min(360, Number(zoom) || 190)),
+      tz: Math.max(CAMERA_MIN_Z, Math.min(360, Number(zoom) || 190)),
       start: performance.now(),
       duration: 720,
     };
@@ -1299,7 +1393,7 @@ window.GlobeEngine = (function () {
   GlobeEngine.prototype.resetView = function () {
     this.rotationY = 0.3;
     this.rotationX = 0.15;
-    this.currentZ = 320;
+    this.currentZ = CAMERA_HOME_Z;
     this.camera.position.z = this.currentZ;
     this.focusAnim = null;
   };
@@ -1398,8 +1492,10 @@ window.GlobeEngine = (function () {
         const point = pointOnVectorPath(packet.points, packet.progress);
         if (point) packet.sprite.position.copy(point);
         const pulse = 1 + Math.sin(performance.now() * 0.01 + packet.phase) * 0.24;
-        packet.sprite.scale.set(7.5 * pulse, 7.5 * pulse, 1);
-        if (packet.sprite.material) packet.sprite.material.opacity = 0.72 + Math.max(0, pulse - 1) * 0.65;
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 2.25;
+        const zoomScale = this.visualScaleForZoom({ minFactor: 0.48, maxFactor: 1.8, farShrink: 0.45, closeBoost: 0.72 });
+        packet.sprite.scale.set(base * zoomScale * pulse, base * zoomScale * pulse, 1);
+        if (packet.sprite.material) packet.sprite.material.opacity = 0.42 + Math.max(0, pulse - 1) * 0.32;
       });
 
       if (this.selectionGroup?.children.length) {
@@ -1473,6 +1569,8 @@ window.GlobeEngine = (function () {
           this._rebuildTrail('logistics', v, v.color);
         }
       });
+
+      this._updateZoomAdaptiveObjects();
 
       this.renderer.render(this.scene, this.camera);
       requestAnimationFrame(tick);

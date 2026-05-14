@@ -29,10 +29,10 @@
     canvas.width = 64;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
-    const glow = ctx.createRadialGradient(32, 32, 1, 32, 32, 30);
-    glow.addColorStop(0, '#ffffff');
-    glow.addColorStop(0.14, color);
-    glow.addColorStop(0.48, colorWithAlpha(color, 0.48));
+    const glow = ctx.createRadialGradient(32, 32, 1, 32, 32, 27);
+    glow.addColorStop(0, colorWithAlpha('#ffffff', 0.86));
+    glow.addColorStop(0.18, color);
+    glow.addColorStop(0.48, colorWithAlpha(color, 0.26));
     glow.addColorStop(1, colorWithAlpha(color, 0));
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, 64, 64);
@@ -47,7 +47,7 @@
     const start = latLonToVec3(Number(origin.lat), Number(origin.lon), 1).normalize();
     const end = latLonToVec3(Number(target.lat), Number(target.lon), 1).normalize();
     const distance = start.angleTo(end);
-    const lift = Math.max(10, Math.min(34, distance * 18));
+    const lift = Math.max(8, Math.min(26, distance * 15));
     const points = [];
     for (let i = 0; i <= 56; i += 1) {
       const t = i / 56;
@@ -87,38 +87,38 @@
       new THREE.LineBasicMaterial({
         color,
         transparent: true,
-        opacity: Math.max(0.16, (Number(opacity) || 0.34) * 0.48),
+        opacity: Math.max(0.08, Math.min(0.22, (Number(opacity) || 0.3) * 0.48)),
         depthTest: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
       })
     );
     line.renderOrder = 3;
     line.userData = { layer: 'cyber', kind: 'cyber-trace' };
     engine.layerGroups.cyber.add(line);
 
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 2; i += 1) {
       const packetColor = i % 2 ? '#9b5cff' : color;
       const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
         map: glowTexture(packetColor),
         color: 0xffffff,
         transparent: true,
-        opacity: 0.86,
+        opacity: 0.56,
         depthTest: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      sprite.scale.set(3.4, 3.4, 1);
+      sprite.scale.set(1.9, 1.9, 1);
       sprite.renderOrder = 8;
-      sprite.position.copy(pointOnPath(points, i / 3) || points[0]);
-      sprite.userData = { layer: 'cyber', kind: 'cyber-packet' };
+      sprite.position.copy(pointOnPath(points, i / 2) || points[0]);
+      sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 1.9 };
       engine.layerGroups.cyber.add(sprite);
       engine.cyberPackets.push({
         sprite,
         points,
-        progress: i / 3 + Math.random() * 0.1,
-        speed: 0.16 + Math.random() * 0.1,
+        progress: i / 2 + Math.random() * 0.08,
+        speed: 0.12 + Math.random() * 0.08,
         phase: Math.random() * Math.PI * 2,
+        baseScale: 1.9,
       });
     }
   }
@@ -135,8 +135,10 @@
         packet.progress = (packet.progress + packet.speed * dt) % 1;
         packet.sprite.position.copy(pointOnPath(packet.points, packet.progress));
         const pulse = 1 + Math.sin(now * 0.009 + packet.phase) * 0.2;
-        packet.sprite.scale.set(3.4 * pulse, 3.4 * pulse, 1);
-        if (packet.sprite.material) packet.sprite.material.opacity = 0.68 + Math.max(0, pulse - 1) * 0.7;
+        const zoomScale = engine.visualScaleForZoom?.({ minFactor: 0.48, maxFactor: 1.75, farShrink: 0.45, closeBoost: 0.7 }) || 1;
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 1.9;
+        packet.sprite.scale.set(base * zoomScale * pulse, base * zoomScale * pulse, 1);
+        if (packet.sprite.material) packet.sprite.material.opacity = 0.42 + Math.max(0, pulse - 1) * 0.3;
       });
       requestAnimationFrame(tick);
     };
@@ -164,10 +166,9 @@
     engine._addPoint = function cyberPaletteAddPoint(layer, lat, lon, color, size, kind, data) {
       if (layer !== 'cyber') return originalAddPoint?.(layer, lat, lon, color, size, kind, data);
       const cyberColor = kind === 'cyber' ? (Number(size) > 0.5 ? '#ff2d55' : '#9b5cff') : color;
-      return originalAddPoint?.(layer, lat, lon, cyberColor, Math.min(Number(size) || 0.5, 0.52), kind, data);
+      return originalAddPoint?.(layer, lat, lon, cyberColor, Math.min(Number(size) || 0.26, 0.32), kind, data);
     };
 
-    startCyberLoop(engine);
     return engine;
   };
 })();

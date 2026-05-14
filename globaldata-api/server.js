@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..')));
 app.use('/api/live', require('./routes/live'));
+app.use('/api/markets', require('./routes/markets'));
 
 app.get('/health', (req, res) => {
   const liveCacheGeneratedAt = global.__GLOBALDATA_LIVE_CACHE_GENERATED_AT || null;

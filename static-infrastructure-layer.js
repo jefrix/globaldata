@@ -54,6 +54,219 @@
     return '#7bd6a8';
   }
 
+  function powerTypeKey(type) {
+    const key = String(type || '').trim().toLowerCase().replace(/[\s_-]+/g, '-');
+    if (key.includes('nuclear')) return 'nuclear';
+    if (key.includes('hydro')) return 'hydro';
+    if (key.includes('solar')) return 'solar';
+    if (key.includes('wind')) return 'wind';
+    if (key.includes('coal')) return 'coal';
+    if (key.includes('gas')) return 'gas';
+    if (key.includes('oil')) return 'oil';
+    if (key.includes('geo')) return 'geothermal';
+    if (key.includes('bio')) return 'biomass';
+    if (key.includes('waste')) return 'waste';
+    if (key.includes('storage') || key.includes('battery')) return 'storage';
+    if (key.includes('cogen') || key.includes('chp')) return 'cogeneration';
+    return key || 'other';
+  }
+
+  function powerMetaFor(type) {
+    const key = powerTypeKey(type);
+    const meta = window.GLOBALDATA_POWER_TYPES?.[key] || {};
+    return {
+      key,
+      label: meta.label || key.toUpperCase(),
+      tag: meta.tag || key.slice(0, 3).toUpperCase(),
+      color: meta.color || '#d9e4ef',
+    };
+  }
+
+  function activePowerFilters(engine) {
+    return engine.infrastructurePowerFilters
+      || window.GlobalDataInfrastructureFilters?.powerTypes
+      || null;
+  }
+
+  function powerPlantVisible(engine, plant) {
+    const filters = activePowerFilters(engine);
+    if (!filters) return true;
+    const key = powerTypeKey(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel);
+    return filters[key] !== false;
+  }
+
+  function drawPowerSymbol(ctx, type, color) {
+    const meta = powerMetaFor(type);
+    ctx.save();
+    ctx.translate(48, 48);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 4;
+
+    if (meta.key === 'nuclear') {
+      for (let i = 0; i < 3; i += 1) {
+        ctx.save();
+        ctx.rotate(i * Math.PI * 2 / 3 - Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, -6);
+        ctx.arc(0, 0, 25, -1.03, -0.34, false);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(0, 0, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (meta.key === 'solar') {
+      for (let i = 0; i < 12; i += 1) {
+        const a = i * Math.PI / 6;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 23, Math.sin(a) * 23);
+        ctx.lineTo(Math.cos(a) * 31, Math.sin(a) * 31);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, 15, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (meta.key === 'wind') {
+      ctx.beginPath();
+      ctx.moveTo(0, 6);
+      ctx.lineTo(0, 28);
+      ctx.moveTo(-10, 28);
+      ctx.lineTo(10, 28);
+      ctx.stroke();
+      for (let i = 0; i < 3; i += 1) {
+        ctx.save();
+        ctx.rotate(i * Math.PI * 2 / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -27);
+        ctx.lineTo(5, -12);
+        ctx.stroke();
+        ctx.restore();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (meta.key === 'hydro') {
+      ctx.beginPath();
+      ctx.moveTo(-24, -18);
+      ctx.lineTo(20, -8);
+      ctx.lineTo(20, 18);
+      ctx.moveTo(-12, -15);
+      ctx.lineTo(-12, 16);
+      ctx.stroke();
+      for (let y = 8; y <= 24; y += 8) {
+        ctx.beginPath();
+        ctx.moveTo(-26, y);
+        ctx.bezierCurveTo(-16, y - 8, -8, y + 8, 2, y);
+        ctx.bezierCurveTo(12, y - 8, 18, y + 8, 28, y);
+        ctx.stroke();
+      }
+    } else if (meta.key === 'coal') {
+      ctx.strokeRect(-22, -2, 34, 25);
+      ctx.beginPath();
+      ctx.moveTo(14, 23);
+      ctx.lineTo(14, -24);
+      ctx.lineTo(27, -24);
+      ctx.lineTo(27, 23);
+      ctx.moveTo(-22, -2);
+      ctx.lineTo(-10, -14);
+      ctx.lineTo(2, -2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(-10, 27, 4, 0, Math.PI * 2);
+      ctx.arc(4, 27, 5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (meta.key === 'gas') {
+      ctx.beginPath();
+      ctx.moveTo(0, 28);
+      ctx.bezierCurveTo(-24, 8, -5, -4, -7, -25);
+      ctx.bezierCurveTo(18, -10, 25, 7, 0, 28);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.moveTo(0, 18);
+      ctx.bezierCurveTo(-8, 8, 0, 0, 2, -9);
+      ctx.bezierCurveTo(12, 4, 11, 10, 0, 18);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+    } else if (meta.key === 'oil') {
+      ctx.beginPath();
+      ctx.moveTo(0, -29);
+      ctx.bezierCurveTo(22, -5, 25, 10, 12, 24);
+      ctx.bezierCurveTo(0, 36, -22, 25, -20, 6);
+      ctx.bezierCurveTo(-18, -7, -5, -19, 0, -29);
+      ctx.fill();
+    } else if (meta.key === 'geothermal') {
+      for (let x = -15; x <= 15; x += 15) {
+        ctx.beginPath();
+        ctx.moveTo(x, 25);
+        ctx.bezierCurveTo(x - 10, 8, x + 10, 2, x, -16);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 21, 20, Math.PI, 0);
+      ctx.stroke();
+    } else if (meta.key === 'biomass') {
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 16, 29, Math.PI / 4, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-18, 20);
+      ctx.lineTo(18, -20);
+      ctx.stroke();
+    } else if (meta.key === 'waste') {
+      for (let i = 0; i < 3; i += 1) {
+        ctx.save();
+        ctx.rotate(i * Math.PI * 2 / 3);
+        ctx.beginPath();
+        ctx.moveTo(0, -25);
+        ctx.lineTo(8, -10);
+        ctx.lineTo(-8, -10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (meta.key === 'storage') {
+      ctx.strokeRect(-25, -14, 44, 28);
+      ctx.strokeRect(20, -6, 6, 12);
+      ctx.beginPath();
+      ctx.moveTo(-12, 0);
+      ctx.lineTo(-2, -11);
+      ctx.lineTo(-1, -2);
+      ctx.lineTo(11, -2);
+      ctx.lineTo(1, 11);
+      ctx.lineTo(1, 2);
+      ctx.lineTo(-12, 2);
+      ctx.stroke();
+    } else if (meta.key === 'cogeneration') {
+      ctx.beginPath();
+      ctx.arc(-9, -8, 11, 0, Math.PI * 2);
+      ctx.arc(12, 9, 11, 0, Math.PI * 2);
+      ctx.moveTo(0, -1);
+      ctx.lineTo(4, 2);
+      ctx.stroke();
+    } else {
+      ctx.font = 'bold 22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(meta.tag, 0, 1);
+    }
+    ctx.restore();
+  }
+
   function textureFor(type, color) {
     const key = `${type}:${color}`;
     if (textures.has(key)) return textures.get(key);
@@ -66,17 +279,21 @@
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
     ctx.shadowColor = color;
-    ctx.shadowBlur = 12;
+    ctx.shadowBlur = 4;
 
-    ctx.globalAlpha = 0.22;
+    ctx.globalAlpha = 0.12;
     ctx.beginPath();
-    ctx.arc(48, 48, 34, 0, Math.PI * 2);
+    ctx.arc(48, 48, 30, 0, Math.PI * 2);
     ctx.fill();
-    ctx.globalAlpha = 0.92;
-    ctx.lineWidth = 4;
+    ctx.globalAlpha = 0.74;
+    ctx.lineWidth = 3.5;
     ctx.strokeRect(23, 23, 50, 50);
 
-    if (type === 'cloud') {
+    if (String(type || '').startsWith('power:')) {
+      ctx.globalAlpha = 0.8;
+      ctx.strokeRect(20, 20, 56, 56);
+      drawPowerSymbol(ctx, String(type).slice(6), color);
+    } else if (type === 'cloud') {
       ctx.beginPath();
       ctx.arc(40, 50, 12, Math.PI, 0);
       ctx.arc(52, 44, 15, Math.PI, 0);
@@ -118,6 +335,26 @@
     return texture;
   }
 
+  function zoomFactor(engine, options) {
+    return engine.visualScaleForZoom?.(options) || 1;
+  }
+
+  function registerZoomSprite(engine, sprite, baseScale, options = {}) {
+    const base = Number(baseScale) || sprite.scale.x || 1;
+    sprite.userData = {
+      ...(sprite.userData || {}),
+      baseScale: base,
+    };
+    engine.registerZoomAdaptiveObject?.(sprite, {
+      baseX: base,
+      baseY: base,
+      minFactor: options.minFactor ?? 0.42,
+      maxFactor: options.maxFactor ?? 1.95,
+      farShrink: options.farShrink ?? 0.58,
+      closeBoost: options.closeBoost ?? 0.95,
+    });
+  }
+
   function ensureLayer(engine) {
     if (!engine.layerGroups) engine.layerGroups = {};
     if (!engine.layerGroups.infrastructure) {
@@ -146,10 +383,9 @@
       new THREE.LineBasicMaterial({
         color,
         transparent: true,
-        opacity: 0.46 * (engine.layerOpacity.infrastructure ?? 1),
+        opacity: 0.26 * (engine.layerOpacity.infrastructure ?? 1),
         depthTest: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
       })
     );
     line.renderOrder = 4;
@@ -162,15 +398,15 @@
         map: textureFor('landing', color),
         color: 0xffffff,
         transparent: true,
-        opacity: 0.82,
+        opacity: 0.42,
         depthTest: true,
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      sprite.scale.set(3.0, 3.0, 1);
+      sprite.scale.set(1.35, 1.35, 1);
       sprite.renderOrder = 9;
       sprite.position.copy(pointOnPath(points, i / packetCount) || points[0]);
-      sprite.userData = { layer: 'infrastructure', kind: 'infrastructure-packet', data: cable };
+      sprite.userData = { layer: 'infrastructure', kind: 'infrastructure-packet', data: cable, baseScale: 1.35 };
       group.add(sprite);
       engine.infrastructurePackets.push({
         sprite,
@@ -178,6 +414,7 @@
         progress: i / packetCount + Math.random() * 0.05,
         speed: 0.045 + Math.random() * 0.035,
         phase: Math.random() * Math.PI * 2,
+        baseScale: 1.35,
       });
     }
   }
@@ -186,33 +423,81 @@
     if (!Number.isFinite(Number(node.lat)) || !Number.isFinite(Number(node.lon))) return;
     const group = ensureLayer(engine);
     const color = node.color || colorForType(node.type);
-    const size = 2.0 + Math.min(3, Number(node.tier || 1)) * 0.75;
+    const size = 1.1 + Math.min(3, Number(node.tier || 1)) * 0.42;
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: textureFor(node.type, color),
       color: 0xffffff,
       transparent: true,
-      opacity: 0.92 * (engine.layerOpacity.infrastructure ?? 1),
+      opacity: 0.78 * (engine.layerOpacity.infrastructure ?? 1),
       depthTest: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
     }));
     sprite.position.copy(latLonToVec3(Number(node.lat), Number(node.lon), R + 1.9));
     sprite.scale.set(size, size, 1);
     sprite.renderOrder = 8;
     sprite.userData = {
       layer: 'infrastructure',
-      kind: 'port',
+      kind: 'infrastructure',
       data: {
         id: node.id,
         name: node.name,
+        type: node.type,
+        tier: node.tier,
+        city: node.city || node.name,
         country: node.country || '--',
-        state: `${String(node.type || 'node').toUpperCase()}${node.operator ? ` / ${node.operator}` : ''}`,
+        operator: node.operator || '--',
+        status: `${String(node.type || 'node').toUpperCase()}${node.operator ? ` / ${node.operator}` : ''}`,
         lat: Number(node.lat),
         lon: Number(node.lon),
         source: node.source || 'GlobalData infrastructure layer',
       },
     };
     group.add(sprite);
+    registerZoomSprite(engine, sprite, size, { minFactor: 0.45, maxFactor: 1.9, farShrink: 0.5, closeBoost: 0.82 });
+    engine.pickables?.push?.(sprite);
+  }
+
+  function capacityToSize(capacityMw) {
+    const mw = Number(capacityMw);
+    if (!Number.isFinite(mw) || mw <= 0) return 1.55;
+    return Math.max(1.35, Math.min(3.85, 0.75 + Math.log10(mw + 10) * 0.78));
+  }
+
+  function addPowerPlant(engine, plant) {
+    if (!Number.isFinite(Number(plant.lat)) || !Number.isFinite(Number(plant.lon))) return;
+    if (!powerPlantVisible(engine, plant)) return;
+    const group = ensureLayer(engine);
+    const meta = powerMetaFor(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel);
+    const color = plant.color || meta.color;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: textureFor(`power:${meta.key}`, color),
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.82 * (engine.layerOpacity.infrastructure ?? 1),
+      depthTest: true,
+      depthWrite: false,
+    }));
+    const size = capacityToSize(plant.capacityMw || plant.capacity_mw);
+    sprite.position.copy(latLonToVec3(Number(plant.lat), Number(plant.lon), R + 2.25));
+    sprite.scale.set(size, size, 1);
+    sprite.renderOrder = 10;
+    sprite.userData = {
+      layer: 'infrastructure',
+      kind: 'powerPlant',
+      data: {
+        ...plant,
+        generationType: meta.key,
+        generationLabel: meta.label,
+        color,
+        lat: Number(plant.lat),
+        lon: Number(plant.lon),
+        capacityMw: Number(plant.capacityMw || plant.capacity_mw),
+        sourceName: plant.sourceName || plant.source || 'Public power plant dataset',
+        source: plant.source || plant.sourceName || 'Public power plant dataset',
+      },
+    };
+    group.add(sprite);
+    registerZoomSprite(engine, sprite, size, { minFactor: 0.38, maxFactor: 2.05, farShrink: 0.62, closeBoost: 1.05 });
     engine.pickables?.push?.(sprite);
   }
 
@@ -236,13 +521,12 @@
       map: textureFor('event', color),
       color: 0xffffff,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.76,
       depthTest: true,
       depthWrite: false,
-      blending: THREE.AdditiveBlending,
     }));
     sprite.position.copy(latLonToVec3(Number(event.lat), Number(event.lon), R + 2.05));
-    sprite.scale.set(3.3, 3.3, 1);
+    sprite.scale.set(1.85, 1.85, 1);
     sprite.renderOrder = 10;
     sprite.userData = {
       layer: 'infrastructure',
@@ -259,6 +543,7 @@
       },
     };
     group.add(sprite);
+    registerZoomSprite(engine, sprite, 1.85, { minFactor: 0.45, maxFactor: 1.85, farShrink: 0.5, closeBoost: 0.75 });
     engine.pickables?.push?.(sprite);
   }
 
@@ -267,6 +552,9 @@
     return {
       cables: data?.infrastructureCables?.length ? data.infrastructureCables : fallback.cables || [],
       nodes: data?.infrastructureNodes?.length ? data.infrastructureNodes : fallback.nodes || [],
+      powerPlants: data?.powerPlants?.length ? data.powerPlants
+        : data?.infrastructurePowerPlants?.length ? data.infrastructurePowerPlants
+          : fallback.powerPlants || [],
       events: [
         ...(fallback.events || []),
         ...(data?.infrastructureEvents || []),
@@ -280,13 +568,16 @@
     engine.infrastructurePackets = [];
     engine._clearGroup?.('infrastructure');
     const payload = combinedPayload(data);
+    const infrastructureLimit = Math.max(engine.maxTrackedObjects || 0, 1400);
     payload.cables.slice(0, engine.maxTrackedObjects || 5000).forEach(cable => addCable(engine, cable));
     payload.nodes.slice(0, engine.maxTrackedObjects || 5000).forEach(node => addNode(engine, node));
+    payload.powerPlants.slice(0, infrastructureLimit).forEach(plant => addPowerPlant(engine, plant));
     payload.events.slice(0, 180).forEach(event => addEvent(engine, event));
     window.dispatchEvent(new CustomEvent('globaldata:infrastructure-ready', {
       detail: {
         cables: payload.cables.length,
         nodes: payload.nodes.length,
+        powerPlants: payload.powerPlants.length,
         events: payload.events.length,
       },
     }));
@@ -304,8 +595,10 @@
         const point = pointOnPath(packet.points, packet.progress);
         if (point) packet.sprite.position.copy(point);
         const pulse = 1 + Math.sin(now * 0.009 + packet.phase) * 0.18;
-        packet.sprite.scale.set(3.0 * pulse, 3.0 * pulse, 1);
-        if (packet.sprite.material) packet.sprite.material.opacity = 0.62 + Math.max(0, pulse - 1) * 0.8;
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 1.35;
+        const scale = base * pulse * zoomFactor(engine, { minFactor: 0.52, maxFactor: 1.8, farShrink: 0.42, closeBoost: 0.7 });
+        packet.sprite.scale.set(scale, scale, 1);
+        if (packet.sprite.material) packet.sprite.material.opacity = 0.34 + Math.max(0, pulse - 1) * 0.28;
       });
       requestAnimationFrame(tick);
     };
@@ -329,20 +622,26 @@
     if (slider) slider.disabled = !active;
   }
 
+  function reactInfrastructureRowExists() {
+    if (document.querySelector('[data-layer-id="infrastructure"]')) return true;
+    return Array.from(document.querySelectorAll('.layer-label'))
+      .some(label => String(label.textContent || '').trim().toUpperCase() === 'INFRASTRUCTURE');
+  }
+
   function injectUi() {
     const engine = window.__globalDataEngine;
     const layers = document.querySelector('.layers');
-    if (!engine || !layers || layers.querySelector('[data-infra-row]')) return;
+    if (!engine || !layers || layers.querySelector('[data-infra-row]') || reactInfrastructureRowExists()) return;
 
     const row = document.createElement('div');
     row.className = 'layer-row';
     row.dataset.infraRow = '1';
     row.innerHTML = [
       '<div class="layer-head">',
-      '<div class="layer-idx">0</div>',
+      '<div class="layer-idx">I</div>',
       '<div style="flex:1;min-width:0">',
       '<div class="layer-label">INFRASTRUCTURE</div>',
-      '<div class="layer-sub">CABLES / CLOUD / EXCHANGES</div>',
+      '<div class="layer-sub">CABLES / CLOUD / POWER</div>',
       '</div>',
       '<button data-infra-toggle aria-pressed="false" style="width:32px;height:16px;border-radius:2px;position:relative;cursor:pointer;background:transparent;border:1px solid var(--edge);padding:0;flex-shrink:0">',
       '<span data-infra-knob style="position:absolute;top:1px;left:1px;width:12px;height:12px;background:var(--text-dim);transition:left .15s"></span>',
@@ -375,7 +674,7 @@
 
   window.addEventListener('keydown', event => {
     if (event.target?.tagName === 'INPUT' || event.target?.tagName === 'TEXTAREA') return;
-    if (event.key !== '0') return;
+    if (String(event.key || '').toLowerCase() !== 'i' || reactInfrastructureRowExists()) return;
     const engine = window.__globalDataEngine;
     if (!engine?.layerGroups?.infrastructure) return;
     const next = !engine.layerGroups.infrastructure.visible;
@@ -395,6 +694,7 @@
     const originalUpdate = engine.updateLiveData?.bind(engine);
 
     engine.infrastructurePackets = [];
+    engine.infrastructurePowerFilters = window.GlobalDataInfrastructureFilters?.powerTypes || null;
     engine._ensureLayerGroups = function infrastructureEnsure() {
       originalEnsure?.();
       ensureLayer(engine);
@@ -404,9 +704,17 @@
       if (id === 'infrastructure') engine.infrastructurePackets = [];
     };
     engine.updateLiveData = function infrastructureUpdate(data) {
+      engine.lastInfrastructureData = data || {};
       originalUpdate?.(data);
       renderInfrastructure(engine, data || {});
     };
+    engine.setInfrastructurePowerFilters = function infrastructurePowerFilters(filters) {
+      engine.infrastructurePowerFilters = filters || null;
+      renderInfrastructure(engine, engine.lastInfrastructureData || window.MOCK_DATA || {});
+    };
+    window.addEventListener('globaldata:infrastructure-filter-change', event => {
+      engine.setInfrastructurePowerFilters?.(event.detail?.powerTypes || null);
+    });
 
     engine._ensureLayerGroups();
     startInfrastructureLoop(engine);

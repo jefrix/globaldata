@@ -142,12 +142,194 @@ const LAYERS = [
   { id: 'geographic', label: 'GEOGRAPHIC',  sub: 'BORDERS · CITIES · POI',        hotkey: '2' },
   { id: 'climate',    label: 'NATURE',      sub: 'EARTHQUAKES · STORMS · ALERTS', hotkey: '3' },
   { id: 'news',       label: 'NEWS',        sub: 'EVENTS · SOURCE CONFIDENCE',    hotkey: '4' },
+  { id: 'infrastructure', label: 'INFRASTRUCTURE', sub: 'CABLES · CLOUD · POWER', hotkey: 'I' },
   { id: 'conflicts',  label: 'CONFLICTS',   sub: 'KINETIC · GRAY ZONE',           hotkey: '5' },
   { id: 'military',   label: 'MILITARY',    sub: 'BASES · NAVAL ASSETS',          hotkey: '6' },
   { id: 'logistics',  label: 'LOGISTICS',   sub: 'CONTAINER · OIL · LNG · TRUCK', hotkey: '7' },
   { id: 'flights',    label: 'FLIGHTS',     sub: 'ADS-B · ROUTES',                hotkey: '8' },
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
+  { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD / COLO / AI CAPACITY', hotkey: '0' },
+  { id: 'markets',    label: 'MARKETS',     sub: 'INDICES · METALS · CRYPTO',     hotkey: 'M' },
 ];
+
+const FALLBACK_POWER_TYPES = {
+  nuclear: { label: 'Nuclear', tag: 'NUC', color: '#ff4f76' },
+  hydro: { label: 'Hydro', tag: 'HYD', color: '#46c7ff' },
+  solar: { label: 'Solar', tag: 'SOL', color: '#ffd84d' },
+  wind: { label: 'Wind', tag: 'WND', color: '#9be7ff' },
+  coal: { label: 'Coal', tag: 'COL', color: '#ff8f3d' },
+  gas: { label: 'Gas', tag: 'GAS', color: '#b38cff' },
+  oil: { label: 'Oil', tag: 'OIL', color: '#f5b142' },
+  geothermal: { label: 'Geothermal', tag: 'GEO', color: '#ff6f59' },
+  biomass: { label: 'Biomass', tag: 'BIO', color: '#76d672' },
+  waste: { label: 'Waste', tag: 'WST', color: '#c9d45b' },
+  storage: { label: 'Storage', tag: 'BAT', color: '#5bd7ff' },
+  cogeneration: { label: 'Cogeneration', tag: 'CHP', color: '#d9e4ef' },
+  other: { label: 'Other', tag: 'OTH', color: '#aeb7c2' },
+};
+const POWER_TYPE_META = window.GLOBALDATA_POWER_TYPES || FALLBACK_POWER_TYPES;
+const POWER_SUBLAYERS = Object.entries(POWER_TYPE_META).map(([id, meta]) => ({ id, ...meta }));
+const DEFAULT_POWER_FILTERS = Object.fromEntries(POWER_SUBLAYERS.map(type => [type.id, true]));
+
+function powerTypeKey(type) {
+  const key = String(type || '').trim().toLowerCase().replace(/[\s_-]+/g, '-');
+  if (key.includes('nuclear')) return 'nuclear';
+  if (key.includes('hydro')) return 'hydro';
+  if (key.includes('solar')) return 'solar';
+  if (key.includes('wind')) return 'wind';
+  if (key.includes('coal')) return 'coal';
+  if (key.includes('gas')) return 'gas';
+  if (key.includes('oil')) return 'oil';
+  if (key.includes('geo')) return 'geothermal';
+  if (key.includes('bio')) return 'biomass';
+  if (key.includes('waste')) return 'waste';
+  if (key.includes('storage') || key.includes('battery')) return 'storage';
+  if (key.includes('cogen') || key.includes('chp')) return 'cogeneration';
+  return key || 'other';
+}
+
+function powerMetaFor(type) {
+  const key = powerTypeKey(type);
+  const meta = POWER_TYPE_META[key] || {};
+  return {
+    key,
+    label: meta.label || key.toUpperCase(),
+    tag: meta.tag || key.slice(0, 3).toUpperCase(),
+    color: meta.color || '#d9e4ef',
+  };
+}
+
+function formatMw(value) {
+  const mw = Number(value);
+  return Number.isFinite(mw) ? `${Math.round(mw).toLocaleString()} MW` : '--';
+}
+
+function formatGwh(value) {
+  const gwh = Number(value);
+  return Number.isFinite(gwh) ? `${Math.round(gwh).toLocaleString()} GWh` : '--';
+}
+
+const MARKET_CONFIG = window.GLOBALDATA_MARKETS || { categories: [], refreshMs: 60000 };
+const MARKET_CATEGORIES = MARKET_CONFIG.categories || [];
+const MARKET_ITEMS = MARKET_CATEGORIES.flatMap(category =>
+  (category.items || []).map(item => ({ ...item, categoryId: category.id, categoryLabel: category.label }))
+);
+
+function formatMarketNumber(value, type) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '--';
+  const maximumFractionDigits = type === 'crypto' && number < 10 ? 4 : number >= 1000 ? 2 : 3;
+  return number.toLocaleString(undefined, { maximumFractionDigits });
+}
+
+function formatMarketChange(value, pct) {
+  const change = Number(value);
+  const changePct = Number(pct);
+  if (!Number.isFinite(change) || !Number.isFinite(changePct)) return '--';
+  const sign = change > 0 ? '+' : '';
+  return `${sign}${formatMarketNumber(change)} / ${sign}${changePct.toFixed(2)}%`;
+}
+
+function marketStatusFor(changePct) {
+  const pct = Number(changePct);
+  if (!Number.isFinite(pct) || Math.abs(pct) < 0.05) return 'flat';
+  return pct > 0 ? 'up' : 'down';
+}
+
+function sourceQuoteFor(item, quotes = {}) {
+  const liveQuote = quotes[item.symbol];
+  const quote = liveQuote?.ok ? liveQuote : item.fallback || liveQuote || {};
+  const fallback = !liveQuote?.ok;
+  const price = Number.isFinite(Number(quote.price)) ? Number(quote.price) : null;
+  const previousClose = Number.isFinite(Number(quote.previousClose)) ? Number(quote.previousClose) : null;
+  const change = Number.isFinite(Number(quote.change)) ? Number(quote.change)
+    : price !== null && previousClose !== null ? price - previousClose : null;
+  const changePct = Number.isFinite(Number(quote.changePct)) ? Number(quote.changePct)
+    : change !== null && previousClose ? (change / previousClose) * 100 : null;
+  return {
+    ...item,
+    ...quote,
+    price,
+    previousClose,
+    change,
+    changePct,
+    fallback,
+    status: marketStatusFor(changePct),
+    sourceUrl: quote.sourceUrl || item.sourceUrl,
+  };
+}
+
+function marketRowsFromQuotes(quotes = {}) {
+  return MARKET_ITEMS.map(item => sourceQuoteFor(item, quotes));
+}
+
+async function fetchMarketQuotes(symbols) {
+  const encoded = encodeURIComponent(symbols.join(','));
+  const currentOrigin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : null;
+  const candidates = [
+    window.GLOBALDATA_API_BASE,
+    window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? currentOrigin : null,
+    'http://localhost:3000',
+  ].filter(Boolean).map(base => `${String(base).replace(/\/$/, '')}/api/markets?symbols=${encoded}`);
+
+  for (const url of [...new Set(candidates)]) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.json();
+    } catch {
+      // Try the next source.
+    }
+  }
+
+  throw new Error('market API unavailable');
+}
+
+function useMarketData(active) {
+  const [state, setState] = useState(() => ({
+    status: 'REFERENCE',
+    source: 'Static market snapshot',
+    updatedAt: MARKET_CONFIG.generatedAt || null,
+    quotes: {},
+  }));
+
+  useEffect(() => {
+    if (!active || !MARKET_ITEMS.length) return undefined;
+    let cancelled = false;
+    const symbols = MARKET_ITEMS.map(item => item.symbol);
+
+    const load = async () => {
+      try {
+        const payload = await fetchMarketQuotes(symbols);
+        if (cancelled) return;
+        const liveCount = Object.values(payload.quotes || {}).filter(quote => quote?.ok).length;
+        setState({
+          status: liveCount ? 'LIVE DELAYED' : 'REFERENCE',
+          source: payload.source || 'Market data',
+          updatedAt: payload.generatedAt || new Date().toISOString(),
+          quotes: payload.quotes || {},
+        });
+      } catch (error) {
+        if (!cancelled) {
+          setState(current => ({
+            ...current,
+            status: 'REFERENCE',
+            source: `Static market snapshot${error?.message ? ` / ${error.message}` : ''}`,
+          }));
+        }
+      }
+    };
+
+    load();
+    const interval = setInterval(load, MARKET_CONFIG.refreshMs || 60000);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [active]);
+
+  return state;
+}
 
 // ============ SMALL UI BITS ============
 function Toggle({ on, onClick, color }) {
@@ -185,9 +367,38 @@ function Slider({ value, onChange, color, disabled }) {
 }
 
 // ============ LAYER CONTROL ============
-function LayerRow({ layer, active, opacity, onToggle, onOpacity, color }) {
+function PowerSublayerControls({ filters, active, onToggle }) {
   return (
-    <div className={`layer-row ${active ? 'active' : ''}`}>
+    <div className="infra-subcontrols" aria-label="Infrastructure power generation sublayers">
+      {POWER_SUBLAYERS.map(type => {
+        const on = filters[type.id] !== false;
+        return (
+          <button
+            key={type.id}
+            type="button"
+            className={`infra-subtoggle ${on ? 'on' : ''}`}
+            style={{
+              color: on ? type.color : 'var(--text-dim)',
+              borderColor: on ? type.color : 'var(--edge)',
+              opacity: active ? 1 : 0.55,
+              background: on ? `${type.color}18` : 'transparent',
+            }}
+            onClick={() => onToggle(type.id)}
+            aria-pressed={on}
+            title={`${type.label} generation`}
+          >
+            <span>{type.tag}</span>
+            <b>{type.label.toUpperCase()}</b>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function LayerRow({ layer, active, opacity, onToggle, onOpacity, color, sublayerContent }) {
+  return (
+    <div className={`layer-row ${active ? 'active' : ''}`} data-layer-id={layer.id}>
       <div className="layer-head">
         <div className="layer-idx">{layer.hotkey}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -201,6 +412,7 @@ function LayerRow({ layer, active, opacity, onToggle, onOpacity, color }) {
         <Slider value={opacity} onChange={onOpacity} color={color} disabled={!active} />
         <span className="sl-val">{String(Math.round(opacity * 100)).padStart(3, '0')}</span>
       </div>
+      {sublayerContent}
     </div>
   );
 }
@@ -270,8 +482,10 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
             <div className="logo-st">INTELLIGENCE BRIEFING SYSTEM / v1.0</div>
             <nav className="top-links" aria-label="Jefrix project links">
               <a href="https://jefrix.github.io/Fieldnotes/index.html">FIELDNOTES</a>
-              <a href="https://jefrix.github.io/History-Timeline/">TIMELINE</a>
+              <a href="https://jefrix.github.io/History-Timeline/">ALMANAC</a>
+              <a data-fieldnotes-timeline-link="1" href="https://jefrix.github.io/History-Timeline/history-timeline.html">TIMELINE</a>
               <a href="https://jefrix.github.io/HQR/">HQR</a>
+              <a data-collapse-signature-link="1" href="https://jefrix.github.io/collapse-signature-research/">CSR</a>
             </nav>
           </div>
         </div>
@@ -314,7 +528,7 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
     <div className="bottom-bar">
       <div className="stat">
         <span className="st-lbl">LAYERS</span>
-        <span className="st-val">{stats.activeLayers}/9</span>
+        <span className="st-val">{stats.activeLayers}/{LAYERS.length}</span>
       </div>
       <div className="stat">
         <span className="st-lbl">FLIGHTS TRK</span>
@@ -335,6 +549,14 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
       <div className="stat">
         <span className="st-lbl">CYBER ACT</span>
         <span className="st-val" style={{ color: '#ff5c2e' }}>{stats.cyber}</span>
+      </div>
+      <div className="stat">
+        <span className="st-lbl">POWER GEN</span>
+        <span className="st-val" style={{ color: '#ffd84d' }}>{stats.infrastructure}</span>
+      </div>
+      <div className="stat">
+        <span className="st-lbl">DATA CTR</span>
+        <span className="st-val" style={{ color: '#5bd7ff' }}>{stats.dataCenters}</span>
       </div>
       <div className="stat">
         <span className="st-lbl">CONFLICTS</span>
@@ -361,7 +583,22 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
 }
 
 // ============ RIGHT RAIL — EVENT TICKER ============
-function EventFeed({ active, theme, data, densityValue, onSelect, selectedId }) {
+function infrastructurePayload(data) {
+  const fallback = window.GLOBALDATA_INFRASTRUCTURE || {};
+  return {
+    cables: data?.infrastructureCables?.length ? data.infrastructureCables : fallback.cables || [],
+    nodes: data?.infrastructureNodes?.length ? data.infrastructureNodes : fallback.nodes || [],
+    powerPlants: data?.powerPlants?.length ? data.powerPlants
+      : data?.infrastructurePowerPlants?.length ? data.infrastructurePowerPlants
+        : fallback.powerPlants || [],
+    events: [
+      ...(fallback.events || []),
+      ...(data?.infrastructureEvents || []),
+    ],
+  };
+}
+
+function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAULT_POWER_FILTERS, marketItems = [], onSelect, selectedId }) {
   const items = useMemo(() => {
     const D = data || window.MOCK_DATA;
     const feed = [];
@@ -402,6 +639,89 @@ function EventFeed({ active, theme, data, densityValue, onSelect, selectedId }) 
         color: c.color || (c.severity === 'CRIT' ? '#ff3370' : c.severity === 'HIGH' ? '#ff5c2e' : '#f5a742'),
         inspectorKind: 'cyber',
         data: c,
+      }));
+    }
+    if (active.markets) {
+      marketItems.slice(0, 50).forEach((market, index) => feed.push({
+        id: market.id || market.symbol,
+        t: market.marketTime ? Date.parse(market.marketTime) : Date.now() - index * 30000,
+        kind: market.type === 'crypto' ? 'COIN' : market.type === 'metal' ? 'MTL' : 'MKT',
+        cat: market.status === 'up' ? 'UP' : market.status === 'down' ? 'DOWN' : 'FLAT',
+        city: market.exchange || market.region || '--',
+        country: market.region || market.currency || '--',
+        title: market.label || market.name,
+        meta: `${formatMarketNumber(market.price, market.type)} ${formatMarketChange(market.change, market.changePct)}`,
+        color: market.status === 'up' ? '#73ff9a' : market.status === 'down' ? '#ff6f59' : '#ffd84d',
+        inspectorKind: 'market',
+        data: market,
+      }));
+    }
+    if (active.infrastructure) {
+      const infra = infrastructurePayload(D);
+      infra.powerPlants
+        .filter(plant => infraPowerTypes[powerTypeKey(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel)] !== false)
+        .slice(0, 80)
+        .forEach((plant, index) => {
+          const meta = powerMetaFor(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel);
+          feed.push({
+            id: plant.id || plant.name,
+            t: Date.now() - index * 45000,
+            kind: meta.tag,
+            cat: formatMw(plant.capacityMw || plant.capacity_mw),
+            city: plant.county && plant.state ? `${plant.county}, ${plant.state}` : plant.state || plant.country || '--',
+            country: plant.country || '--',
+            title: plant.name,
+            meta: `${meta.label} / ${formatMw(plant.capacityMw || plant.capacity_mw)}`,
+            color: plant.color || meta.color,
+            inspectorKind: 'powerPlant',
+            data: plant,
+          });
+        });
+      infra.nodes.slice(0, 24).forEach((node, index) => feed.push({
+        id: node.id || node.name,
+        t: Date.now() - (index + 90) * 45000,
+        kind: 'INF',
+        cat: String(node.type || 'NODE').toUpperCase(),
+        city: node.city || node.name || '--',
+        country: node.country || '--',
+        title: node.name,
+        meta: node.operator || node.type || 'INFRASTRUCTURE',
+        color: node.color || '#5bd7ff',
+        inspectorKind: 'infrastructure',
+        data: node,
+      }));
+      infra.events.slice(0, 16).forEach((event, index) => feed.push({
+        id: event.id || event.title,
+        t: Date.now() - (index + 1000) * 45000,
+        kind: 'INF',
+        cat: event.severity || event.category || 'WATCH',
+        city: event.city || event.name || 'Infrastructure',
+        country: event.country || '--',
+        title: event.title,
+        meta: event.sourceName || event.source || 'INFRASTRUCTURE',
+        color: /watch|risk|high|outage/i.test(event.severity || event.title || '') ? '#ff5c2e' : '#f5d142',
+        inspectorKind: 'news',
+        data: {
+          ...event,
+          category: event.category || 'INFRASTRUCTURE',
+          sourceName: event.sourceName || event.source || 'Infrastructure',
+          ts: event.ts || Date.now(),
+        },
+      }));
+    }
+    if (active.dataCenters) {
+      (D.dataCenters || []).forEach((dc, index) => feed.push({
+        id: dc.id || dc.name,
+        t: Date.now() - index * 60000,
+        kind: 'DC',
+        cat: Number.isFinite(Number(dc.powerMw)) ? `${Math.round(Number(dc.powerMw))}MW` : 'UNDISC',
+        city: dc.city || dc.region || '--',
+        country: dc.country || '--',
+        title: dc.name,
+        meta: dc.operator || dc.owner || 'DATA CENTER',
+        color: Number.isFinite(Number(dc.powerMw)) && Number(dc.powerMw) >= 200 ? '#5bd7ff' : '#73ff9a',
+        inspectorKind: 'dataCenter',
+        data: dc,
       }));
     }
     if (active.conflicts) {
@@ -481,7 +801,7 @@ function EventFeed({ active, theme, data, densityValue, onSelect, selectedId }) 
     }
     feed.sort((a, b) => b.t - a.t);
     return feed.slice(0, 60);
-  }, [active, theme, data, densityValue]);
+  }, [active, theme, data, densityValue, infraPowerTypes, marketItems]);
 
   const fmtT = (t) => {
     const diff = Math.floor((Date.now() - t) / 60000);
@@ -524,6 +844,75 @@ function EventFeed({ active, theme, data, densityValue, onSelect, selectedId }) 
   );
 }
 
+function MarketBoard({ items, state, onSelect, selectedId }) {
+  const grouped = MARKET_CATEGORIES.map(category => ({
+    ...category,
+    items: items.filter(item => item.categoryId === category.id),
+  })).filter(category => category.items.length);
+  const leaders = [...items]
+    .filter(item => Number.isFinite(Number(item.changePct)))
+    .sort((a, b) => Math.abs(Number(b.changePct)) - Math.abs(Number(a.changePct)))
+    .slice(0, 4);
+
+  return (
+    <div className="market-board">
+      <div className="market-head">
+        <div>
+          <div className="market-title">GLOBAL MARKETS</div>
+          <div className="market-sub">INDICES / PRECIOUS METALS / CRYPTO</div>
+        </div>
+        <div className="market-status">
+          <span>{state.status}</span>
+          <b>{state.updatedAt ? new Date(state.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</b>
+        </div>
+      </div>
+      <div className="market-leaders">
+        {leaders.map(item => (
+          <button
+            key={`leader-${item.id}`}
+            className={`market-chip ${item.status}`}
+            onClick={() => onSelect?.({ kind: 'market', data: item, eventId: item.id })}
+          >
+            <span>{item.label}</span>
+            <b>{formatMarketChange(item.change, item.changePct)}</b>
+          </button>
+        ))}
+      </div>
+      <div className="market-scroll">
+        {grouped.map(category => (
+          <section className="market-section" key={category.id}>
+            <div className="market-section-hd">
+              <span>{category.label}</span>
+              <b>{category.items.length}</b>
+            </div>
+            <div className="market-grid">
+              {category.items.map(item => (
+                <button
+                  key={item.id}
+                  className={`market-card ${item.status} ${selectedId === item.id ? 'selected' : ''}`}
+                  onClick={() => onSelect?.({ kind: 'market', data: item, eventId: item.id })}
+                >
+                  <div className="market-card-top">
+                    <span>{item.label}</span>
+                    <b>{item.currency || item.region || '--'}</b>
+                  </div>
+                  <div className="market-card-name">{item.name}</div>
+                  <div className="market-price">{formatMarketNumber(item.price, item.type)}</div>
+                  <div className="market-change">{formatMarketChange(item.change, item.changePct)}</div>
+                  <div className="market-card-meta">
+                    <span>{item.exchange || item.exchangeName || item.region}</span>
+                    {item.fallback && <b>REF</b>}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ============ INSPECTOR ============
 function Row({ k, v, color }) {
   return <div className="insp-row"><span>{k}</span><b style={color ? { color } : null}>{v}</b></div>;
@@ -547,7 +936,11 @@ function Inspector({ pick, onClose, theme }) {
         {kind === 'flight' && <FlightDetail d={data} />}
         {kind === 'vessel' && <VesselDetail d={data} />}
         {kind === 'port' && <PortDetail d={data} />}
+        {kind === 'infrastructure' && <InfrastructureDetail d={data} />}
+        {kind === 'powerPlant' && <PowerPlantDetail d={data} />}
+        {kind === 'market' && <MarketDetail d={data} />}
         {kind === 'news' && <NewsDetail d={data} />}
+        {kind === 'dataCenter' && <DataCenterDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
         {kind === 'diplomacy' && <DiplomacyDetail d={data} />}
         {kind === 'military' && <MilitaryDetail d={data} />}
@@ -575,6 +968,61 @@ function PortDetail({ d }) {
     <Row k="SHIPS/DAY" v={port.shipsPerDay || '--'} />
     <Row k="ESTIMATE" v={port.trafficBasis || '--'} />
     <Row k="SOURCE" v={port.source || 'ports dataset'} />
+  </>);
+}
+function InfrastructureDetail({ d }) {
+  return (<>
+    <div className="insp-title" style={{ color: '#5bd7ff' }}>{d.name}</div>
+    <Row k="TYPE" v={String(d.type || 'NODE').toUpperCase()} color="#5bd7ff" />
+    <Row k="LOCATION" v={`${d.city || d.name || '--'}, ${d.country || '--'}`} />
+    <Row k="OPERATOR" v={d.operator || '--'} />
+    <Row k="TIER" v={d.tier ? `T${d.tier}` : '--'} />
+    <Row k="STATUS" v={d.status || 'Mapped infrastructure node'} />
+    <Row k="SOURCE" v={d.source || 'GlobalData infrastructure layer'} />
+  </>);
+}
+function PowerPlantDetail({ d }) {
+  const meta = powerMetaFor(d.generationType || d.primaryFuel || d.primary_fuel || d.fuel);
+  const source = d.sourceName || d.source || d.dataset || 'Public power plant dataset';
+  return (<>
+    <div className="insp-title" style={{ color: d.color || meta.color }}>{d.name}</div>
+    <Row k="TYPE" v={meta.label.toUpperCase()} color={d.color || meta.color} />
+    <Row k="CAPACITY" v={formatMw(d.capacityMw || d.capacity_mw)} color={d.color || meta.color} />
+    <Row k="LOCATION" v={d.county && d.state ? `${d.county} County, ${d.state}` : d.state || d.country || '--'} />
+    <Row k="COUNTRY" v={d.country || d.country_long || '--'} />
+    <Row k="OWNER" v={d.owner || '--'} />
+    <Row k="OPERATOR" v={d.operator || d.owner || '--'} />
+    {d.generatorCount && <Row k="UNITS" v={d.generatorCount} />}
+    <Row k="COMMISSION" v={d.commissioningYear || d.commissioning_year || '--'} />
+    <Row k="GEN 2017" v={formatGwh(d.annualGenerationGwh ?? d.generation_gwh_2017)} />
+    <Row k="DATA YEAR" v={d.sourceYear || d.year_of_capacity_data || 'see source'} />
+    <Row k="DATASET" v={d.dataset || 'WRI Global Power Plant Database'} />
+    <Row k="SOURCE" v={source} />
+    {d.regulatorSource && <Row k="REGULATOR" v={d.regulatorSource} />}
+    {d.sourceUrl && <div className="news-actions">
+      <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">OPEN SOURCE</a>
+      {d.regulatorUrl && <a className="news-link" href={d.regulatorUrl} target="_blank" rel="noreferrer">OPEN NRC</a>}
+    </div>}
+  </>);
+}
+function MarketDetail({ d }) {
+  const color = d.status === 'up' ? '#73ff9a' : d.status === 'down' ? '#ff6f59' : '#ffd84d';
+  return (<>
+    <div className="insp-title" style={{ color }}>{d.label || d.symbol}</div>
+    <Row k="NAME" v={d.name || '--'} />
+    <Row k="SYMBOL" v={d.symbol || '--'} color={color} />
+    <Row k="TYPE" v={String(d.type || 'market').toUpperCase()} />
+    <Row k="PRICE" v={`${formatMarketNumber(d.price, d.type)} ${d.currency || ''}`.trim()} color={color} />
+    <Row k="CHANGE" v={formatMarketChange(d.change, d.changePct)} color={color} />
+    <Row k="PREV CLOSE" v={formatMarketNumber(d.previousClose, d.type)} />
+    <Row k="DAY RANGE" v={`${formatMarketNumber(d.dayLow, d.type)} - ${formatMarketNumber(d.dayHigh, d.type)}`} />
+    <Row k="EXCHANGE" v={d.exchangeName || d.exchange || '--'} />
+    <Row k="REGION" v={d.region || '--'} />
+    <Row k="UPDATED" v={d.marketTime ? new Date(d.marketTime).toLocaleString() : d.fallback ? 'Static snapshot' : '--'} />
+    <Row k="SOURCE" v={d.fallback ? 'Static fallback / Yahoo Finance snapshot' : 'Yahoo Finance chart API'} />
+    {d.sourceUrl && <div className="news-actions">
+      <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">OPEN SOURCE</a>
+    </div>}
   </>);
 }
 function FlightDetail({ d }) {
@@ -612,6 +1060,27 @@ function NewsDetail({ d }) {
     <Row k="AGE" v={`${Math.floor((Date.now() - d.ts) / 60000)} min ago`} />
     {d.url && <div className="news-actions">
       <a className="news-link" href={d.url} target="_blank" rel="noreferrer">OPEN ARTICLE</a>
+    </div>}
+  </>);
+}
+function DataCenterDetail({ d }) {
+  const power = Number.isFinite(Number(d.powerMw)) ? `${Math.round(Number(d.powerMw)).toLocaleString()} MW` : null;
+  const source = d.sourceName || d.source || 'Public source';
+  return (<>
+    <div className="insp-title" style={{ color: '#5bd7ff' }}>{d.name}</div>
+    <Row k="OWNER" v={d.owner || '--'} />
+    <Row k="OPERATOR" v={d.operator || d.owner || '--'} />
+    <Row k="TYPE" v={d.type || '--'} />
+    <Row k="LOCATION" v={`${d.city || '--'}, ${d.country || '--'}`} />
+    <Row k="REGION" v={d.region || '--'} />
+    <Row k="POWER" v={d.powerLabel || power || 'Not publicly disclosed'} color={power ? '#5bd7ff' : '#d9e4ef'} />
+    <Row k="COMPUTE" v={d.computeCapacity || 'Not publicly disclosed'} />
+    <Row k="FACILITY" v={d.facilitySize || '--'} />
+    <Row k="NETWORK" v={d.network || '--'} />
+    <Row k="STATUS" v={d.status || '--'} color="#73ff9a" />
+    <Row k="SOURCE" v={source} />
+    {d.sourceUrl && <div className="news-actions">
+      <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">OPEN SOURCE</a>
     </div>}
   </>);
 }
@@ -754,6 +1223,7 @@ function mergeLiveData(live) {
     kasperskyCyber: live.kasperskyCyber || [],
     earthquakes: live.earthquakes || [],
     weather: live.weather || [],
+    dataCenters: D.dataCenters || [],
   };
 }
 
@@ -853,6 +1323,10 @@ function isMilitaryVesselRecord(vessel) {
 }
 
 function selectionColorForEvent(pick) {
+  if (pick?.kind === 'powerPlant') {
+    return powerMetaFor(pick.data?.generationType || pick.data?.primaryFuel || pick.data?.primary_fuel || pick.data?.fuel).color;
+  }
+  if (pick?.kind === 'infrastructure') return '#5bd7ff';
   return '#73ff9a';
 }
 
@@ -959,6 +1433,13 @@ function App() {
   const [opacity, setOpacity] = useState(() => {
     const a = {}; LAYERS.forEach(l => a[l.id] = 1); return a;
   });
+  const [infraPowerTypes, setInfraPowerTypes] = useState(() => {
+    try {
+      return { ...DEFAULT_POWER_FILTERS, ...(JSON.parse(localStorage.getItem('gd_infra_power_types')) || {}) };
+    } catch {
+      return { ...DEFAULT_POWER_FILTERS };
+    }
+  });
   const [densityValue, setDensityValue] = useState(() => {
     const saved = Number(localStorage.getItem('gd_density_limit'));
     return Number.isFinite(saved) ? saved : 0.5;
@@ -971,7 +1452,10 @@ function App() {
   const engineRef = useRef(null);
   const theme = window.THEMES[tweaks.theme];
   const { data, status: dataStatus } = useLiveData(tweaks.density, densityValue);
+  const marketState = useMarketData(active.markets);
+  const marketItems = useMemo(() => marketRowsFromQuotes(marketState.quotes), [marketState.quotes]);
   useEffect(() => { localStorage.setItem('gd_tweaks', JSON.stringify(tweaks)); }, [tweaks]);
+  useEffect(() => { localStorage.setItem('gd_infra_power_types', JSON.stringify(infraPowerTypes)); }, [infraPowerTypes]);
   useEffect(() => { localStorage.setItem('gd_density_limit', String(densityValue)); }, [densityValue]);
 
 useEffect(() => {
@@ -1021,6 +1505,17 @@ useEffect(() => {
 });
   }, [active, opacity]);
 
+  useEffect(() => {
+    window.GlobalDataInfrastructureFilters = { powerTypes: infraPowerTypes };
+    if (engineRef.current?.setInfrastructurePowerFilters) {
+      engineRef.current.setInfrastructurePowerFilters(infraPowerTypes);
+    } else {
+      window.dispatchEvent(new CustomEvent('globaldata:infrastructure-filter-change', {
+        detail: { powerTypes: infraPowerTypes },
+      }));
+    }
+  }, [infraPowerTypes]);
+
   // Grid / labels / projection / spin
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
@@ -1033,9 +1528,8 @@ useEffect(() => {
   useEffect(() => {
     const onKey = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      const idx = parseInt(e.key) - 1;
-      if (idx >= 0 && idx < LAYERS.length) {
-        const l = LAYERS[idx];
+      const l = LAYERS.find(layer => String(layer.hotkey).toLowerCase() === String(e.key).toLowerCase());
+      if (l) {
         setActive(a => ({ ...a, [l.id]: !a[l.id] }));
       }
       if (e.key === 'r' || e.key === 'R') engineRef.current?.resetView();
@@ -1075,15 +1569,20 @@ useEffect(() => {
         : 0,
       news: active.news ? D.news.length : 0,
       cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
+      dataCenters: active.dataCenters ? (D.dataCenters?.length || 0) : 0,
+      markets: active.markets ? marketItems.length : 0,
+      infrastructure: active.infrastructure ? infrastructurePayload(D).powerPlants
+        .filter(plant => infraPowerTypes[powerTypeKey(plant.generationType || plant.primaryFuel || plant.primary_fuel || plant.fuel)] !== false)
+        .length : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
     };
-  }, [active, data]);
+  }, [active, data, infraPowerTypes, marketItems.length]);
 
   const colorFor = (id) => {
     const m = {
       diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
-      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040',
+      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a',
     };
     return m[id] || theme.accent;
   };
@@ -1099,6 +1598,10 @@ useEffect(() => {
   const clearRailSelection = React.useCallback(() => {
     setRailPick(null);
     engineRef.current?.clearSelectionHighlight?.();
+  }, []);
+
+  const toggleInfraPowerType = React.useCallback(typeId => {
+    setInfraPowerTypes(current => ({ ...current, [typeId]: current[typeId] === false }));
   }, []);
 
   // Theme CSS vars
@@ -1179,6 +1682,13 @@ useEffect(() => {
                 color={colorFor(l.id)}
                 onToggle={() => setActive(a => ({ ...a, [l.id]: !a[l.id] }))}
                 onOpacity={v => setOpacity(o => ({ ...o, [l.id]: v }))}
+                sublayerContent={l.id === 'infrastructure' ? (
+                  <PowerSublayerControls
+                    filters={infraPowerTypes}
+                    active={active.infrastructure}
+                    onToggle={toggleInfraPowerType}
+                  />
+                ) : null}
               />
             ))}
           </div>
@@ -1205,25 +1715,33 @@ useEffect(() => {
         </aside>
 
         {/* GLOBE */}
-        <div className="globe-wrap">
-          <div ref={globeRef} className="globe" />
+        <div className={`globe-wrap ${active.markets ? 'market-mode' : ''}`}>
+          <div ref={globeRef} className={`globe ${active.markets ? 'hidden-globe' : ''}`} />
+          {active.markets && (
+            <MarketBoard
+              items={marketItems}
+              state={marketState}
+              selectedId={railPick?.eventId || null}
+              onSelect={selectFeedEvent}
+            />
+          )}
           {/* Corner crosshairs */}
-          <div className="xh xh-tl"><span/><span/></div>
-          <div className="xh xh-tr"><span/><span/></div>
-          <div className="xh xh-bl"><span/><span/></div>
-          <div className="xh xh-br"><span/><span/></div>
+          {!active.markets && <div className="xh xh-tl"><span/><span/></div>}
+          {!active.markets && <div className="xh xh-tr"><span/><span/></div>}
+          {!active.markets && <div className="xh xh-bl"><span/><span/></div>}
+          {!active.markets && <div className="xh xh-br"><span/><span/></div>}
 
           {/* Zoom controls */}
-          <div className="zoom-controls">
+          {!active.markets && <div className="zoom-controls">
             <button onClick={() => engineRef.current?.zoomBy(0.85)}>+</button>
             <div className="zoom-rail">
-              <div className="zoom-tick" style={{top: `${(1 - (parseFloat(camInfo.zoom) - 0.5) / 1.8) * 100}%`}} />
+              <div className="zoom-tick" style={{top: `${Math.max(0, Math.min(100, (1 - (parseFloat(camInfo.zoom) - 0.57) / 2.29) * 100))}%`}} />
             </div>
             <button onClick={() => engineRef.current?.zoomBy(1.18)}>−</button>
-          </div>
+          </div>}
 
           {/* Bearing indicator */}
-          <div className="bearing">
+          {!active.markets && <div className="bearing">
             <svg width="60" height="60" viewBox="-30 -30 60 60">
               <circle r="28" fill="none" stroke="currentColor" strokeWidth="0.8" opacity=".4" />
               <circle r="22" fill="none" stroke="currentColor" strokeWidth="0.5" opacity=".3" strokeDasharray="2 2" />
@@ -1232,13 +1750,13 @@ useEffect(() => {
               </g>
               <text x="0" y="-16" textAnchor="middle" fontSize="6" fill="currentColor">N</text>
             </svg>
-          </div>
+          </div>}
 
           {/* Scanline overlay */}
           <div className="scanlines" />
 
           {/* Inspector (only when something picked) */}
-          {pick && <div className="picked-wrap"><Inspector pick={pick} onClose={() => setPick(null)} theme={theme} /></div>}
+          {pick && !active.markets && <div className="picked-wrap"><Inspector pick={pick} onClose={() => setPick(null)} theme={theme} /></div>}
         </div>
 
         {/* RIGHT RAIL — FEED + EMPTY INSPECTOR */}
@@ -1249,6 +1767,8 @@ useEffect(() => {
             theme={theme}
             data={data}
             densityValue={densityValue}
+            infraPowerTypes={infraPowerTypes}
+            marketItems={marketItems}
             selectedId={railPick?.eventId || null}
             onSelect={selectFeedEvent}
           />

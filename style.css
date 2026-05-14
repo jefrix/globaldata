@@ -168,6 +168,46 @@ html, body {
 .sl-lbl { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.15em; color: var(--text-dim); width: 22px; }
 .sl-val { font-family: var(--mono); font-size: 9px; color: var(--text-dim); width: 24px; text-align: right; }
 
+.infra-subcontrols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 9px;
+  padding-left: 34px;
+}
+.infra-subtoggle {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 26px;
+  padding: 4px 7px;
+  border: 1px solid var(--edge);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--mono);
+  text-align: left;
+  transition: background .15s, border-color .15s, color .15s, opacity .15s;
+}
+.infra-subtoggle:hover { background: rgba(255,255,255,0.04) !important; }
+.infra-subtoggle span {
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  border-right: 1px solid currentColor;
+  opacity: 0.95;
+}
+.infra-subtoggle b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
 .opSlider { -webkit-appearance: none; appearance: none; flex: 1; height: 2px; background: var(--edge); outline: none; cursor: pointer; }
 .opSlider::-webkit-slider-thumb {
   -webkit-appearance: none; width: 10px; height: 10px; background: var(--sc, var(--accent));
@@ -192,8 +232,199 @@ html, body {
 /* ============ GLOBE ============ */
 .globe-wrap { position: relative; }
 .globe { position: absolute; inset: 0; }
+.globe.hidden-globe { opacity: 0; pointer-events: none; }
 .globe canvas { cursor: grab; }
 .globe canvas:active { cursor: grabbing; }
+
+.market-board {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  padding: 18px;
+  background:
+    linear-gradient(180deg, rgba(5,11,23,0.96), rgba(8,20,42,0.98)),
+    repeating-linear-gradient(90deg, rgba(115,255,154,0.035) 0, rgba(115,255,154,0.035) 1px, transparent 1px, transparent 64px);
+}
+.market-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--edge);
+}
+.market-title {
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-size: 16px;
+  color: var(--text);
+}
+.market-sub {
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+}
+.market-status {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+.market-status span { color: #73ff9a; font-size: 10px; }
+.market-status b { color: var(--text); font-size: 11px; font-weight: 500; }
+.market-leaders {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  padding: 12px 0;
+}
+.market-chip {
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--edge);
+  background: rgba(0,0,0,0.24);
+  color: var(--text);
+  text-align: left;
+  font-family: var(--mono);
+  cursor: pointer;
+}
+.market-chip span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-dim);
+}
+.market-chip b {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 600;
+}
+.market-chip.up, .market-card.up { border-color: rgba(115,255,154,0.45); }
+.market-chip.down, .market-card.down { border-color: rgba(255,111,89,0.45); }
+.market-chip.flat, .market-card.flat { border-color: rgba(255,216,77,0.35); }
+.market-chip.up b, .market-card.up .market-change { color: #73ff9a; }
+.market-chip.down b, .market-card.down .market-change { color: #ff6f59; }
+.market-chip.flat b, .market-card.flat .market-change { color: #ffd84d; }
+.market-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.market-scroll::-webkit-scrollbar { width: 6px; }
+.market-scroll::-webkit-scrollbar-thumb { background: var(--edge); }
+.market-section { margin-bottom: 14px; }
+.market-section-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+}
+.market-section-hd b { color: var(--accent); font-weight: 500; }
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+  gap: 8px;
+}
+.market-card {
+  min-width: 0;
+  min-height: 118px;
+  padding: 10px;
+  border: 1px solid var(--edge);
+  background: rgba(0,0,0,0.24);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.market-card:hover, .market-card.selected {
+  background: rgba(59,141,245,0.10);
+  border-color: var(--accent);
+}
+.market-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  font-family: var(--mono);
+}
+.market-card-top span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.market-card-top b {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  font-size: 8px;
+  font-weight: 500;
+}
+.market-card-name {
+  margin-top: 5px;
+  min-height: 28px;
+  color: var(--text-dim);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.market-price {
+  margin-top: 7px;
+  font-family: var(--mono);
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.market-change {
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.market-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+.market-card-meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.market-card-meta b {
+  flex-shrink: 0;
+  color: #ffd84d;
+  font-weight: 500;
+}
 
 .xh { position: absolute; pointer-events: none; color: var(--accent); opacity: .5; }
 .xh span { position: absolute; background: currentColor; }
