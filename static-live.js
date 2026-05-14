@@ -1,5 +1,7 @@
 (function () {
   const STATIC_MODE_HOSTS = ['jefrix.github.io'];
+  const KASPERSKY_COUNTRIES_URL = 'https://cybermap.kaspersky.com/map/data/countries.json';
+  const KASPERSKY_EVENTS_BASE = 'https://sm-cybermap-mediaprod.smweb.tech/data/events/default';
 
   if (!STATIC_MODE_HOSTS.includes(window.location.hostname)) return;
 
@@ -31,6 +33,98 @@
     'united kingdom': { lat: 54.2, lon: -2.5, city: 'United Kingdom', country: 'GBR' },
   };
 
+  const COUNTRY_CENTROIDS = {
+    US: { lat: 39.8, lon: -98.6, label: 'United States' },
+    USA: { lat: 39.8, lon: -98.6, label: 'United States' },
+    QAT: { lat: 25.3, lon: 51.2, label: 'Qatar' },
+    CA: { lat: 56.1, lon: -106.3, label: 'Canada' },
+    CAN: { lat: 56.1, lon: -106.3, label: 'Canada' },
+    MX: { lat: 23.6, lon: -102.5, label: 'Mexico' },
+    MEX: { lat: 23.6, lon: -102.5, label: 'Mexico' },
+    GB: { lat: 54.2, lon: -2.5, label: 'United Kingdom' },
+    GBR: { lat: 54.2, lon: -2.5, label: 'United Kingdom' },
+    FR: { lat: 46.2, lon: 2.2, label: 'France' },
+    FRA: { lat: 46.2, lon: 2.2, label: 'France' },
+    DE: { lat: 51.2, lon: 10.4, label: 'Germany' },
+    DEU: { lat: 51.2, lon: 10.4, label: 'Germany' },
+    IT: { lat: 42.8, lon: 12.5, label: 'Italy' },
+    ITA: { lat: 42.8, lon: 12.5, label: 'Italy' },
+    ES: { lat: 40.4, lon: -3.7, label: 'Spain' },
+    ESP: { lat: 40.4, lon: -3.7, label: 'Spain' },
+    RU: { lat: 61.5, lon: 105.3, label: 'Russia' },
+    RUS: { lat: 61.5, lon: 105.3, label: 'Russia' },
+    UA: { lat: 49.0, lon: 31.4, label: 'Ukraine' },
+    UKR: { lat: 49.0, lon: 31.4, label: 'Ukraine' },
+    CN: { lat: 35.9, lon: 104.2, label: 'China' },
+    CHN: { lat: 35.9, lon: 104.2, label: 'China' },
+    JP: { lat: 36.2, lon: 138.3, label: 'Japan' },
+    JPN: { lat: 36.2, lon: 138.3, label: 'Japan' },
+    KR: { lat: 36.5, lon: 127.8, label: 'South Korea' },
+    KOR: { lat: 36.5, lon: 127.8, label: 'South Korea' },
+    IN: { lat: 20.6, lon: 78.9, label: 'India' },
+    IND: { lat: 20.6, lon: 78.9, label: 'India' },
+    BR: { lat: -14.2, lon: -51.9, label: 'Brazil' },
+    BRA: { lat: -14.2, lon: -51.9, label: 'Brazil' },
+    AU: { lat: -25.3, lon: 133.8, label: 'Australia' },
+    AUS: { lat: -25.3, lon: 133.8, label: 'Australia' },
+    ZA: { lat: -30.6, lon: 22.9, label: 'South Africa' },
+    ZAF: { lat: -30.6, lon: 22.9, label: 'South Africa' },
+    IL: { lat: 31.0, lon: 35.0, label: 'Israel' },
+    ISR: { lat: 31.0, lon: 35.0, label: 'Israel' },
+    IR: { lat: 32.4, lon: 53.7, label: 'Iran' },
+    IRN: { lat: 32.4, lon: 53.7, label: 'Iran' },
+    TR: { lat: 39.0, lon: 35.2, label: 'Turkey' },
+    TUR: { lat: 39.0, lon: 35.2, label: 'Turkey' },
+    AFG: { lat: 33.9, lon: 67.7, label: 'Afghanistan' },
+    ALB: { lat: 41.2, lon: 20.2, label: 'Albania' },
+    DZA: { lat: 28.0, lon: 1.7, label: 'Algeria' },
+    AGO: { lat: -11.2, lon: 17.9, label: 'Angola' },
+    ARG: { lat: -38.4, lon: -63.6, label: 'Argentina' },
+    ARM: { lat: 40.1, lon: 45.0, label: 'Armenia' },
+    AUT: { lat: 47.5, lon: 14.6, label: 'Austria' },
+    AZE: { lat: 40.1, lon: 47.6, label: 'Azerbaijan' },
+    BGD: { lat: 23.7, lon: 90.4, label: 'Bangladesh' },
+    BEL: { lat: 50.5, lon: 4.5, label: 'Belgium' },
+    BGR: { lat: 42.7, lon: 25.5, label: 'Bulgaria' },
+    CHE: { lat: 46.8, lon: 8.2, label: 'Switzerland' },
+    CHL: { lat: -35.7, lon: -71.5, label: 'Chile' },
+    COL: { lat: 4.6, lon: -74.3, label: 'Colombia' },
+    EGY: { lat: 26.8, lon: 30.8, label: 'Egypt' },
+    IDN: { lat: -2.5, lon: 118.0, label: 'Indonesia' },
+    KAZ: { lat: 48.0, lon: 67.0, label: 'Kazakhstan' },
+    MYS: { lat: 4.2, lon: 102.0, label: 'Malaysia' },
+    NLD: { lat: 52.1, lon: 5.3, label: 'Netherlands' },
+    NGA: { lat: 9.1, lon: 8.7, label: 'Nigeria' },
+    PAK: { lat: 30.4, lon: 69.3, label: 'Pakistan' },
+    PHL: { lat: 12.9, lon: 122.8, label: 'Philippines' },
+    POL: { lat: 52.0, lon: 19.1, label: 'Poland' },
+    ROU: { lat: 45.9, lon: 24.9, label: 'Romania' },
+    SAU: { lat: 23.9, lon: 45.1, label: 'Saudi Arabia' },
+    SGP: { lat: 1.35, lon: 103.8, label: 'Singapore' },
+    THA: { lat: 15.9, lon: 101.0, label: 'Thailand' },
+    VNM: { lat: 14.1, lon: 108.3, label: 'Vietnam' },
+  };
+
+  const KASPERSKY_TYPES = {
+    1: { code: 'OAS', label: 'On-Access Scan', color: '#38b349' },
+    2: { code: 'ODS', label: 'On-Demand Scan', color: '#ed1c24' },
+    3: { code: 'MAV', label: 'Mail Anti-Virus', color: '#f26522' },
+    4: { code: 'WAV', label: 'Web Anti-Virus', color: '#0087f4' },
+    5: { code: 'IDS', label: 'Intrusion Detection', color: '#ec008c' },
+    6: { code: 'VUL', label: 'Vulnerability Scan', color: '#fbf267' },
+    7: { code: 'KAS', label: 'Anti-Spam', color: '#855ff4' },
+    9: { code: 'RMW', label: 'Ransomware', color: '#4f5bff' },
+  };
+
+  const KASPERSKY_HUBS = [
+    { lat: 37.77, lon: -122.42, label: 'San Francisco exchange' },
+    { lat: 40.71, lon: -74.01, label: 'New York exchange' },
+    { lat: 51.51, lon: -0.13, label: 'London exchange' },
+    { lat: 52.52, lon: 13.4, label: 'Berlin exchange' },
+    { lat: 1.35, lon: 103.82, label: 'Singapore exchange' },
+    { lat: 35.68, lon: 139.69, label: 'Tokyo exchange' },
+  ];
+
   function jsonResponse(payload) {
     return new Response(JSON.stringify(payload), {
       status: 200,
@@ -38,8 +132,8 @@
     });
   }
 
-  async function getJson(url) {
-    const response = await originalFetch(url);
+  async function getJson(url, options = {}) {
+    const response = await originalFetch(url, options);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
   }
@@ -381,6 +475,97 @@
       .slice(0, 1200);
   }
 
+  function decodeBase64Uint32LE(value) {
+    const binary = atob(String(value || ''));
+    const output = [];
+    for (let offset = 0; offset + 3 < binary.length; offset += 4) {
+      output.push(
+        binary.charCodeAt(offset)
+        | (binary.charCodeAt(offset + 1) << 8)
+        | (binary.charCodeAt(offset + 2) << 16)
+        | (binary.charCodeAt(offset + 3) << 24)
+      );
+    }
+    return output;
+  }
+
+  function jitter(value, seed, amount = 0.8) {
+    const x = Math.sin(seed * 12.9898) * 43758.5453;
+    return value + (x - Math.floor(x) - 0.5) * amount;
+  }
+
+  async function loadKasperskyCyber(limit = 500) {
+    const hour = new Date().getUTCHours();
+    const hours = [hour, (hour + 23) % 24];
+    const countriesPromise = getJson(KASPERSKY_COUNTRIES_URL, { cache: 'no-store' });
+    let eventData = null;
+
+    for (const eventHour of hours) {
+      try {
+        const cacheBust = `gd=${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        const candidate = await getJson(`${KASPERSKY_EVENTS_BASE}/${eventHour}.json?${cacheBust}`, { cache: 'no-store' });
+        if (candidate && candidate.events) {
+          eventData = { ...candidate, hour: eventHour };
+          break;
+        }
+      } catch {
+        // Try the previous hour if the current Kaspersky packet is not available yet.
+      }
+    }
+    if (!eventData) throw new Error('Kaspersky event packet unavailable');
+
+    const countries = await countriesPromise;
+    const countryByKey = Object.fromEntries((countries || []).map(country => [
+      country.key,
+      String(country.name || '').replace('MAP_COUNTRY_', ''),
+    ]));
+    const events = decodeBase64Uint32LE(eventData.events);
+    const traces = [];
+
+    for (let index = 0; index + 1 < events.length; index += 2) {
+      const packed = events[index];
+      const count = events[index + 1];
+      const typeId = (packed >>> 24) & 255;
+      const targetKey = (packed >>> 12) & 4095;
+      const sourceKey = packed & 4095;
+      const type = KASPERSKY_TYPES[typeId];
+      const targetIso = countryByKey[targetKey];
+      const sourceIso = countryByKey[sourceKey];
+      const targetCenter = COUNTRY_CENTROIDS[targetIso];
+      if (!type || !targetCenter || !count) continue;
+
+      const sourceCenter = COUNTRY_CENTROIDS[sourceIso] || KASPERSKY_HUBS[typeId % KASPERSKY_HUBS.length];
+      const seed = targetKey * 13 + typeId * 29 + count;
+      traces.push({
+        id: `kas-static-${eventData.hour}-${type.code}-${targetKey}-${sourceKey}`,
+        kind: 'kaspersky',
+        sourceName: 'Kaspersky Cybermap',
+        type: type.code,
+        severity: count > 900 ? 'CRIT' : count > 260 ? 'HIGH' : count > 70 ? 'MED' : 'LOW',
+        title: `${type.label}: ${targetCenter.label}`,
+        count,
+        color: type.color,
+        origin: {
+          lat: jitter(sourceCenter.lat, seed + 1, 1.4),
+          lon: jitter(sourceCenter.lon, seed + 2, 1.4),
+          label: sourceCenter.label || sourceIso || 'Kaspersky aggregate',
+          country: sourceIso || 'GLOBAL',
+        },
+        target: {
+          lat: jitter(targetCenter.lat, seed + 3, 1.0),
+          lon: jitter(targetCenter.lon, seed + 4, 1.0),
+          label: targetCenter.label,
+          country: targetIso,
+        },
+        ts: Date.now(),
+      });
+    }
+
+    return traces
+      .sort((a, b) => b.count - a.count)
+      .slice(0, Math.max(40, Math.min(Number(limit) || 500, 1200)));
+  }
+
   async function settle(name, loader) {
     try {
       const data = await loader();
@@ -392,6 +577,7 @@
 
   async function staticPayload(requestUrl) {
     const flightLimit = parseLimitFromUrl(requestUrl, 'limit', 2500, 5000);
+    const objectLimit = parseLimitFromUrl(requestUrl, 'objects', 1200, 5000);
     const results = await Promise.all([
       settle('news', loadNews),
       settle('flights', () => loadFlights(flightLimit)),
@@ -399,6 +585,7 @@
       settle('weather', loadWeather),
       settle('shippingLanes', loadShippingLanes),
       settle('ports', loadPorts),
+      settle('kasperskyCyber', () => loadKasperskyCyber(objectLimit)),
     ]);
     const byName = Object.fromEntries(results.map(result => [result.name, result]));
     const shippingLanes = byName.shippingLanes.data;
@@ -420,7 +607,7 @@
       aisstream: [],
       earthquakes: byName.earthquakes.data,
       weather: byName.weather.data,
-      kasperskyCyber: [],
+      kasperskyCyber: byName.kasperskyCyber.data,
       cached: false,
       staticPageFallback: true,
     };
