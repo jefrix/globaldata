@@ -483,9 +483,9 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
             <nav className="top-links" aria-label="Jefrix project links">
               <a href="https://jefrix.github.io/Fieldnotes/index.html">FIELDNOTES</a>
               <a href="https://jefrix.github.io/History-Timeline/">ALMANAC</a>
-              <a data-fieldnotes-timeline-link="1" href="https://jefrix.github.io/History-Timeline/history-timeline.html">TIMELINE</a>
-              <a href="https://jefrix.github.io/HQR/">HQR</a>
+              <a data-fieldnotes-timeline-link="1" href="https://jefrix.github.io/History-Timeline/HistoryTimeline.html">TIMELINE</a>
               <a data-collapse-signature-link="1" href="https://jefrix.github.io/collapse-signature-research/">CSR</a>
+              <a href="https://jefrix.github.io/HQR/">HQR</a>
             </nav>
           </div>
         </div>

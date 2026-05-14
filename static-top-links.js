@@ -1,7 +1,9 @@
 (function () {
+  const FIELDNOTES_URL = 'https://jefrix.github.io/Fieldnotes/index.html';
   const ALMANAC_URL = 'https://jefrix.github.io/History-Timeline/';
-  const TIMELINE_URL = 'https://jefrix.github.io/History-Timeline/history-timeline.html';
+  const TIMELINE_URL = 'https://jefrix.github.io/History-Timeline/HistoryTimeline.html';
   const CSR_URL = 'https://jefrix.github.io/collapse-signature-research/';
+  const HQR_URL = 'https://jefrix.github.io/HQR/';
   const MAX_ATTEMPTS = 40;
 
   function sameUrl(a, b) {
@@ -13,43 +15,21 @@
     if (!nav) return false;
 
     const links = Array.from(nav.querySelectorAll('a'));
-    const almanacLink = links.find(link => {
-      const label = link.textContent.trim().toUpperCase();
-      return label === 'TIMELINE' || label === 'ALMANAC' || sameUrl(link.href, ALMANAC_URL);
+    const desired = [
+      { label: 'FIELDNOTES', href: FIELDNOTES_URL, match: link => link.textContent.trim().toUpperCase() === 'FIELDNOTES' || sameUrl(link.href, FIELDNOTES_URL) },
+      { label: 'ALMANAC', href: ALMANAC_URL, match: link => link.textContent.trim().toUpperCase() === 'ALMANAC' || sameUrl(link.href, ALMANAC_URL) },
+      { label: 'TIMELINE', href: TIMELINE_URL, dataset: ['fieldnotesTimelineLink', '1'], match: link => link.dataset.fieldnotesTimelineLink || link.textContent.trim().toUpperCase() === 'TIMELINE' },
+      { label: 'CSR', href: CSR_URL, dataset: ['collapseSignatureLink', '1'], match: link => link.dataset.collapseSignatureLink || link.textContent.trim().toUpperCase() === 'CSR' || sameUrl(link.href, CSR_URL) },
+      { label: 'HQR', href: HQR_URL, match: link => link.textContent.trim().toUpperCase() === 'HQR' || sameUrl(link.href, HQR_URL) },
+    ];
+
+    desired.forEach(item => {
+      const link = links.find(item.match) || document.createElement('a');
+      link.href = item.href;
+      link.textContent = item.label;
+      if (item.dataset) link.dataset[item.dataset[0]] = item.dataset[1];
+      nav.appendChild(link);
     });
-
-    if (almanacLink) {
-      if (almanacLink.textContent.trim() !== 'ALMANAC') almanacLink.textContent = 'ALMANAC';
-      if (!sameUrl(almanacLink.href, ALMANAC_URL)) almanacLink.href = ALMANAC_URL;
-    }
-
-    let timelineLink = nav.querySelector('[data-fieldnotes-timeline-link]');
-    if (!timelineLink) {
-      const timelineLink = document.createElement('a');
-      timelineLink.dataset.fieldnotesTimelineLink = '1';
-      timelineLink.href = TIMELINE_URL;
-      timelineLink.textContent = 'TIMELINE';
-
-      if (almanacLink) almanacLink.insertAdjacentElement('afterend', timelineLink);
-      else nav.appendChild(timelineLink);
-    } else {
-      timelineLink.href = TIMELINE_URL;
-      timelineLink.textContent = 'TIMELINE';
-    }
-
-    timelineLink = nav.querySelector('[data-fieldnotes-timeline-link]');
-    let csrLink = nav.querySelector('[data-collapse-signature-link]')
-      || links.find(link => link.textContent.trim().toUpperCase() === 'CSR' || sameUrl(link.href, CSR_URL));
-    if (!csrLink) {
-      csrLink = document.createElement('a');
-      csrLink.dataset.collapseSignatureLink = '1';
-      csrLink.textContent = 'CSR';
-      if (timelineLink?.nextSibling) nav.insertBefore(csrLink, timelineLink.nextSibling);
-      else nav.appendChild(csrLink);
-    }
-    csrLink.dataset.collapseSignatureLink = '1';
-    csrLink.href = CSR_URL;
-    csrLink.textContent = 'CSR';
 
     return true;
   }
