@@ -1026,15 +1026,26 @@ function PortDetail({ d }) {
   </>);
 }
 function InfrastructureDetail({ d }) {
-  const location = [d.city || d.region || d.name || '--', d.country || null].filter(Boolean).join(', ');
+  const location = d.city && d.county
+    ? `${d.city}, ${d.county} County`
+    : [d.city || d.region || d.name || '--', d.country || d.state || null].filter(Boolean).join(', ');
+  const capacity = d.capacityMw || d.capacity_mw || d.output || d.powerOutput || d.powerLabel;
+  const owner = d.owner || d.operator || '--';
   return (<>
-    <div className="insp-title" style={{ color: '#5bd7ff' }}>{d.name}</div>
-    <Row k="TYPE" v={String(d.type || 'NODE').toUpperCase()} color="#5bd7ff" />
+    <div className="insp-title" style={{ color: d.color || '#5bd7ff' }}>{d.name}</div>
+    <Row k="OWNER" v={owner} />
+    <Row k="OPERATOR" v={d.operator || d.owner || '--'} />
+    <Row k="TYPE" v={String(d.type || d.kind || 'NODE').toUpperCase()} color={d.color || '#5bd7ff'} />
+    {capacity && <Row k="OUTPUT" v={Number.isFinite(Number(capacity)) ? formatMw(capacity) : capacity} color={d.color || '#5bd7ff'} />}
     <Row k="LOCATION" v={location} />
-    <Row k="OPERATOR" v={d.operator || '--'} />
-    <Row k="TIER" v={d.tier ? `T${d.tier}` : '--'} />
+    {d.facilitySize && <Row k="FACILITY" v={d.facilitySize} />}
+    {d.network && <Row k="NETWORK" v={d.network} />}
+    {d.tier && <Row k="TIER" v={`T${d.tier}`} />}
     <Row k="STATUS" v={d.status || 'Mapped data network node'} />
-    <Row k="SOURCE" v={d.source || 'GlobalData data center network layer'} />
+    <Row k="SOURCE" v={d.sourceName || d.source || 'GlobalData data center network layer'} />
+    {d.sourceUrl && <div className="news-actions">
+      <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">OPEN SOURCE</a>
+    </div>}
   </>);
 }
 function PowerPlantDetail({ d }) {
@@ -1122,12 +1133,15 @@ function NewsDetail({ d }) {
 function DataCenterDetail({ d }) {
   const power = Number.isFinite(Number(d.powerMw)) ? `${Math.round(Number(d.powerMw)).toLocaleString()} MW` : null;
   const source = d.sourceName || d.source || 'Public source';
+  const location = d.city && d.county
+    ? `${d.city}, ${d.county} County`
+    : `${d.city || '--'}, ${d.region || d.country || d.state || '--'}`;
   return (<>
     <div className="insp-title" style={{ color: '#5bd7ff' }}>{d.name}</div>
     <Row k="OWNER" v={d.owner || '--'} />
     <Row k="OPERATOR" v={d.operator || d.owner || '--'} />
     <Row k="TYPE" v={d.type || '--'} />
-    <Row k="LOCATION" v={`${d.city || '--'}, ${d.country || '--'}`} />
+    <Row k="LOCATION" v={location} />
     <Row k="REGION" v={d.region || '--'} />
     <Row k="POWER" v={d.powerLabel || power || 'Not publicly disclosed'} color={power ? '#5bd7ff' : '#d9e4ef'} />
     <Row k="COMPUTE" v={d.computeCapacity || 'Not publicly disclosed'} />
@@ -1387,6 +1401,19 @@ function selectionColorForEvent(pick) {
   return '#73ff9a';
 }
 
+function shouldUseRailInspector(pick) {
+  return ['infrastructure', 'powerPlant', 'dataCenter'].includes(pick?.kind);
+}
+
+function railPickFromObject(pick) {
+  if (!pick?.kind || !pick?.data) return null;
+  return {
+    kind: pick.kind,
+    data: pick.data,
+    eventId: pick.eventId || pick.data.id || pick.data.name || `${pick.kind}-${Date.now()}`,
+  };
+}
+
 function normalizeTweaks(tweaks, defaults) {
   const next = { ...defaults, ...(tweaks || {}) };
   if (String(next.classification || '').toUpperCase().includes('SIMULATION')) {
@@ -1519,6 +1546,16 @@ useEffect(() => {
   const e = window.GlobeEngine.create(globeRef.current, theme);
   e.buildAll?.();
   e.onPick?.(p => {
+    if (shouldUseRailInspector(p)) {
+      const railPick = railPickFromObject(p);
+      if (railPick) {
+        setRailPick(railPick);
+        setPick(null);
+        const point = focusPointForEvent(railPick, data);
+        if (point && e.highlightPoint) e.highlightPoint(point.lat, point.lon, selectionColorForEvent(railPick));
+      }
+      return;
+    }
     setPick(p);
     if (p?.kind === 'diplomacy') e.selectDiplomacyCountry?.(p.data.code);
   });
@@ -1647,11 +1684,28 @@ useEffect(() => {
 
   const selectFeedEvent = React.useCallback((eventPick) => {
     setRailPick(eventPick);
+    setPick(null);
     const point = focusPointForEvent(eventPick, data);
     if (point && engineRef.current?.highlightPoint) {
       engineRef.current.highlightPoint(point.lat, point.lon, selectionColorForEvent(eventPick));
     }
   }, [data]);
+
+  useEffect(() => {
+    const onRailPick = event => {
+      const railPick = railPickFromObject(event.detail || {});
+      if (railPick) selectFeedEvent(railPick);
+    };
+    window.GlobalDataSelectRailPick = pick => {
+      const railPick = railPickFromObject(pick || {});
+      if (railPick) selectFeedEvent(railPick);
+    };
+    window.addEventListener('globaldata:rail-pick', onRailPick);
+    return () => {
+      window.removeEventListener('globaldata:rail-pick', onRailPick);
+      if (window.GlobalDataSelectRailPick) delete window.GlobalDataSelectRailPick;
+    };
+  }, [selectFeedEvent]);
 
   const clearRailSelection = React.useCallback(() => {
     setRailPick(null);

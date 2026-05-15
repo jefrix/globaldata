@@ -5,6 +5,8 @@
     highways: false,
     water: false,
     powerGrid: false,
+    infrastructure: false,
+    dataCenters: false,
     parks: false,
     localNews: false,
   };
@@ -203,6 +205,34 @@
       },
     }));
     panel.appendChild(layerRow({
+      keyName: 'infrastructure',
+      hotkey: 'F',
+      label: 'INFRASTRUCTURE',
+      sub: 'POWER GEN / PORTS / AIR',
+      color: '#ffd84d',
+      active: localState.infrastructure,
+      onToggle: () => {
+        const next = !localState.infrastructure;
+        setPlaceholderLayer('infrastructure', next);
+        window.GlobalDataLocalInfrastructure?.setActive?.('infrastructure', next);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
+      keyName: 'dataCenters',
+      hotkey: 'D',
+      label: 'DATA CENTERS',
+      sub: 'CLOUD / COLO / AI',
+      color: '#5bd7ff',
+      active: localState.dataCenters,
+      onToggle: () => {
+        const next = !localState.dataCenters;
+        setPlaceholderLayer('dataCenters', next);
+        window.GlobalDataLocalInfrastructure?.setActive?.('dataCenters', next);
+        refreshRows();
+      },
+    }));
+    panel.appendChild(layerRow({
       keyName: 'parks',
       hotkey: 'K',
       label: 'PARKS',
@@ -247,6 +277,8 @@
     document.querySelectorAll('[data-local-menu-layer="highways"]').forEach(row => setToggle(row, localState.highways, '#d9e4ef'));
     document.querySelectorAll('[data-local-menu-layer="water"]').forEach(row => setToggle(row, localState.water, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="powerGrid"]').forEach(row => setToggle(row, localState.powerGrid, '#f5d142'));
+    document.querySelectorAll('[data-local-menu-layer="infrastructure"]').forEach(row => setToggle(row, localState.infrastructure, '#ffd84d'));
+    document.querySelectorAll('[data-local-menu-layer="dataCenters"]').forEach(row => setToggle(row, localState.dataCenters, '#5bd7ff'));
     document.querySelectorAll('[data-local-menu-layer="parks"]').forEach(row => setToggle(row, localState.parks, '#7bd6a8'));
     document.querySelectorAll('[data-local-menu-layer="localNews"]').forEach(row => setToggle(row, localState.localNews, '#f58a42'));
     setCountiesVisible(localState.counties);
@@ -329,10 +361,11 @@
     setLayer(name, active) {
       if (name === 'counties') setCountiesVisible(Boolean(active));
       if (name === 'highways') setHighwaysVisible(Boolean(active));
-      if (['cities', 'water', 'powerGrid', 'parks', 'localNews'].includes(name)) {
+      if (['cities', 'water', 'powerGrid', 'infrastructure', 'dataCenters', 'parks', 'localNews'].includes(name)) {
         setPlaceholderLayer(name, Boolean(active));
       }
       if (name === 'powerGrid') window.GlobalDataPowerGrid?.setActive?.(Boolean(active));
+      if (name === 'infrastructure' || name === 'dataCenters') window.GlobalDataLocalInfrastructure?.setActive?.(name, Boolean(active));
       refreshRows();
     },
     getLayer(name) {
@@ -355,6 +388,18 @@
       const next = !localState.powerGrid;
       setPlaceholderLayer('powerGrid', next);
       window.GlobalDataPowerGrid?.setActive?.(next);
+      refreshRows();
+    }
+    if (event.key === 'f' || event.key === 'F') {
+      const next = !localState.infrastructure;
+      setPlaceholderLayer('infrastructure', next);
+      window.GlobalDataLocalInfrastructure?.setActive?.('infrastructure', next);
+      refreshRows();
+    }
+    if (event.key === 'd' || event.key === 'D') {
+      const next = !localState.dataCenters;
+      setPlaceholderLayer('dataCenters', next);
+      window.GlobalDataLocalInfrastructure?.setActive?.('dataCenters', next);
       refreshRows();
     }
   });
