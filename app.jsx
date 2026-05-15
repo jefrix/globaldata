@@ -150,6 +150,7 @@ const LAYERS = [
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
   { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD · COLO · CABLES', hotkey: '0' },
   { id: 'markets',    label: 'MARKETS',     sub: 'INDICES · METALS · CRYPTO',     hotkey: 'M' },
+  { id: 'sun',        label: 'SUN',         sub: 'SOLAR ACTIVITY · NOAA/NASA',     hotkey: 'S' },
 ];
 
 const FALLBACK_POWER_TYPES = {
@@ -1677,7 +1678,7 @@ useEffect(() => {
     const m = {
       diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
-      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a',
+      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a', sun: '#ffcf47',
     };
     return m[id] || theme.accent;
   };
