@@ -2,7 +2,7 @@
   "strictLive": true,
   "cached": true,
   "staticCache": true,
-  "generatedAt": 1778961355695,
+  "generatedAt": 1778963898529,
   "sources": [
     {
       "name": "gdelt",
@@ -12,7 +12,7 @@
     {
       "name": "rss",
       "ok": true,
-      "count": 599
+      "count": 609
     },
     {
       "name": "reliefweb",
@@ -49,17 +49,17 @@
     {
       "name": "earthquakes",
       "ok": true,
-      "count": 40
+      "count": 38
     },
     {
       "name": "news",
       "ok": true,
-      "count": 444
+      "count": 456
     },
     {
       "name": "conflictEvents",
       "ok": true,
-      "count": 168
+      "count": 170
     },
     {
       "name": "vessels",
@@ -86,6 +86,23 @@
       "relevanceScore": 11
     },
     {
+      "id": "rss-cbs-world-lo72ec",
+      "lat": 4.820250000000001,
+      "lon": -74.28515,
+      "city": "Colombia",
+      "country": "COL",
+      "title": "Former mayor and aide killed in shooting in Colombia weeks before election",
+      "description": "Colombia&#039;s presidential elections are scheduled for May 31, marking the end of the term for Gustavo Petro, the country&#039;s first leftist president.",
+      "category": "NEWS",
+      "source": "CBS World",
+      "sourceName": "CBS World",
+      "officialSource": false,
+      "url": "https://www.cbsnews.com/news/presidential-campaign-staffers-killed-colombia-election/",
+      "sources": 1,
+      "ts": 1778963667000,
+      "relevanceScore": 10
+    },
+    {
       "id": "rss-deutsche-welle-nyfd6a",
       "lat": 46.33805,
       "lon": 2.10265,
@@ -99,24 +116,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/foreign-student-fee-hikes-in-france-trigger-backlash/a-77146306?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959842272,
+      "ts": 1778962385577,
       "relevanceScore": 10
     },
     {
-      "id": "rss-cbs-world-lo72ec",
-      "lat": 4.820250000000001,
-      "lon": -74.28515,
-      "city": "Colombia",
-      "country": "COL",
-      "title": "2 presidential campaign staffers killed in Colombia weeks before election",
-      "description": "Colombia&#039;s presidential elections are scheduled for May 31, marking the end of the term for Gustavo Petro, the country&#039;s first leftist president.",
-      "category": "NEWS",
-      "source": "CBS World",
-      "sourceName": "CBS World",
+      "id": "rss-times-of-israel-1bwogfd",
+      "lat": 31.25135,
+      "lon": 34.93675,
+      "city": "Israel",
+      "country": "ISR",
+      "title": "IDF infantry platoon commander killed by Hezbollah drone in southern Lebanon",
+      "description": "Slain officer named as Cpt. Maoz Israel Recanati, 24, who was set to marry fiancé next month; IDF says it struck over 100 Hezbollah targets over weekend The post IDF infantry platoon commander killed by Hezbollah drone in southern Lebanon appeared first on The Times of Israel .",
+      "category": "CONFLICT",
+      "source": "Times of Israel",
+      "sourceName": "Times of Israel",
       "officialSource": false,
-      "url": "https://www.cbsnews.com/news/presidential-campaign-staffers-killed-colombia-election/",
+      "url": "https://www.timesofisrael.com/idf-infantry-platoon-commander-killed-by-hezbollah-drone-in-southern-lebanon/",
       "sources": 1,
-      "ts": 1778957973000,
+      "ts": 1778962276000,
       "relevanceScore": 10
     },
     {
@@ -133,7 +150,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/the-country-that-s-turning-to-solar-during-war/a-76907346?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778954202276,
+      "ts": 1778956685581,
       "relevanceScore": 10
     },
     {
@@ -474,23 +491,6 @@
       "url": "https://gcaptain.com/china-wants-strait-of-hormuz-open-free-of-curbs-ustr-greer-tells-bloomberg-news/",
       "sources": 1,
       "ts": 1778830271000,
-      "relevanceScore": 10
-    },
-    {
-      "id": "rss-gcaptain-1izdzvk",
-      "lat": 32.570499999999996,
-      "lon": 53.5559,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "U.S. Admiral Says Operation EPIC FURY Rolled Back ‘40 Years’ of Iranian Military Investment",
-      "description": "Admiral Brad Cooper of U.S. Central Command on Thursday delivered the most sweeping public assessment yet of the damage inflicted on Iran during Operation EPIC FURY, telling lawmakers the 38-day...",
-      "category": "CONFLICT",
-      "source": "gCaptain",
-      "sourceName": "gCaptain",
-      "officialSource": false,
-      "url": "https://gcaptain.com/u-s-admiral-says-operation-epic-fury-rolled-back-40-years-of-iranian-military-investment/",
-      "sources": 1,
-      "ts": 1778782609000,
       "relevanceScore": 10
     },
     {
@@ -1100,7 +1100,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/who-is-mario-draghi-this-year-s-charlemagne-prize-winner/a-77115925?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959542272,
+      "ts": 1778962085577,
       "relevanceScore": 9
     },
     {
@@ -1117,7 +1117,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/somali-piracy-disrupts-global-shipping-and-trade-routes/a-77047750?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957862273,
+      "ts": 1778960405578,
       "relevanceScore": 9
     },
     {
@@ -1134,7 +1134,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/greek-minister-says-mystery-drone-from-a-foreign-state/a-77107116?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957322274,
+      "ts": 1778959865579,
       "relevanceScore": 9
     },
     {
@@ -1151,7 +1151,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/a-new-climate-club-minus-the-fossil-fuel-lobby/a-76992981?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778955222275,
+      "ts": 1778957705580,
       "relevanceScore": 9
     },
     {
@@ -1168,7 +1168,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/will-eu-bring-in-a-windfall-tax-on-oil-companies/a-76920556?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778955162275,
+      "ts": 1778957645580,
       "relevanceScore": 9
     },
     {
@@ -1185,7 +1185,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/why-uae-s-opec-exit-is-a-blow-to-saudi-arabia/a-76975354?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778955102275,
+      "ts": 1778957585580,
       "relevanceScore": 9
     },
     {
@@ -1202,7 +1202,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/will-the-iran-war-end-strait-of-hormuz-oil-supremacy/a-76893004?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778954562275,
+      "ts": 1778957045581,
       "relevanceScore": 9
     },
     {
@@ -1219,7 +1219,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/states-gather-in-a-new-push-to-ditch-coal-oil-and-gas/a-76891719?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778954322276,
+      "ts": 1778956805581,
       "relevanceScore": 9
     },
     {
@@ -1236,7 +1236,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/russia-to-block-kazakh-oil-flows-to-germany-via-key-pipeline/a-76895743?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778954022276,
+      "ts": 1778956505581,
       "relevanceScore": 9
     },
     {
@@ -1253,7 +1253,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-s-chip-ambitions-shake-up-global-tech-industry/a-76056790?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778953422276,
+      "ts": 1778955965582,
       "relevanceScore": 9
     },
     {
@@ -1495,6 +1495,23 @@
       "relevanceScore": 9
     },
     {
+      "id": "rss-offshore-energy-4aekbw",
+      "lat": 19.77065,
+      "lon": 0.006050000000000006,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Yinson Production and PTSC lock in financing for Southeast Asian gas project’s FSO",
+      "description": "Singapore’s Yinson Production, a subsidiary of Kuala Lumpur-based energy infrastructure and technology company Yinson, and its joint venture (JV) partner, PTSC, have secured multimillion-dollar funding for the partial construction of a newbuild floating storage and offloading (FSO) unit, destined to be deployed at the Block B gas field off the coast of Vietnam, Southeast Asia. The post Yinson Production and PTSC lock",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/yinson-production-and-ptsc-lock-in-financing-for-southeast-asian-gas-projects-fso/",
+      "sources": 1,
+      "ts": 1778848739000,
+      "relevanceScore": 9
+    },
+    {
       "id": "rss-guardian-world-i2ugr5",
       "lat": 32.1536,
       "lon": 53.689,
@@ -1529,6 +1546,40 @@
       "relevanceScore": 9
     },
     {
+      "id": "rss-offshore-energy-1x605ge",
+      "lat": 20.11385,
+      "lon": -0.20075,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "&#8216;Many key components&#8217; manufactured for BiMEP-destined wave energy unit",
+      "description": "Carnegie Clean Energy and its supply chain partners have completed the fabrication and manufacture [&#8230;] The post &#8216;Many key components&#8217; manufactured for BiMEP-destined wave energy unit appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/many-key-components-manufactured-for-bimep-destined-wave-energy-unit/",
+      "sources": 1,
+      "ts": 1778841137000,
+      "relevanceScore": 9
+    },
+    {
+      "id": "rss-offshore-energy-s11880",
+      "lat": 20.1914,
+      "lon": -0.04400000000000001,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "DNO in the clear for drilling ops with Odfjell Drilling-managed rig",
+      "description": "Norway’s oil and gas player DNO has received the go-ahead from the country’s authorities for drilling activities in the Norwegian Sea with a semi-submersible rig managed by Odfjell Drilling, an offshore drilling contractor. The post DNO in the clear for drilling ops with Odfjell Drilling-managed rig appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/dno-in-the-clear-for-drilling-ops-with-odfjell-drilling-managed-rig/",
+      "sources": 1,
+      "ts": 1778837272000,
+      "relevanceScore": 9
+    },
+    {
       "id": "rss-cnbc-world-economy-905mqf",
       "lat": 26.6525,
       "lon": 56.0971,
@@ -1543,6 +1594,57 @@
       "url": "https://www.cnbc.com/2026/05/15/uae-west-east-oil-pipeline-strait-hormuz-iran-war.html",
       "sources": 1,
       "ts": 1778836797000,
+      "relevanceScore": 9
+    },
+    {
+      "id": "rss-offshore-energy-1oyeryr",
+      "lat": 35.9547,
+      "lon": 138.3693,
+      "city": "Japan",
+      "country": "JPN",
+      "title": "Inpex coming aboard Australia’s huge multibillion-dollar gas project",
+      "description": "Japan’s exploration and production (E&#38;P) company Inpex has set the wheels in motion to join an offshore development project, which is described as Australia’s largest untapped conventional gas resource. The post Inpex coming aboard Australia’s huge multibillion-dollar gas project appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/inpex-coming-aboard-australias-huge-multibillion-dollar-gas-project/",
+      "sources": 1,
+      "ts": 1778833548000,
+      "relevanceScore": 9
+    },
+    {
+      "id": "rss-offshore-energy-103rkss",
+      "lat": 19.8801,
+      "lon": 0.1947,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "$7.5 billion gas project on Senegal’s development agenda",
+      "description": "Société des Pétroles du Sénégal (Petrosen), Senegal’s state-owned oil and gas company, has shed light on the investment required to bring a deepwater gas field to life, which is estimated to hold recoverable resources of approximately 25 trillion cubic feet (tcf) of gas. The post $7.5 billion gas project on Senegal’s development agenda appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/7-5-billion-gas-project-on-senegals-development-agenda/",
+      "sources": 1,
+      "ts": 1778831361000,
+      "relevanceScore": 9
+    },
+    {
+      "id": "rss-offshore-energy-16m56nb",
+      "lat": 20.1375,
+      "lon": -0.1771,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Petronas picks local tubular running services provider for next five years",
+      "description": "Malaysia’s state-owned oil &#38; gas heavyweight Petronas has awarded a local company a five-year [&#8230;] The post Petronas picks local tubular running services provider for next five years appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/petronas-picks-local-tubular-running-services-provider-for-next-five-years/",
+      "sources": 1,
+      "ts": 1778829704000,
       "relevanceScore": 9
     },
     {
@@ -1801,12 +1903,12 @@
       "relevanceScore": 9
     },
     {
-      "id": "wiki-current-h30fjp",
-      "lat": 32.4495,
-      "lon": 53.514100000000006,
+      "id": "wiki-current-1spx5qi",
+      "lat": 32.4308,
+      "lon": 53.495400000000004,
       "city": "Iran",
       "country": "IRN",
-      "title": "2026 Strait of Hormuz crisis Iranian lawmaker Ebrahim Azizi says that Iran will introduce new mechanism to regulate maritime traffic through a designated route in the Strait of Hormuz and charge fees for ships entering the waterway . (AA)",
+      "title": "2026 Strait of Hormuz crisis Iranian lawmaker Ebrahim Azizi says that Iran will introduce new mechanisms to regulate maritime traffic through a designated route in the Strait of Hormuz and charge fees for ships entering the waterway . (AA)",
       "category": "NEWS",
       "source": "wikipedia.org",
       "sourceName": "Wikipedia Current Events",
@@ -1974,7 +2076,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-gets-ahead-in-the-new-space-race/a-77177359?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778961282271,
+      "ts": 1778963825576,
       "relevanceScore": 6
     },
     {
@@ -1991,7 +2093,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/middle-east-updates-big-crowds-at-nakba-day-rally-in-london/live-77179563?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960982271,
+      "ts": 1778963525576,
       "relevanceScore": 6
     },
     {
@@ -2008,7 +2110,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/study-immigrants-disadvantaged-in-german-housing-market/a-77171138?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960922271,
+      "ts": 1778963465576,
       "relevanceScore": 6
     },
     {
@@ -2025,7 +2127,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/taiwan-urges-trump-to-advance-arms-deal-after-china-summit/a-77178649?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960742271,
+      "ts": 1778963285576,
       "relevanceScore": 6
     },
     {
@@ -2042,7 +2144,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-us-israel-compete-in-fast-growing-laser-weapons-race/a-77174766?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960682271,
+      "ts": 1778963225576,
       "relevanceScore": 6
     },
     {
@@ -2059,7 +2161,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/india-news-pm-modi-visits-the-netherlands-at-start-of-europe-tour/live-77178271?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960502272,
+      "ts": 1778963045576,
       "relevanceScore": 6
     },
     {
@@ -2076,7 +2178,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/us-stops-poland-troop-deployment-after-germany-pullout-order/a-77177920?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960382272,
+      "ts": 1778962925576,
       "relevanceScore": 6
     },
     {
@@ -2093,7 +2195,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/middle-east-israel-lebanon-agree-to-extend-truce-us-says/live-77167235?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960322272,
+      "ts": 1778962865576,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-guardian-world-jdx2ko",
+      "lat": 20.0825,
+      "lon": -0.15290000000000004,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Canada confirms first hantavirus case in isolation in British Columbia",
+      "description": "<p>The person was on board the MV Hondius, the center of the outbreak that has claimed three lives</p><p>Canadian officials said oon Saturday that one of the four Canadians currently quarantining in British Columbia after being exposed to the hantavirus while on board the cruise ship where the outbreak occurred has presumptively tested positive.</p><p>Speaking at <a href=\"https://www.youtube.com/watch?v=WF1cAcvC20M&a",
+      "category": "MARITIME",
+      "source": "Guardian World",
+      "sourceName": "Guardian World",
+      "officialSource": false,
+      "url": "https://www.theguardian.com/world/2026/may/16/canada-first-hantavirus-case-british-columbia",
+      "sources": 1,
+      "ts": 1778962376000,
       "relevanceScore": 6
     },
     {
@@ -2110,7 +2229,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/latvia-prime-minister-evika-silina-resigns-over-handling-of-drone-incidents-after-coalition-ally-s-withdrawal/a-77159518?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959482272,
+      "ts": 1778962025577,
       "relevanceScore": 6
     },
     {
@@ -2127,7 +2246,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-goes-electric-but-can-it-get-off-coal/a-77147566?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959362272,
+      "ts": 1778961905577,
       "relevanceScore": 6
     },
     {
@@ -2144,7 +2263,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-s-shortfall-in-medium-range-defense-capabilities/a-77151793?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959182272,
+      "ts": 1778961725577,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-al-jazeera-gu4r2t",
+      "lat": 30.5461,
+      "lon": 69.2015,
+      "city": "Pakistan",
+      "country": "PAK",
+      "title": "Can new Pakistan-Afghanistan tensions lead to another border clash?",
+      "description": "Both sides target each other despite a pause in fighting mediated in March.",
+      "category": "CONFLICT",
+      "source": "Al Jazeera",
+      "sourceName": "Al Jazeera",
+      "officialSource": false,
+      "url": "https://www.aljazeera.com/video/inside-story/2026/5/16/can-new-pakistan-afghanistan-tensions-lead-to-another-border-clash?traffic_source=rss",
+      "sources": 1,
+      "ts": 1778961648000,
       "relevanceScore": 6
     },
     {
@@ -2161,7 +2297,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/ceasefire-in-sight-what-s-next-for-russia-s-war-in-ukraine/a-77138367?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959062272,
+      "ts": 1778961605577,
       "relevanceScore": 6
     },
     {
@@ -2178,7 +2314,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-s-new-rules-give-the-west-a-new-headache/a-77075741?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778959002273,
+      "ts": 1778961545577,
       "relevanceScore": 6
     },
     {
@@ -2195,7 +2331,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/satellites-add-a-new-layer-to-global-poverty-data/a-77130563?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958942273,
+      "ts": 1778961485577,
       "relevanceScore": 6
     },
     {
@@ -2212,7 +2348,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/eu-invites-taliban-members-to-discuss-afghan-migrant-returns/a-77134268?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958822273,
+      "ts": 1778961365578,
       "relevanceScore": 6
     },
     {
@@ -2229,7 +2365,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/uk-keir-starmer-tells-cabinet-he-will-continue-in-place-as-four-junior-ministers-quit/a-77129695?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958582273,
+      "ts": 1778961125578,
       "relevanceScore": 6
     },
     {
@@ -2246,7 +2382,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/eu-negotiators-agree-new-rules-on-vital-medicines/a-77126715?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958402273,
+      "ts": 1778960945578,
       "relevanceScore": 6
     },
     {
@@ -2263,7 +2399,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/hantavirus-how-is-the-outbreak-being-contained/a-77122959?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958282273,
+      "ts": 1778960825578,
       "relevanceScore": 6
     },
     {
@@ -2280,7 +2416,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-news-1-in-6-retailers-fear-for-future/live-77114178?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958102273,
+      "ts": 1778960645578,
       "relevanceScore": 6
     },
     {
@@ -2297,7 +2433,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/ukraine-eu-sanctions-russians-over-systematic-unlawful-deportation-of-children/live-77121806?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778958042273,
+      "ts": 1778960585578,
       "relevanceScore": 6
     },
     {
@@ -2314,7 +2450,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/uk-prime-minister-keir-starmer-not-walking-away-after-local-election-mauling/a-77116149?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957982273,
+      "ts": 1778960525578,
       "relevanceScore": 6
     },
     {
@@ -2331,7 +2467,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-s-businesses-frustrated-by-economic-decline/a-77097307?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957802273,
+      "ts": 1778960345578,
       "relevanceScore": 6
     },
     {
@@ -2348,7 +2484,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/could-german-ex-leader-really-negotiate-ukraine-peace/a-77111372?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957682273,
+      "ts": 1778960225578,
       "relevanceScore": 6
     },
     {
@@ -2365,7 +2501,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-ulm-5-on-trial-after-attack-on-israeli-arms-firm/a-77038804?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957622273,
+      "ts": 1778960165579,
       "relevanceScore": 6
     },
     {
@@ -2382,7 +2518,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/berlin-fighting-the-city-s-young-far-right-scene/a-77098275?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957502273,
+      "ts": 1778960045579,
       "relevanceScore": 6
     },
     {
@@ -2399,7 +2535,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/data-centers-critical-tech-infrastructure-under-threat/a-77106191?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957442273,
+      "ts": 1778959985579,
       "relevanceScore": 6
     },
     {
@@ -2416,7 +2552,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957262274,
+      "ts": 1778959805579,
       "relevanceScore": 6
     },
     {
@@ -2433,7 +2569,228 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/new-film-portrays-thomas-and-erika-mann-with-an-oddly-twisted-premise/a-76970827?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778957202274,
+      "ts": 1778959745579,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-b376jn",
+      "lat": 48.90045,
+      "lon": 31.61505,
+      "city": "Ukraine",
+      "country": "UKR",
+      "title": "Trump announces 3-day ceasefire between Ukraine and Russia",
+      "description": "The US president said both sides had agreed to halt fighting from May 9 to 11 and to exchange 1,000 prisoners each. Both Ukraine and Russia confirmed the ceasefire and prisoner exchange. Follow DW for more.",
+      "category": "CONFLICT",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/trump-announces-3-day-ceasefire-between-ukraine-and-russia/live-77091251?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778959565579,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1jamrh3",
+      "lat": 51.01885,
+      "lon": 4.20425,
+      "city": "Brussels",
+      "country": "BEL",
+      "title": "Why the EU sees Chinese solar tech as a major security risk",
+      "description": "Europe's solar boom is powered by Chinese technology. But experts warn Chinese-made tech could threaten the continent's safety and even create blackouts. Now, Brussels is aiming to reduce its dependence.",
+      "category": "DIPLOMACY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/why-the-eu-sees-chinese-solar-tech-as-a-major-security-risk/a-77066865?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778959265579,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1jogbfh",
+      "lat": 50.932700000000004,
+      "lon": 10.4473,
+      "city": "Germany",
+      "country": "DEU",
+      "title": "Germany news: Coalition at odds over pay rises for MPs",
+      "description": "German conservatives want to hold on to automatic pay increases for lawmakers, while the center-left thinks they should skip it this year in light of the economic situation. DW has more.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/germany-news-coalition-at-odds-over-pay-rises-for-mps/live-77073798?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778959205579,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1l23oem",
+      "lat": 51.106300000000005,
+      "lon": 4.3709,
+      "city": "Brussels",
+      "country": "BEL",
+      "title": "Hungary's new government pushes for euro by 2030",
+      "description": "Hungary's new leadership wants the country to adopt the euro by the end of the decade while repairing strained ties with Brussels. But with a weak economy and tight deadlines, experts warn the path will be steep.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/hungary-s-new-government-pushes-for-euro-by-2030/a-77053959?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778958905579,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-11lq02v",
+      "lat": 32.2405,
+      "lon": 53.8551,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "What the Strait of Hormuz fuel crisis means for air travel",
+      "description": "Does travel insurance cover flight cancellations caused by the Iran war? Travelers could face major disruption as the jet fuel crisis threatens summer flights.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778958845580,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1r40bux",
+      "lat": 26.37915,
+      "lon": 56.37375,
+      "city": "Strait of Hormuz",
+      "country": "MARITIME",
+      "title": "Germany prepares for mission in the Strait of Hormuz",
+      "description": "The German minesweeper Fulda has set course for the Mediterranean. The German armed forces may assist in clearing mines in the Strait of Hormuz — although only under certain conditions.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778958665580,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-mygcae",
+      "lat": 19.89605,
+      "lon": 0.21065000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "What is hantavirus?",
+      "description": "Three people have died on a cruise ship in the Atlantic, reportedly from hantavirus. The dangerous Andes strain has been confirmed in two cases. What are the symptoms, and how is it transmitted?",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-is-hantavirus/a-77047777?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778958545580,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-3wz3eu",
+      "lat": 32.5507,
+      "lon": 53.615300000000005,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Dubai's image as a financial hub faces its biggest test yet",
+      "description": "Amid the smoldering Iran war, wealthy elites are quietly shifting capital and other assets out of Dubai and heading to Singapore and Switzerland. Just how resilient is the emirate's safe-haven reputation?",
+      "category": "CONFLICT",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778958365580,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-whli9r",
+      "lat": 19.912,
+      "lon": 0.14740000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Gender investment gap: Are women catching up with men?",
+      "description": "Online brokers are tapping into the potential of female investors. Tailor-made products and branding campaigns are on the rise. Will this help bridge the gap between women and men when it comes to investing?",
+      "category": "NEWS",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/gender-investment-gap-are-women-catching-up-with-men/a-76862702?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778957945580,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1f0acaf",
+      "lat": 20.24475,
+      "lon": -0.06985000000000001,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Extreme weather and green energy on the rise in Europe",
+      "description": "Europe's climate extremes have hit new highs — but renewables are now supplying nearly half of the continent's electricity.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/extreme-weather-and-green-energy-on-the-rise-in-europe/a-76962870?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778957345581,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-8urmq3",
+      "lat": 6.25885,
+      "lon": -66.51575,
+      "city": "Venezuela",
+      "country": "VEN",
+      "title": "Germany's entrepreneurs betting on post-Maduro Venezuela",
+      "description": "Venezuela's economy is opening sectors to foreign firms, and that could pay off for the few German companies that have stuck it out through years of decline.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/germany-s-entrepreneurs-betting-on-post-maduro-venezuela/a-76968518?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778957285581,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1d9zphv",
+      "lat": 20.13475,
+      "lon": -0.17985,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "What Renault's new EV reveals about the global auto industry",
+      "description": "French carmaker Renault no longer sells its brand in the Chinese market, but it's not afraid to design and develop them there. It's just one more sign of big shifts in the global auto industry.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-renault-s-new-ev-reveals-about-the-global-auto-industry/a-76823988?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778957225581,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-14ea0m7",
+      "lat": 20.2035,
+      "lon": -0.0319,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "'Marine unicorns' aren't loving Arctic noise",
+      "description": "Narwhals are fleeing Canada's far north. Researchers suspect a link to noise pollution from increasing ship traffic.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/marine-unicorns-aren-t-loving-arctic-noise/a-76704611?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778957105581,
       "relevanceScore": 6
     },
     {
@@ -2454,207 +2811,88 @@
       "relevanceScore": 6
     },
     {
-      "id": "rss-deutsche-welle-1jamrh3",
-      "lat": 51.01885,
-      "lon": 4.20425,
-      "city": "Brussels",
-      "country": "BEL",
-      "title": "Why the EU sees Chinese solar tech as a major security risk",
-      "description": "Europe's solar boom is powered by Chinese technology. But experts warn Chinese-made tech could threaten the continent's safety and even create blackouts. Now, Brussels is aiming to reduce its dependence.",
-      "category": "DIPLOMACY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/why-the-eu-sees-chinese-solar-tech-as-a-major-security-risk/a-77066865?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778956782274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1jogbfh",
-      "lat": 50.932700000000004,
-      "lon": 10.4473,
-      "city": "Germany",
-      "country": "DEU",
-      "title": "Germany news: Coalition at odds over pay rises for MPs",
-      "description": "German conservatives want to hold on to automatic pay increases for lawmakers, while the center-left thinks they should skip it this year in light of the economic situation. DW has more.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/germany-news-coalition-at-odds-over-pay-rises-for-mps/live-77073798?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778956722274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1l23oem",
-      "lat": 51.106300000000005,
-      "lon": 4.3709,
-      "city": "Brussels",
-      "country": "BEL",
-      "title": "Hungary's new government pushes for euro by 2030",
-      "description": "Hungary's new leadership wants the country to adopt the euro by the end of the decade while repairing strained ties with Brussels. But with a weak economy and tight deadlines, experts warn the path will be steep.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/hungary-s-new-government-pushes-for-euro-by-2030/a-77053959?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778956422274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-11lq02v",
-      "lat": 32.2405,
-      "lon": 53.8551,
+      "id": "rss-deutsche-welle-1hvtd13",
+      "lat": 32.270199999999996,
+      "lon": 53.805600000000005,
       "city": "Iran",
       "country": "IRN",
-      "title": "What the Strait of Hormuz fuel crisis means for air travel",
-      "description": "Does travel insurance cover flight cancellations caused by the Iran war? Travelers could face major disruption as the jet fuel crisis threatens summer flights.",
-      "category": "MARITIME",
+      "title": "Could Iran war trigger bigger trade crisis than COVID?",
+      "description": "As the Iran war simmers, trade experts ask whether it could reshape supply chains more deeply than COVID-19, forcing companies to rethink strategies to counter further geopolitical shocks.",
+      "category": "ECONOMY",
       "source": "Deutsche Welle",
       "sourceName": "Deutsche Welle",
       "officialSource": false,
-      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
+      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778956362274,
+      "ts": 1778956445581,
       "relevanceScore": 6
     },
     {
-      "id": "rss-deutsche-welle-1r40bux",
-      "lat": 26.37915,
-      "lon": 56.37375,
-      "city": "Strait of Hormuz",
-      "country": "MARITIME",
-      "title": "Germany prepares for mission in the Strait of Hormuz",
-      "description": "The German minesweeper Fulda has set course for the Mediterranean. The German armed forces may assist in clearing mines in the Strait of Hormuz — although only under certain conditions.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778956182274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-mygcae",
-      "lat": 19.89605,
-      "lon": 0.21065000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "What is hantavirus?",
-      "description": "Three people have died on a cruise ship in the Atlantic, reportedly from hantavirus. The dangerous Andes strain has been confirmed in two cases. What are the symptoms, and how is it transmitted?",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/what-is-hantavirus/a-77047777?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778956062274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-3wz3eu",
-      "lat": 32.5507,
-      "lon": 53.615300000000005,
+      "id": "rss-deutsche-welle-11s5maa",
+      "lat": 32.515499999999996,
+      "lon": 53.5801,
       "city": "Iran",
       "country": "IRN",
-      "title": "Dubai's image as a financial hub faces its biggest test yet",
-      "description": "Amid the smoldering Iran war, wealthy elites are quietly shifting capital and other assets out of Dubai and heading to Singapore and Switzerland. Just how resilient is the emirate's safe-haven reputation?",
-      "category": "CONFLICT",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778955882274,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-whli9r",
-      "lat": 19.912,
-      "lon": 0.14740000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Gender investment gap: Are women catching up with men?",
-      "description": "Online brokers are tapping into the potential of female investors. Tailor-made products and branding campaigns are on the rise. Will this help bridge the gap between women and men when it comes to investing?",
-      "category": "NEWS",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/gender-investment-gap-are-women-catching-up-with-men/a-76862702?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778955462275,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1f0acaf",
-      "lat": 20.24475,
-      "lon": -0.06985000000000001,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Extreme weather and green energy on the rise in Europe",
-      "description": "Europe's climate extremes have hit new highs — but renewables are now supplying nearly half of the continent's electricity.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/extreme-weather-and-green-energy-on-the-rise-in-europe/a-76962870?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778954862275,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-8urmq3",
-      "lat": 6.25885,
-      "lon": -66.51575,
-      "city": "Venezuela",
-      "country": "VEN",
-      "title": "Germany's entrepreneurs betting on post-Maduro Venezuela",
-      "description": "Venezuela's economy is opening sectors to foreign firms, and that could pay off for the few German companies that have stuck it out through years of decline.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/germany-s-entrepreneurs-betting-on-post-maduro-venezuela/a-76968518?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778954802275,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1d9zphv",
-      "lat": 20.13475,
-      "lon": -0.17985,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "What Renault's new EV reveals about the global auto industry",
-      "description": "French carmaker Renault no longer sells its brand in the Chinese market, but it's not afraid to design and develop them there. It's just one more sign of big shifts in the global auto industry.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/what-renault-s-new-ev-reveals-about-the-global-auto-industry/a-76823988?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778954742275,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-14ea0m7",
-      "lat": 20.2035,
-      "lon": -0.0319,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "'Marine unicorns' aren't loving Arctic noise",
-      "description": "Narwhals are fleeing Canada's far north. Researchers suspect a link to noise pollution from increasing ship traffic.",
+      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
+      "description": "The impact of jet fuel shortages because of the closure of the Strait of Hormuz is starting to burn. Lufthansa has canceled 20,000 flights and experts warn more cancellations and price hikes are on the way.",
       "category": "MARITIME",
       "source": "Deutsche Welle",
       "sourceName": "Deutsche Welle",
       "officialSource": false,
-      "url": "https://www.dw.com/en/marine-unicorns-aren-t-loving-arctic-noise/a-76704611?maca=en-rss-en-all-1573-rdf",
+      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778954622275,
+      "ts": 1778956385581,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-10nc7mw",
+      "lat": 19.9208,
+      "lon": 0.15620000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Can data centers be green?",
+      "description": "Renewable energy is increasingly being used to supply power-hungry data centers. As the sector swells, much of the electricity demand is being met by polluting fossil fuels.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/can-data-centers-be-green/a-76873187?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778956145581,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-2mtxyo",
+      "lat": 32.3989,
+      "lon": 53.9343,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
+      "description": "Iran says it has placed mines in the Straight of Hormuz to discourage independent traffic. How dangerous are naval mines, and what can be done to clear them?",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778955905582,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-22uum9",
+      "lat": 32.25645,
+      "lon": 53.871050000000004,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
+      "description": "With war in Iran on hold, the world's largest industrial trade fair opens in Hannover. And Brazil, this year's partner country, is pulling out all stops to convince visitors it's a reliable technology leader.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778955785582,
       "relevanceScore": 6
     },
     {
@@ -2672,91 +2910,6 @@
       "url": "https://www.cbsnews.com/news/tourists-killed-maldives-cave-diving-accident-italy/",
       "sources": 1,
       "ts": 1778954484000,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1hvtd13",
-      "lat": 32.270199999999996,
-      "lon": 53.805600000000005,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Could Iran war trigger bigger trade crisis than COVID?",
-      "description": "As the Iran war simmers, trade experts ask whether it could reshape supply chains more deeply than COVID-19, forcing companies to rethink strategies to counter further geopolitical shocks.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778953902276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-11s5maa",
-      "lat": 32.515499999999996,
-      "lon": 53.5801,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
-      "description": "The impact of jet fuel shortages because of the closure of the Strait of Hormuz is starting to burn. Lufthansa has canceled 20,000 flights and experts warn more cancellations and price hikes are on the way.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778953842276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-10nc7mw",
-      "lat": 19.9208,
-      "lon": 0.15620000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Can data centers be green?",
-      "description": "Renewable energy is increasingly being used to supply power-hungry data centers. As the sector swells, much of the electricity demand is being met by polluting fossil fuels.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/can-data-centers-be-green/a-76873187?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778953602276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-2mtxyo",
-      "lat": 32.3989,
-      "lon": 53.9343,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
-      "description": "Iran says it has placed mines in the Straight of Hormuz to discourage independent traffic. How dangerous are naval mines, and what can be done to clear them?",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778953362276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-22uum9",
-      "lat": 32.25645,
-      "lon": 53.871050000000004,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
-      "description": "With war in Iran on hold, the world's largest industrial trade fair opens in Hannover. And Brazil, this year's partner country, is pulling out all stops to convince visitors it's a reliable technology leader.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778953242276,
       "relevanceScore": 6
     },
     {
@@ -3182,23 +3335,6 @@
       "url": "https://www.cnbc.com/2026/05/16/russias-putin-to-meet-chinas-xi-in-beijing-from-may-19-20.html",
       "sources": 1,
       "ts": 1778923609000,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-france-24-1ytlkes",
-      "lat": 19.80805,
-      "lon": 0.04344999999999998,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "US ramps up pressure on Cuba and plans to indict Raúl Castro",
-      "description": "The Justice Department is preparing to seek an indictment against former Cuban President Raúl Castro as President Donald Trump threatens possible military action against the communist-run island.",
-      "category": "CONFLICT",
-      "source": "France 24",
-      "sourceName": "France 24",
-      "officialSource": false,
-      "url": "https://www.france24.com/en/video/20260516-us-ramps-up-pressure-on-cuba-and-plans-to-indict-ra%C3%BAl-castro",
-      "sources": 1,
-      "ts": 1778920881000,
       "relevanceScore": 6
     },
     {
@@ -3797,6 +3933,23 @@
       "relevanceScore": 6
     },
     {
+      "id": "rss-offshore-energy-5cvmpo",
+      "lat": 19.95435,
+      "lon": 0.26895,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Industry players unite to form UAE’s first shipbuilding consortium",
+      "description": "A group of national industry players has come together to form the first shipbuilders [&#8230;] The post Industry players unite to form UAE’s first shipbuilding consortium appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/industry-players-unite-to-form-uaes-first-shipbuilding-consortium/",
+      "sources": 1,
+      "ts": 1778847660000,
+      "relevanceScore": 6
+    },
+    {
       "id": "rss-the-aviationist-149gvpx",
       "lat": 32.2988,
       "lon": 53.8342,
@@ -4052,6 +4205,40 @@
       "relevanceScore": 6
     },
     {
+      "id": "rss-offshore-energy-1ehsn18",
+      "lat": 20.16995,
+      "lon": -0.06545000000000001,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Velesto lines up multi-well offshore rig job in Southeast Asia",
+      "description": "Malaysia’s Velesto Energy, owner of premium jack-up rigs, has been hired to supply a jack-up rig for a drilling campaign off the coast of Malaysia, Southeast Asia. The post Velesto lines up multi-well offshore rig job in Southeast Asia appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/velesto-lines-up-multi-well-offshore-rig-job-in-southeast-asia/",
+      "sources": 1,
+      "ts": 1778845214000,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-offshore-energy-y5fva5",
+      "lat": 20.03905,
+      "lon": 0.27445,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Azerbaijan kicks off offshore wind measurement campaign with LiDAR deployed in Caspian Sea",
+      "description": "EOLOS Floating LiDAR Solutions has commissioned its FLS200 integrated floating LiDAR buoy at an [&#8230;] The post Azerbaijan kicks off offshore wind measurement campaign with LiDAR deployed in Caspian Sea appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/azerbaijan-kicks-off-offshore-wind-measurement-campaign-with-lidar-deployed-in-caspian-sea/",
+      "sources": 1,
+      "ts": 1778844062000,
+      "relevanceScore": 6
+    },
+    {
       "id": "rss-marinelink-23pk8g",
       "lat": 20.08855,
       "lon": -0.14685,
@@ -4066,6 +4253,23 @@
       "url": "https://www.marinelink.com/news/solstads-arbitration-win-unlocks-m-539250",
       "sources": 1,
       "ts": 1778837209000,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-offshore-energy-11y0v76",
+      "lat": 20.06765,
+      "lon": -0.24695000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Solstad Offshore comes out as winner in CSV legal battle",
+      "description": "An arbitration regarding a disputed 2024 charter hire related to the largest vessel in [&#8230;] The post Solstad Offshore comes out as winner in CSV legal battle appeared first on Offshore Energy .",
+      "category": "ECONOMY",
+      "source": "Offshore Energy",
+      "sourceName": "Offshore Energy",
+      "officialSource": false,
+      "url": "https://www.offshore-energy.biz/solstad-offshore-comes-out-as-winner-in-csv-legal-battle/",
+      "sources": 1,
+      "ts": 1778833825000,
       "relevanceScore": 6
     },
     {
@@ -6033,7 +6237,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-news-dead-humpback-whale-off-denmark-is-timmy-who-spent-weeks-stranded-in-baltic-sea/live-77178633?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778961162271,
+      "ts": 1778963705576,
       "relevanceScore": 4
     },
     {
@@ -6050,7 +6254,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/trump-says-is-second-in-command-killed-in-nigeria/a-77178187?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778960442272,
+      "ts": 1778962985576,
       "relevanceScore": 4
     },
     {
@@ -147409,6 +147613,18 @@
       "level": 0.38
     },
     {
+      "id": "conflict-rss-times-of-israel-1bwogfd",
+      "lat": 31.25135,
+      "lon": 34.93675,
+      "title": "IDF infantry platoon commander killed by Hezbollah drone in southern Lebanon",
+      "country": "Israel",
+      "source": "Times of Israel",
+      "url": "https://www.timesofisrael.com/idf-infantry-platoon-commander-killed-by-hezbollah-drone-in-southern-lebanon/",
+      "ts": 1778962276000,
+      "fatalities": 0,
+      "level": 0.62
+    },
+    {
       "id": "conflict-rss-deutsche-welle-jo0e9c",
       "lat": 49.26565,
       "lon": 31.430249999999997,
@@ -147416,7 +147632,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/the-country-that-s-turning-to-solar-during-war/a-76907346?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778954202276,
+      "ts": 1778956685581,
       "fatalities": 0,
       "level": 0.38
     },
@@ -147553,18 +147769,6 @@
       "level": 0.38
     },
     {
-      "id": "conflict-rss-gcaptain-1izdzvk",
-      "lat": 32.570499999999996,
-      "lon": 53.5559,
-      "title": "U.S. Admiral Says Operation EPIC FURY Rolled Back ‘40 Years’ of Iranian Military Investment",
-      "country": "Iran",
-      "source": "gCaptain",
-      "url": "https://gcaptain.com/u-s-admiral-says-operation-epic-fury-rolled-back-40-years-of-iranian-military-investment/",
-      "ts": 1778782609000,
-      "fatalities": 0,
-      "level": 0.62
-    },
-    {
       "id": "conflict-rss-defense-news-1a4xaez",
       "lat": 19.7261,
       "lon": -0.038500000000000006,
@@ -147644,7 +147848,7 @@
       "country": "Kyiv",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/greek-minister-says-mystery-drone-from-a-foreign-state/a-77107116?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957322274,
+      "ts": 1778959865579,
       "fatalities": 0,
       "level": 0.38
     },
@@ -147656,7 +147860,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/will-the-iran-war-end-strait-of-hormuz-oil-supremacy/a-76893004?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778954562275,
+      "ts": 1778957045581,
       "fatalities": 0,
       "level": 0.38
     },
@@ -147889,10 +148093,10 @@
       "level": 0.38
     },
     {
-      "id": "conflict-wiki-current-h30fjp",
-      "lat": 32.4495,
-      "lon": 53.514100000000006,
-      "title": "2026 Strait of Hormuz crisis Iranian lawmaker Ebrahim Azizi says that Iran will introduce new mechanism to regulate maritime traffic through a designated route in the Strait of Hormuz and charge fees for ships entering the waterway . (AA)",
+      "id": "conflict-wiki-current-1spx5qi",
+      "lat": 32.4308,
+      "lon": 53.495400000000004,
+      "title": "2026 Strait of Hormuz crisis Iranian lawmaker Ebrahim Azizi says that Iran will introduce new mechanisms to regulate maritime traffic through a designated route in the Strait of Hormuz and charge fees for ships entering the waterway . (AA)",
       "country": "Iran",
       "source": "wikipedia.org",
       "url": "https://en.wikipedia.org/wiki/Portal%3ACurrent_events%2F2026_May_16",
@@ -147992,7 +148196,7 @@
       "country": "Germany",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/germany-gets-ahead-in-the-new-space-race/a-77177359?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778961282271,
+      "ts": 1778963825576,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148004,7 +148208,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/middle-east-updates-big-crowds-at-nakba-day-rally-in-london/live-77179563?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778960982271,
+      "ts": 1778963525576,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148016,7 +148220,7 @@
       "country": "Israel",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/china-us-israel-compete-in-fast-growing-laser-weapons-race/a-77174766?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778960682271,
+      "ts": 1778963225576,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148028,7 +148232,7 @@
       "country": "Israel",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/middle-east-israel-lebanon-agree-to-extend-truce-us-says/live-77167235?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778960322272,
+      "ts": 1778962865576,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148040,7 +148244,19 @@
       "country": "Russia",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/latvia-prime-minister-evika-silina-resigns-over-handling-of-drone-incidents-after-coalition-ally-s-withdrawal/a-77159518?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778959482272,
+      "ts": 1778962025577,
+      "fatalities": 0,
+      "level": 0.62
+    },
+    {
+      "id": "conflict-rss-al-jazeera-gu4r2t",
+      "lat": 30.5461,
+      "lon": 69.2015,
+      "title": "Can new Pakistan-Afghanistan tensions lead to another border clash?",
+      "country": "Pakistan",
+      "source": "Al Jazeera",
+      "url": "https://www.aljazeera.com/video/inside-story/2026/5/16/can-new-pakistan-afghanistan-tensions-lead-to-another-border-clash?traffic_source=rss",
+      "ts": 1778961648000,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148052,7 +148268,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/ceasefire-in-sight-what-s-next-for-russia-s-war-in-ukraine/a-77138367?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778959062272,
+      "ts": 1778961605577,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148064,7 +148280,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/could-german-ex-leader-really-negotiate-ukraine-peace/a-77111372?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957682273,
+      "ts": 1778960225578,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148076,7 +148292,7 @@
       "country": "Germany",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/berlin-fighting-the-city-s-young-far-right-scene/a-77098275?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957502273,
+      "ts": 1778960045579,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148088,7 +148304,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/data-centers-critical-tech-infrastructure-under-threat/a-77106191?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957442273,
+      "ts": 1778959985579,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148100,7 +148316,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957262274,
+      "ts": 1778959805579,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148112,7 +148328,55 @@
       "country": "Global",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/new-film-portrays-thomas-and-erika-mann-with-an-oddly-twisted-premise/a-76970827?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778957202274,
+      "ts": 1778959745579,
+      "fatalities": 0,
+      "level": 0.62
+    },
+    {
+      "id": "conflict-rss-deutsche-welle-b376jn",
+      "lat": 48.90045,
+      "lon": 31.61505,
+      "title": "Trump announces 3-day ceasefire between Ukraine and Russia",
+      "country": "Ukraine",
+      "source": "Deutsche Welle",
+      "url": "https://www.dw.com/en/trump-announces-3-day-ceasefire-between-ukraine-and-russia/live-77091251?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778959565579,
+      "fatalities": 0,
+      "level": 0.62
+    },
+    {
+      "id": "conflict-rss-deutsche-welle-11lq02v",
+      "lat": 32.2405,
+      "lon": 53.8551,
+      "title": "What the Strait of Hormuz fuel crisis means for air travel",
+      "country": "Iran",
+      "source": "Deutsche Welle",
+      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778958845580,
+      "fatalities": 0,
+      "level": 0.38
+    },
+    {
+      "id": "conflict-rss-deutsche-welle-1r40bux",
+      "lat": 26.37915,
+      "lon": 56.37375,
+      "title": "Germany prepares for mission in the Strait of Hormuz",
+      "country": "Strait of Hormuz",
+      "source": "Deutsche Welle",
+      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778958665580,
+      "fatalities": 0,
+      "level": 0.38
+    },
+    {
+      "id": "conflict-rss-deutsche-welle-3wz3eu",
+      "lat": 32.5507,
+      "lon": 53.615300000000005,
+      "title": "Dubai's image as a financial hub faces its biggest test yet",
+      "country": "Iran",
+      "source": "Deutsche Welle",
+      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778958365580,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148129,40 +148393,52 @@
       "level": 0.62
     },
     {
-      "id": "conflict-rss-deutsche-welle-11lq02v",
-      "lat": 32.2405,
-      "lon": 53.8551,
-      "title": "What the Strait of Hormuz fuel crisis means for air travel",
+      "id": "conflict-rss-deutsche-welle-1hvtd13",
+      "lat": 32.270199999999996,
+      "lon": 53.805600000000005,
+      "title": "Could Iran war trigger bigger trade crisis than COVID?",
       "country": "Iran",
       "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778956362274,
+      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778956445581,
       "fatalities": 0,
       "level": 0.38
     },
     {
-      "id": "conflict-rss-deutsche-welle-1r40bux",
-      "lat": 26.37915,
-      "lon": 56.37375,
-      "title": "Germany prepares for mission in the Strait of Hormuz",
-      "country": "Strait of Hormuz",
+      "id": "conflict-rss-deutsche-welle-11s5maa",
+      "lat": 32.515499999999996,
+      "lon": 53.5801,
+      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
+      "country": "Iran",
       "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778956182274,
+      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778956385581,
       "fatalities": 0,
       "level": 0.38
     },
     {
-      "id": "conflict-rss-deutsche-welle-3wz3eu",
-      "lat": 32.5507,
-      "lon": 53.615300000000005,
-      "title": "Dubai's image as a financial hub faces its biggest test yet",
+      "id": "conflict-rss-deutsche-welle-2mtxyo",
+      "lat": 32.3989,
+      "lon": 53.9343,
+      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
       "country": "Iran",
       "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778955882274,
+      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778955905582,
       "fatalities": 0,
-      "level": 0.62
+      "level": 0.38
+    },
+    {
+      "id": "conflict-rss-deutsche-welle-22uum9",
+      "lat": 32.25645,
+      "lon": 53.871050000000004,
+      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
+      "country": "Iran",
+      "source": "Deutsche Welle",
+      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
+      "ts": 1778955785582,
+      "fatalities": 0,
+      "level": 0.38
     },
     {
       "id": "conflict-rss-cbs-world-97rvls",
@@ -148175,54 +148451,6 @@
       "ts": 1778954484000,
       "fatalities": 0,
       "level": 0.62
-    },
-    {
-      "id": "conflict-rss-deutsche-welle-1hvtd13",
-      "lat": 32.270199999999996,
-      "lon": 53.805600000000005,
-      "title": "Could Iran war trigger bigger trade crisis than COVID?",
-      "country": "Iran",
-      "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778953902276,
-      "fatalities": 0,
-      "level": 0.38
-    },
-    {
-      "id": "conflict-rss-deutsche-welle-11s5maa",
-      "lat": 32.515499999999996,
-      "lon": 53.5801,
-      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
-      "country": "Iran",
-      "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778953842276,
-      "fatalities": 0,
-      "level": 0.38
-    },
-    {
-      "id": "conflict-rss-deutsche-welle-2mtxyo",
-      "lat": 32.3989,
-      "lon": 53.9343,
-      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
-      "country": "Iran",
-      "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778953362276,
-      "fatalities": 0,
-      "level": 0.38
-    },
-    {
-      "id": "conflict-rss-deutsche-welle-22uum9",
-      "lat": 32.25645,
-      "lon": 53.871050000000004,
-      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
-      "country": "Iran",
-      "source": "Deutsche Welle",
-      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778953242276,
-      "fatalities": 0,
-      "level": 0.38
     },
     {
       "id": "conflict-rss-al-jazeera-ucvt20",
@@ -148403,18 +148631,6 @@
       "ts": 1778923989000,
       "fatalities": 0,
       "level": 0.38
-    },
-    {
-      "id": "conflict-rss-france-24-1ytlkes",
-      "lat": 19.80805,
-      "lon": 0.04344999999999998,
-      "title": "US ramps up pressure on Cuba and plans to indict Raúl Castro",
-      "country": "Global",
-      "source": "France 24",
-      "url": "https://www.france24.com/en/video/20260516-us-ramps-up-pressure-on-cuba-and-plans-to-indict-ra%C3%BAl-castro",
-      "ts": 1778920881000,
-      "fatalities": 0,
-      "level": 0.62
     },
     {
       "id": "conflict-rss-cbs-world-15090hn",
@@ -148677,6 +148893,18 @@
       "source": "MarineLink",
       "url": "https://www.marinelink.com/news/solstads-arbitration-win-unlocks-m-539250",
       "ts": 1778837209000,
+      "fatalities": 0,
+      "level": 0.38
+    },
+    {
+      "id": "conflict-rss-offshore-energy-11y0v76",
+      "lat": 20.06765,
+      "lon": -0.24695000000000003,
+      "title": "Solstad Offshore comes out as winner in CSV legal battle",
+      "country": "Global",
+      "source": "Offshore Energy",
+      "url": "https://www.offshore-energy.biz/solstad-offshore-comes-out-as-winner-in-csv-legal-battle/",
+      "ts": 1778833825000,
       "fatalities": 0,
       "level": 0.38
     },
@@ -149908,32 +150136,6 @@
       "ts": 1778879725536,
       "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy3u",
       "severity": "yellow"
-    },
-    {
-      "id": "nc75361026",
-      "type": "earthquake",
-      "lat": 40.5886650085449,
-      "lon": -122.71516418457,
-      "depth": 49.5499992370605,
-      "mag": 2.55,
-      "place": "15 km SSW of French Gulch, CA",
-      "title": "M 2.6 - 15 km SSW of French Gulch, CA",
-      "ts": 1778877485800,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/nc75361026",
-      "severity": "green"
-    },
-    {
-      "id": "us6000sy57",
-      "type": "earthquake",
-      "lat": 53.5222,
-      "lon": -166.0425,
-      "depth": 73.201,
-      "mag": 2.5,
-      "place": "50 km SE of Unalaska, Alaska",
-      "title": "M 2.5 - 50 km SE of Unalaska, Alaska",
-      "ts": 1778877203179,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy57",
-      "severity": "green"
     }
   ],
   "weather": [],
