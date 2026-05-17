@@ -2,7 +2,7 @@
   "strictLive": true,
   "cached": true,
   "staticCache": true,
-  "generatedAt": 1778974816510,
+  "generatedAt": 1778982958020,
   "sources": [
     {
       "name": "gdelt",
@@ -12,7 +12,7 @@
     {
       "name": "rss",
       "ok": true,
-      "count": 609
+      "count": 607
     },
     {
       "name": "reliefweb",
@@ -23,7 +23,7 @@
     {
       "name": "wikipedia-current",
       "ok": true,
-      "count": 178
+      "count": 161
     },
     {
       "name": "wikinews",
@@ -49,7 +49,7 @@
     {
       "name": "earthquakes",
       "ok": true,
-      "count": 38
+      "count": 39
     },
     {
       "name": "news",
@@ -59,7 +59,7 @@
     {
       "name": "conflictEvents",
       "ok": true,
-      "count": 170
+      "count": 172
     },
     {
       "name": "vessels",
@@ -99,7 +99,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/foreign-student-fee-hikes-in-france-trigger-backlash/a-77146306?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778973243274,
+      "ts": 1778981325083,
+      "relevanceScore": 10
+    },
+    {
+      "id": "rss-guardian-world-p1p202",
+      "lat": 31.01705,
+      "lon": 35.25245,
+      "city": "Israel",
+      "country": "ISR",
+      "title": "Israeli strikes kill six in southern Lebanon hours after extension of ceasefire",
+      "description": "<p>Three paramedics at health centre among dead, while Hamas military chief Izz al-Din al-Haddad killed in Gaza strike</p><p>Israel carried out airstrikes in southern Lebanon, killing at least six people, including three paramedics working at a health centre, just hours after its envoys had agreed with the Lebanese government <a href=\"https://www.theguardian.com/world/2026/may/15/israel-and-lebanon-agree-ceasefire-ex",
+      "category": "CONFLICT",
+      "source": "Guardian World",
+      "sourceName": "Guardian World",
+      "officialSource": false,
+      "url": "https://www.theguardian.com/world/2026/may/16/israeli-strikes-southern-lebanon-hours-after-extension-of-ceasefire",
+      "sources": 1,
+      "ts": 1778980187000,
       "relevanceScore": 10
     },
     {
@@ -116,7 +133,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/the-country-that-s-turning-to-solar-during-war/a-76907346?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778967603278,
+      "ts": 1778975745087,
       "relevanceScore": 10
     },
     {
@@ -168,40 +185,6 @@
       "url": "https://www.theguardian.com/environment/2026/may/16/timmy-the-whale-confirmed-dead-by-danish-authorities",
       "sources": 1,
       "ts": 1778952142000,
-      "relevanceScore": 10
-    },
-    {
-      "id": "rss-al-jazeera-r176fv",
-      "lat": 17.7409,
-      "lon": 7.8963,
-      "city": "Niger",
-      "country": "NER",
-      "title": "Abu-Bilal al-Minuki: ISIL’s shadow commander in West Africa",
-      "description": "Nigeria and the US say &#039;key&#039; ISIL leader was killed in joint military operation in Borno state.",
-      "category": "CONFLICT",
-      "source": "Al Jazeera",
-      "sourceName": "Al Jazeera",
-      "officialSource": false,
-      "url": "https://www.aljazeera.com/news/2026/5/16/abu-bilal-al-minuki-isils-shadow-commander-in-west-africa?traffic_source=rss",
-      "sources": 1,
-      "ts": 1778947095000,
-      "relevanceScore": 10
-    },
-    {
-      "id": "rss-guardian-world-p1p202",
-      "lat": 31.01705,
-      "lon": 35.25245,
-      "city": "Israel",
-      "country": "ISR",
-      "title": "Israeli strikes kill six in southern Lebanon hours after extension of ceasefire",
-      "description": "<p>Three paramedics at health centre among dead, while Israel also says it killed Hamas military chief in Gaza</p><p>Israel carried out airstrikes in southern Lebanon, killing at least six people, including three paramedics working at a health centre, just hours after its envoys had agreed with the Lebanese government <a href=\"https://www.theguardian.com/world/2026/may/15/israel-and-lebanon-agree-ceasefire-extension-",
-      "category": "CONFLICT",
-      "source": "Guardian World",
-      "sourceName": "Guardian World",
-      "officialSource": false,
-      "url": "https://www.theguardian.com/world/2026/may/16/israeli-strikes-southern-lebanon-hours-after-extension-of-ceasefire",
-      "sources": 1,
-      "ts": 1778947064000,
       "relevanceScore": 10
     },
     {
@@ -1070,23 +1053,6 @@
       "relevanceScore": 10
     },
     {
-      "id": "rss-gcaptain-187ulrn",
-      "lat": 61.5902,
-      "lon": 105.1548,
-      "city": "Russia",
-      "country": "RUS",
-      "title": "US Allows Russia Oil Sales Waiver To Expire Despite Tight Market",
-      "description": "By&#160;Jennifer A. Dlouhy May 16, 2026 (Bloomberg) &#8211;The Trump administration allowed a waiver that encouraged more Russian crude sales to lapse, even as the Iran war stokes concerns about global...",
-      "category": "ECONOMY",
-      "source": "gCaptain",
-      "sourceName": "gCaptain",
-      "officialSource": false,
-      "url": "https://gcaptain.com/us-allows-russia-oil-sales-waiver-to-expire-despite-tight-market/",
-      "sources": 1,
-      "ts": 1778973127000,
-      "relevanceScore": 9
-    },
-    {
       "id": "rss-deutsche-welle-16yuda0",
       "lat": 19.97085,
       "lon": -0.26455,
@@ -1100,7 +1066,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/who-is-mario-draghi-this-year-s-charlemagne-prize-winner/a-77115925?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972943274,
+      "ts": 1778981025083,
       "relevanceScore": 9
     },
     {
@@ -1117,7 +1083,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/somali-piracy-disrupts-global-shipping-and-trade-routes/a-77047750?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971263275,
+      "ts": 1778979345084,
       "relevanceScore": 9
     },
     {
@@ -1134,7 +1100,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/greek-minister-says-mystery-drone-from-a-foreign-state/a-77107116?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970723276,
+      "ts": 1778978805085,
       "relevanceScore": 9
     },
     {
@@ -1151,7 +1117,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/a-new-climate-club-minus-the-fossil-fuel-lobby/a-76992981?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778968623277,
+      "ts": 1778976765086,
       "relevanceScore": 9
     },
     {
@@ -1168,7 +1134,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/will-eu-bring-in-a-windfall-tax-on-oil-companies/a-76920556?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778968563277,
+      "ts": 1778976705086,
       "relevanceScore": 9
     },
     {
@@ -1185,7 +1151,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/why-uae-s-opec-exit-is-a-blow-to-saudi-arabia/a-76975354?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778968503277,
+      "ts": 1778976645086,
       "relevanceScore": 9
     },
     {
@@ -1202,7 +1168,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/will-the-iran-war-end-strait-of-hormuz-oil-supremacy/a-76893004?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778967963277,
+      "ts": 1778976105087,
       "relevanceScore": 9
     },
     {
@@ -1219,7 +1185,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/states-gather-in-a-new-push-to-ditch-coal-oil-and-gas/a-76891719?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778967723278,
+      "ts": 1778975865087,
       "relevanceScore": 9
     },
     {
@@ -1236,7 +1202,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/russia-to-block-kazakh-oil-flows-to-germany-via-key-pipeline/a-76895743?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778967423278,
+      "ts": 1778975565087,
       "relevanceScore": 9
     },
     {
@@ -1253,7 +1219,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-s-chip-ambitions-shake-up-global-tech-industry/a-76056790?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778966883278,
+      "ts": 1778975025088,
+      "relevanceScore": 9
+    },
+    {
+      "id": "rss-gcaptain-187ulrn",
+      "lat": 61.5902,
+      "lon": 105.1548,
+      "city": "Russia",
+      "country": "RUS",
+      "title": "US Allows Russia Oil Sales Waiver To Expire Despite Tight Market",
+      "description": "By&#160;Jennifer A. Dlouhy May 16, 2026 (Bloomberg) &#8211;The Trump administration allowed a waiver that encouraged more Russian crude sales to lapse, even as the Iran war stokes concerns about global...",
+      "category": "ECONOMY",
+      "source": "gCaptain",
+      "sourceName": "gCaptain",
+      "officialSource": false,
+      "url": "https://gcaptain.com/us-allows-russia-oil-sales-waiver-to-expire-despite-tight-market/",
+      "sources": 1,
+      "ts": 1778973127000,
       "relevanceScore": 9
     },
     {
@@ -2076,7 +2059,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-gets-ahead-in-the-new-space-race/a-77177359?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974683273,
+      "ts": 1778982765082,
       "relevanceScore": 6
     },
     {
@@ -2093,7 +2076,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/middle-east-updates-big-crowds-at-nakba-day-rally-in-london/live-77179563?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974383273,
+      "ts": 1778982465082,
       "relevanceScore": 6
     },
     {
@@ -2110,7 +2093,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/study-immigrants-disadvantaged-in-german-housing-market/a-77171138?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974323273,
+      "ts": 1778982405082,
       "relevanceScore": 6
     },
     {
@@ -2127,7 +2110,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/taiwan-urges-trump-to-advance-arms-deal-after-china-summit/a-77178649?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974143273,
+      "ts": 1778982225082,
       "relevanceScore": 6
     },
     {
@@ -2144,7 +2127,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-us-israel-compete-in-fast-growing-laser-weapons-race/a-77174766?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974083273,
+      "ts": 1778982165082,
       "relevanceScore": 6
     },
     {
@@ -2161,7 +2144,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/india-news-pm-modi-visits-the-netherlands-at-start-of-europe-tour/live-77178271?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778973903274,
+      "ts": 1778981985082,
       "relevanceScore": 6
     },
     {
@@ -2178,7 +2161,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/us-stops-poland-troop-deployment-after-germany-pullout-order/a-77177920?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778973783274,
+      "ts": 1778981865082,
       "relevanceScore": 6
     },
     {
@@ -2195,7 +2178,41 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/middle-east-israel-lebanon-agree-to-extend-truce-us-says/live-77167235?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778973723274,
+      "ts": 1778981805082,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-times-of-israel-qnn6xj",
+      "lat": 30.9021,
+      "lon": 35.1375,
+      "city": "Israel",
+      "country": "ISR",
+      "title": "Amid reports Iran war could resume, Trump posts image warning of &#8216;calm before the storm&#8217;",
+      "description": "IDF says it intercepted rockets launched by Hezbollah at troops in southern Lebanon * Terror group claims to have launched drone swarm at IDF base in northern Israel The post Amid reports Iran war could resume, Trump posts image warning of &#8216;calm before the storm&#8217; appeared first on The Times of Israel .",
+      "category": "CLIMATE",
+      "source": "Times of Israel",
+      "sourceName": "Times of Israel",
+      "officialSource": false,
+      "url": "https://www.timesofisrael.com/liveblog-may-17-2026/",
+      "sources": 1,
+      "ts": 1778981734000,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-guardian-world-1rsaxpu",
+      "lat": 19.8988,
+      "lon": 0.1342,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Australia news live: Albanese congratulates Delta Goodrem on Eurovision fourth-place finish; Queensland Labor set to win Stafford byelection",
+      "description": "<p>Follow the day’s news live</p><ul><li><p>Get our <a href=\"https://www.theguardian.com/email-newsletters?CMP=cvau_sfl\">breaking news email</a>, <a href=\"https://app.adjust.com/w4u7jx3\">free app</a> or <a href=\"https://www.theguardian.com/australia-news/series/full-story?CMP=cvau_sfl\">daily news podcast</a></p></li></ul><p><strong>Jim Chalmers</strong> says the opposition’s policy to index tax brackets would cost th",
+      "category": "ECONOMY",
+      "source": "Guardian World",
+      "sourceName": "Guardian World",
+      "officialSource": false,
+      "url": "https://www.theguardian.com/australia-news/live/2026/may/17/australia-news-live-stafford-queensland-labor-lnp-jim-chalmers-federal-budget-anthony-albanese-angus-taylor-aukus-coalition-ntwnfb",
+      "sources": 1,
+      "ts": 1778981648000,
       "relevanceScore": 6
     },
     {
@@ -2212,7 +2229,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/latvia-prime-minister-evika-silina-resigns-over-handling-of-drone-incidents-after-coalition-ally-s-withdrawal/a-77159518?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972883274,
+      "ts": 1778980965083,
       "relevanceScore": 6
     },
     {
@@ -2229,7 +2246,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-goes-electric-but-can-it-get-off-coal/a-77147566?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972763274,
+      "ts": 1778980845083,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-al-jazeera-kdv8fx",
+      "lat": 20.10395,
+      "lon": -0.21065000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Tunisians rally amid economic crisis and political arrests",
+      "description": "Hundreds of Tunisians have marched through the capital to denounce a worsening economic crisis and crackdown on dissent.",
+      "category": "ECONOMY",
+      "source": "Al Jazeera",
+      "sourceName": "Al Jazeera",
+      "officialSource": false,
+      "url": "https://www.aljazeera.com/video/newsfeed/2026/5/17/tunisians-rally-amid-economic-crisis-and-political-arrests?traffic_source=rss",
+      "sources": 1,
+      "ts": 1778980729000,
       "relevanceScore": 6
     },
     {
@@ -2246,7 +2280,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-s-shortfall-in-medium-range-defense-capabilities/a-77151793?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972583274,
+      "ts": 1778980665083,
       "relevanceScore": 6
     },
     {
@@ -2263,7 +2297,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/ceasefire-in-sight-what-s-next-for-russia-s-war-in-ukraine/a-77138367?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972463274,
+      "ts": 1778980545083,
       "relevanceScore": 6
     },
     {
@@ -2280,7 +2314,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/china-s-new-rules-give-the-west-a-new-headache/a-77075741?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972403275,
+      "ts": 1778980485083,
       "relevanceScore": 6
     },
     {
@@ -2297,7 +2331,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/satellites-add-a-new-layer-to-global-poverty-data/a-77130563?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972343275,
+      "ts": 1778980425083,
       "relevanceScore": 6
     },
     {
@@ -2314,7 +2348,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/eu-invites-taliban-members-to-discuss-afghan-migrant-returns/a-77134268?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778972223275,
+      "ts": 1778980305083,
       "relevanceScore": 6
     },
     {
@@ -2331,7 +2365,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/uk-keir-starmer-tells-cabinet-he-will-continue-in-place-as-four-junior-ministers-quit/a-77129695?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971983275,
+      "ts": 1778980065084,
       "relevanceScore": 6
     },
     {
@@ -2348,7 +2382,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/eu-negotiators-agree-new-rules-on-vital-medicines/a-77126715?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971803275,
+      "ts": 1778979885084,
       "relevanceScore": 6
     },
     {
@@ -2365,7 +2399,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/hantavirus-how-is-the-outbreak-being-contained/a-77122959?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971683275,
+      "ts": 1778979765084,
       "relevanceScore": 6
     },
     {
@@ -2382,7 +2416,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-news-1-in-6-retailers-fear-for-future/live-77114178?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971503275,
+      "ts": 1778979585084,
       "relevanceScore": 6
     },
     {
@@ -2399,7 +2433,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/ukraine-eu-sanctions-russians-over-systematic-unlawful-deportation-of-children/live-77121806?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971443275,
+      "ts": 1778979525084,
       "relevanceScore": 6
     },
     {
@@ -2416,7 +2450,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/uk-prime-minister-keir-starmer-not-walking-away-after-local-election-mauling/a-77116149?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971383275,
+      "ts": 1778979465084,
       "relevanceScore": 6
     },
     {
@@ -2433,7 +2467,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-s-businesses-frustrated-by-economic-decline/a-77097307?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971203275,
+      "ts": 1778979285084,
       "relevanceScore": 6
     },
     {
@@ -2450,7 +2484,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/could-german-ex-leader-really-negotiate-ukraine-peace/a-77111372?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971083275,
+      "ts": 1778979165084,
       "relevanceScore": 6
     },
     {
@@ -2467,7 +2501,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-ulm-5-on-trial-after-attack-on-israeli-arms-firm/a-77038804?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778971023275,
+      "ts": 1778979105084,
       "relevanceScore": 6
     },
     {
@@ -2484,7 +2518,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/berlin-fighting-the-city-s-young-far-right-scene/a-77098275?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970903275,
+      "ts": 1778978985084,
       "relevanceScore": 6
     },
     {
@@ -2501,7 +2535,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/data-centers-critical-tech-infrastructure-under-threat/a-77106191?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970843275,
+      "ts": 1778978925084,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-cbs-world-1jkp18g",
+      "lat": 20.01375,
+      "lon": 0.24915,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Largest aircraft carrier in the world returns to the U.S., bringing thousands of sailors home",
+      "description": "The Pentagon awarded the USS Ford Carrier Group the prestigious Presidential Unit Citation for heroism as the warships finally returned home from two defining military missions. Olivia Rinaldi has more.",
+      "category": "CONFLICT",
+      "source": "CBS World",
+      "sourceName": "CBS World",
+      "officialSource": false,
+      "url": "https://www.cbsnews.com/video/largest-aircraft-carrier-world-returns-us-bringing-thousands-sailors-home/",
+      "sources": 1,
+      "ts": 1778978749000,
       "relevanceScore": 6
     },
     {
@@ -2518,7 +2569,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970663276,
+      "ts": 1778978745085,
       "relevanceScore": 6
     },
     {
@@ -2535,7 +2586,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/new-film-portrays-thomas-and-erika-mann-with-an-oddly-twisted-premise/a-76970827?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970603276,
+      "ts": 1778978685085,
       "relevanceScore": 6
     },
     {
@@ -2552,7 +2603,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/why-the-eu-sees-chinese-solar-tech-as-a-major-security-risk/a-77066865?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970183276,
+      "ts": 1778978265085,
       "relevanceScore": 6
     },
     {
@@ -2569,7 +2620,296 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-news-coalition-at-odds-over-pay-rises-for-mps/live-77073798?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778970123276,
+      "ts": 1778978205085,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1l23oem",
+      "lat": 51.106300000000005,
+      "lon": 4.3709,
+      "city": "Brussels",
+      "country": "BEL",
+      "title": "Hungary's new government pushes for euro by 2030",
+      "description": "Hungary's new leadership wants the country to adopt the euro by the end of the decade while repairing strained ties with Brussels. But with a weak economy and tight deadlines, experts warn the path will be steep.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/hungary-s-new-government-pushes-for-euro-by-2030/a-77053959?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977905085,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-11lq02v",
+      "lat": 32.2405,
+      "lon": 53.8551,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "What the Strait of Hormuz fuel crisis means for air travel",
+      "description": "Does travel insurance cover flight cancellations caused by the Iran war? Travelers could face major disruption as the jet fuel crisis threatens summer flights.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977845085,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1r40bux",
+      "lat": 26.37915,
+      "lon": 56.37375,
+      "city": "Strait of Hormuz",
+      "country": "MARITIME",
+      "title": "Germany prepares for mission in the Strait of Hormuz",
+      "description": "The German minesweeper Fulda has set course for the Mediterranean. The German armed forces may assist in clearing mines in the Strait of Hormuz — although only under certain conditions.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977665085,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-mygcae",
+      "lat": 19.89605,
+      "lon": 0.21065000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "What is hantavirus?",
+      "description": "Three people have died on a cruise ship in the Atlantic, reportedly from hantavirus. The dangerous Andes strain has been confirmed in two cases. What are the symptoms, and how is it transmitted?",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-is-hantavirus/a-77047777?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977605085,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-3wz3eu",
+      "lat": 32.5507,
+      "lon": 53.615300000000005,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Dubai's image as a financial hub faces its biggest test yet",
+      "description": "Amid the smoldering Iran war, wealthy elites are quietly shifting capital and other assets out of Dubai and heading to Singapore and Switzerland. Just how resilient is the emirate's safe-haven reputation?",
+      "category": "CONFLICT",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977425086,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-whli9r",
+      "lat": 19.912,
+      "lon": 0.14740000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Gender investment gap: Are women catching up with men?",
+      "description": "Online brokers are tapping into the potential of female investors. Tailor-made products and branding campaigns are on the rise. Will this help bridge the gap between women and men when it comes to investing?",
+      "category": "NEWS",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/gender-investment-gap-are-women-catching-up-with-men/a-76862702?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778977005086,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1f0acaf",
+      "lat": 20.24475,
+      "lon": -0.06985000000000001,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Extreme weather and green energy on the rise in Europe",
+      "description": "Europe's climate extremes have hit new highs — but renewables are now supplying nearly half of the continent's electricity.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/extreme-weather-and-green-energy-on-the-rise-in-europe/a-76962870?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778976405087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-8urmq3",
+      "lat": 6.25885,
+      "lon": -66.51575,
+      "city": "Venezuela",
+      "country": "VEN",
+      "title": "Germany's entrepreneurs betting on post-Maduro Venezuela",
+      "description": "Venezuela's economy is opening sectors to foreign firms, and that could pay off for the few German companies that have stuck it out through years of decline.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/germany-s-entrepreneurs-betting-on-post-maduro-venezuela/a-76968518?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778976345087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1d9zphv",
+      "lat": 20.13475,
+      "lon": -0.17985,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "What Renault's new EV reveals about the global auto industry",
+      "description": "French carmaker Renault no longer sells its brand in the Chinese market, but it's not afraid to design and develop them there. It's just one more sign of big shifts in the global auto industry.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/what-renault-s-new-ev-reveals-about-the-global-auto-industry/a-76823988?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778976285087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-14ea0m7",
+      "lat": 20.2035,
+      "lon": -0.0319,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "'Marine unicorns' aren't loving Arctic noise",
+      "description": "Narwhals are fleeing Canada's far north. Researchers suspect a link to noise pollution from increasing ship traffic.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/marine-unicorns-aren-t-loving-arctic-noise/a-76704611?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778976165087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-al-jazeera-1qs2y4h",
+      "lat": 31.1661,
+      "lon": 34.9307,
+      "city": "Israel",
+      "country": "ISR",
+      "title": "Iran war live: Tehran plans tolls in Hormuz; Trump warns of ‘very bad time’",
+      "description": "Iran to reveal its plan for Strait of Hormuz soon as Israel attacks Lebanon and Gaza, killing and wounding dozens.",
+      "category": "MARITIME",
+      "source": "Al Jazeera",
+      "sourceName": "Al Jazeera",
+      "officialSource": false,
+      "url": "https://www.aljazeera.com/news/liveblog/2026/5/17/iran-war-live-tehran-eyes-tolls-in-hormuz-trump-warns-of-very-bad-time?traffic_source=rss",
+      "sources": 1,
+      "ts": 1778976000000,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-1hvtd13",
+      "lat": 32.270199999999996,
+      "lon": 53.805600000000005,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Could Iran war trigger bigger trade crisis than COVID?",
+      "description": "As the Iran war simmers, trade experts ask whether it could reshape supply chains more deeply than COVID-19, forcing companies to rethink strategies to counter further geopolitical shocks.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778975505087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-11s5maa",
+      "lat": 32.515499999999996,
+      "lon": 53.5801,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
+      "description": "The impact of jet fuel shortages because of the closure of the Strait of Hormuz is starting to burn. Lufthansa has canceled 20,000 flights and experts warn more cancellations and price hikes are on the way.",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778975445087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-10nc7mw",
+      "lat": 19.9208,
+      "lon": 0.15620000000000003,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "Can data centers be green?",
+      "description": "Renewable energy is increasingly being used to supply power-hungry data centers. As the sector swells, much of the electricity demand is being met by polluting fossil fuels.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/can-data-centers-be-green/a-76873187?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778975205087,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-2mtxyo",
+      "lat": 32.3989,
+      "lon": 53.9343,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
+      "description": "Iran says it has placed mines in the Straight of Hormuz to discourage independent traffic. How dangerous are naval mines, and what can be done to clear them?",
+      "category": "MARITIME",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778974965088,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-deutsche-welle-22uum9",
+      "lat": 32.25645,
+      "lon": 53.871050000000004,
+      "city": "Iran",
+      "country": "IRN",
+      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
+      "description": "With war in Iran on hold, the world's largest industrial trade fair opens in Hannover. And Brazil, this year's partner country, is pulling out all stops to convince visitors it's a reliable technology leader.",
+      "category": "ECONOMY",
+      "source": "Deutsche Welle",
+      "sourceName": "Deutsche Welle",
+      "officialSource": false,
+      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
+      "sources": 1,
+      "ts": 1778974845088,
+      "relevanceScore": 6
+    },
+    {
+      "id": "rss-bbc-world-ycs5hk",
+      "lat": 31.22275,
+      "lon": 34.90815,
+      "city": "Israel",
+      "country": "ISR",
+      "title": "Hezbollah drone strike videos show evolving tactics against Israel",
+      "description": "BBC Verify has examined dozens of videos of fibre-optic drone attacks carried out by the Lebanese armed group.",
+      "category": "CONFLICT",
+      "source": "BBC World",
+      "sourceName": "BBC World",
+      "officialSource": false,
+      "url": "https://www.bbc.com/news/articles/c1j2zwe9g5no?at_medium=RSS&at_campaign=rss",
+      "sources": 1,
+      "ts": 1778973019000,
       "relevanceScore": 6
     },
     {
@@ -2587,261 +2927,6 @@
       "url": "https://www.theguardian.com/us-news/2026/may/16/california-turtle-trafficking",
       "sources": 1,
       "ts": 1778970113000,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1l23oem",
-      "lat": 51.106300000000005,
-      "lon": 4.3709,
-      "city": "Brussels",
-      "country": "BEL",
-      "title": "Hungary's new government pushes for euro by 2030",
-      "description": "Hungary's new leadership wants the country to adopt the euro by the end of the decade while repairing strained ties with Brussels. But with a weak economy and tight deadlines, experts warn the path will be steep.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/hungary-s-new-government-pushes-for-euro-by-2030/a-77053959?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778969823276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-11lq02v",
-      "lat": 32.2405,
-      "lon": 53.8551,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "What the Strait of Hormuz fuel crisis means for air travel",
-      "description": "Does travel insurance cover flight cancellations caused by the Iran war? Travelers could face major disruption as the jet fuel crisis threatens summer flights.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778969763276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1r40bux",
-      "lat": 26.37915,
-      "lon": 56.37375,
-      "city": "Strait of Hormuz",
-      "country": "MARITIME",
-      "title": "Germany prepares for mission in the Strait of Hormuz",
-      "description": "The German minesweeper Fulda has set course for the Mediterranean. The German armed forces may assist in clearing mines in the Strait of Hormuz — although only under certain conditions.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778969583276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-mygcae",
-      "lat": 19.89605,
-      "lon": 0.21065000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "What is hantavirus?",
-      "description": "Three people have died on a cruise ship in the Atlantic, reportedly from hantavirus. The dangerous Andes strain has been confirmed in two cases. What are the symptoms, and how is it transmitted?",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/what-is-hantavirus/a-77047777?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778969463276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-3wz3eu",
-      "lat": 32.5507,
-      "lon": 53.615300000000005,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Dubai's image as a financial hub faces its biggest test yet",
-      "description": "Amid the smoldering Iran war, wealthy elites are quietly shifting capital and other assets out of Dubai and heading to Singapore and Switzerland. Just how resilient is the emirate's safe-haven reputation?",
-      "category": "CONFLICT",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778969283276,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-whli9r",
-      "lat": 19.912,
-      "lon": 0.14740000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Gender investment gap: Are women catching up with men?",
-      "description": "Online brokers are tapping into the potential of female investors. Tailor-made products and branding campaigns are on the rise. Will this help bridge the gap between women and men when it comes to investing?",
-      "category": "NEWS",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/gender-investment-gap-are-women-catching-up-with-men/a-76862702?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778968863277,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1f0acaf",
-      "lat": 20.24475,
-      "lon": -0.06985000000000001,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Extreme weather and green energy on the rise in Europe",
-      "description": "Europe's climate extremes have hit new highs — but renewables are now supplying nearly half of the continent's electricity.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/extreme-weather-and-green-energy-on-the-rise-in-europe/a-76962870?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778968263277,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-8urmq3",
-      "lat": 6.25885,
-      "lon": -66.51575,
-      "city": "Venezuela",
-      "country": "VEN",
-      "title": "Germany's entrepreneurs betting on post-Maduro Venezuela",
-      "description": "Venezuela's economy is opening sectors to foreign firms, and that could pay off for the few German companies that have stuck it out through years of decline.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/germany-s-entrepreneurs-betting-on-post-maduro-venezuela/a-76968518?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778968203277,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1d9zphv",
-      "lat": 20.13475,
-      "lon": -0.17985,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "What Renault's new EV reveals about the global auto industry",
-      "description": "French carmaker Renault no longer sells its brand in the Chinese market, but it's not afraid to design and develop them there. It's just one more sign of big shifts in the global auto industry.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/what-renault-s-new-ev-reveals-about-the-global-auto-industry/a-76823988?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778968143277,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-14ea0m7",
-      "lat": 20.2035,
-      "lon": -0.0319,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "'Marine unicorns' aren't loving Arctic noise",
-      "description": "Narwhals are fleeing Canada's far north. Researchers suspect a link to noise pollution from increasing ship traffic.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/marine-unicorns-aren-t-loving-arctic-noise/a-76704611?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778968023277,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-1hvtd13",
-      "lat": 32.270199999999996,
-      "lon": 53.805600000000005,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Could Iran war trigger bigger trade crisis than COVID?",
-      "description": "As the Iran war simmers, trade experts ask whether it could reshape supply chains more deeply than COVID-19, forcing companies to rethink strategies to counter further geopolitical shocks.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778967363278,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-11s5maa",
-      "lat": 32.515499999999996,
-      "lon": 53.5801,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Iran war: Jet fuel crisis deepens as Lufthansa cuts flights",
-      "description": "The impact of jet fuel shortages because of the closure of the Strait of Hormuz is starting to burn. Lufthansa has canceled 20,000 flights and experts warn more cancellations and price hikes are on the way.",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778967303278,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-10nc7mw",
-      "lat": 19.9208,
-      "lon": 0.15620000000000003,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Can data centers be green?",
-      "description": "Renewable energy is increasingly being used to supply power-hungry data centers. As the sector swells, much of the electricity demand is being met by polluting fossil fuels.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/can-data-centers-be-green/a-76873187?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778967063278,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-2mtxyo",
-      "lat": 32.3989,
-      "lon": 53.9343,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Mines in the Strait of Hormuz: How dangerous are they?",
-      "description": "Iran says it has placed mines in the Straight of Hormuz to discourage independent traffic. How dangerous are naval mines, and what can be done to clear them?",
-      "category": "MARITIME",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778966823278,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-deutsche-welle-22uum9",
-      "lat": 32.25645,
-      "lon": 53.871050000000004,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Hannover Messe 2026: Brazilian flair awaits visitors",
-      "description": "With war in Iran on hold, the world's largest industrial trade fair opens in Hannover. And Brazil, this year's partner country, is pulling out all stops to convince visitors it's a reliable technology leader.",
-      "category": "ECONOMY",
-      "source": "Deutsche Welle",
-      "sourceName": "Deutsche Welle",
-      "officialSource": false,
-      "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
-      "sources": 1,
-      "ts": 1778966703278,
       "relevanceScore": 6
     },
     {
@@ -2936,7 +3021,7 @@
       "city": "Global",
       "country": "GLOBAL",
       "title": "Canada confirms first hantavirus case in isolation in British Columbia",
-      "description": "<p>The person was on board the MV Hondius, the center of the outbreak that has claimed three lives</p><p>Canadian officials said on Saturday that one of the four Canadians currently quarantining in British Columbia after being exposed to the hantavirus while on board the cruise ship where the outbreak occurred has presumptively tested positive.</p><p>Speaking at <a href=\"https://www.youtube.com/watch?v=WF1cAcvC20M&am",
+      "description": "<p>The person was on board the MV Hondius, the center of the outbreak that has claimed three lives</p><p>Canadian officials said on Saturday that a test for one of the four Canadians currently quarantining in British Columbia after being exposed to the hantavirus while on board the cruise ship where the outbreak occurred indicated a positive result.</p><p>Speaking at a <a href=\"https://www.youtube.com/watch?v=WF1cAcv",
       "category": "MARITIME",
       "source": "Guardian World",
       "sourceName": "Guardian World",
@@ -3029,23 +3114,6 @@
       "url": "https://www.aljazeera.com/news/2026/5/16/sudanese-army-captures-key-town-near-ethiopian-border-from-rsf?traffic_source=rss",
       "sources": 1,
       "ts": 1778949350000,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-al-jazeera-3npkns",
-      "lat": 32.34995,
-      "lon": 53.96455,
-      "city": "Iran",
-      "country": "IRN",
-      "title": "Iran warns of readiness for war and economic costs as US talks falter",
-      "description": "Iranian leaders and TV have ramped up pressure on the US with a stream of messaging to domestic and foreign audiences.",
-      "category": "ECONOMY",
-      "source": "Al Jazeera",
-      "sourceName": "Al Jazeera",
-      "officialSource": false,
-      "url": "https://www.aljazeera.com/news/2026/5/16/iran_warns_of_readiness_for_war_and_economic_costs_as_us_talks_falter?traffic_source=rss",
-      "sources": 1,
-      "ts": 1778945593000,
       "relevanceScore": 6
     },
     {
@@ -3590,23 +3658,6 @@
       "url": "https://www.cnbc.com/2026/05/15/ai-chip-bubble-is-now-bigger-than-the-nasdaq-during-dot-com-frenzy.html",
       "sources": 1,
       "ts": 1778878294000,
-      "relevanceScore": 6
-    },
-    {
-      "id": "rss-cbs-world-xd8gij",
-      "lat": 19.89935,
-      "lon": 0.13475,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "What we know about hantavirus cases tied to deadly cruise ship outbreak",
-      "description": "Health officials have identified at least 10 confirmed or suspected cases of hantavirus tied to an outbreak on the M/V Hondius cruise ship.",
-      "category": "MARITIME",
-      "source": "CBS World",
-      "sourceName": "CBS World",
-      "officialSource": false,
-      "url": "https://www.cbsnews.com/news/hantavirus-cases-deadly-cruise-ship-outbreak/",
-      "sources": 1,
-      "ts": 1778878249000,
       "relevanceScore": 6
     },
     {
@@ -4188,23 +4239,6 @@
       "relevanceScore": 6
     },
     {
-      "id": "rss-bbc-world-1h4n620",
-      "lat": 31.16225,
-      "lon": 34.92685,
-      "city": "Israel",
-      "country": "ISR",
-      "title": "Why is Ireland not taking part in this year's Eurovision?",
-      "description": "Ireland's boycott is the latest in a series of moves that has seen the country at odds with Israel over its war in Gaza.",
-      "category": "CONFLICT",
-      "source": "BBC World",
-      "sourceName": "BBC World",
-      "officialSource": false,
-      "url": "https://www.bbc.com/news/articles/c0e2g5y9wyeo?at_medium=RSS&at_campaign=rss",
-      "sources": 1,
-      "ts": 1778845301000,
-      "relevanceScore": 6
-    },
-    {
       "id": "rss-offshore-energy-1ehsn18",
       "lat": 20.16995,
       "lon": -0.06545000000000001,
@@ -4312,7 +4346,7 @@
       "lon": 0.12925,
       "city": "Global",
       "country": "GLOBAL",
-      "title": "Maldives suspends search for bodies of Italian divers",
+      "title": "Maldives suspends search for four Italians in underwater cave after military diver dies",
       "description": "The search for the bodies of four Italian divers believed to be deep inside an underwater cave in the Maldives has been suspended, after a military diver died trying to reach them.",
       "category": "CONFLICT",
       "source": "Sky News World",
@@ -6224,6 +6258,23 @@
       "relevanceScore": 5
     },
     {
+      "id": "rss-the-aviationist-1q2jut9",
+      "lat": 20.03355,
+      "lon": 0.26895,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "APKWS Rockets Deployed Operationally on RAF Typhoons Just Two Months After First Test Firing",
+      "description": "Royal Air Force Typhoon FGR4s deployed to the Middle East have begun carrying APKWS guided rockets just weeks after completing a rapid testing and certification process.&#160; In early March 2026, we reported on the sighting of a Royal Air Force Typhoon outfitted with two rocket pods at BAE Systems&#8217; Warton airfield. Though unconfirmed at the [&#8230;]",
+      "category": "CLIMATE",
+      "source": "The Aviationist",
+      "sourceName": "The Aviationist",
+      "officialSource": false,
+      "url": "https://theaviationist.com/2026/05/17/apkws-deployed-operationally-on-raf-typhoons/",
+      "sources": 1,
+      "ts": 1778982747000,
+      "relevanceScore": 4
+    },
+    {
       "id": "rss-deutsche-welle-1gqh47p",
       "lat": 51.136750000000006,
       "lon": 10.65135,
@@ -6237,7 +6288,7 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/germany-news-dead-humpback-whale-off-denmark-is-timmy-who-spent-weeks-stranded-in-baltic-sea/live-77178633?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778974563273,
+      "ts": 1778982645082,
       "relevanceScore": 4
     },
     {
@@ -6254,7 +6305,24 @@
       "officialSource": false,
       "url": "https://www.dw.com/en/trump-says-is-second-in-command-killed-in-nigeria/a-77178187?maca=en-rss-en-all-1573-rdf",
       "sources": 1,
-      "ts": 1778973843274,
+      "ts": 1778981925082,
+      "relevanceScore": 4
+    },
+    {
+      "id": "rss-cbs-world-1x7k8hd",
+      "lat": 19.7756,
+      "lon": 0.011000000000000012,
+      "city": "Global",
+      "country": "GLOBAL",
+      "title": "At least 80 dead in Congo&#039;s Ebola outbreak as WHO declares public health emergency",
+      "description": "At least 80 deaths have been reported in Congo&#039;s new Ebola disease outbreak in the eastern Ituri province, authorities said.",
+      "category": "NEWS",
+      "source": "CBS World",
+      "sourceName": "CBS World",
+      "officialSource": false,
+      "url": "https://www.cbsnews.com/news/congo-ebola-outbreak-dead-usaid-response/",
+      "sources": 1,
+      "ts": 1778978056000,
       "relevanceScore": 4
     },
     {
@@ -6326,40 +6394,6 @@
       "relevanceScore": 4
     },
     {
-      "id": "rss-bbc-world-1syv4cc",
-      "lat": 20.26565,
-      "lon": -0.048950000000000014,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Man killed by 13ft shark in Western Australia",
-      "description": "The attack occurred at Horseshoe Reef - north-west of the popular Rottnest Island near the city of Perth, local police say.",
-      "category": "NEWS",
-      "source": "BBC World",
-      "sourceName": "BBC World",
-      "officialSource": false,
-      "url": "https://www.bbc.com/news/articles/c1m2xy3dr20o?at_medium=RSS&at_campaign=rss",
-      "sources": 1,
-      "ts": 1778949167000,
-      "relevanceScore": 4
-    },
-    {
-      "id": "rss-cbs-world-1x7k8hd",
-      "lat": 19.7756,
-      "lon": 0.011000000000000012,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "Frequent burials, at least 80 dead as Congo grapples with Ebola outbreak",
-      "description": "Officials first announced the outbreak on Friday, with 65 deaths and 246 suspected cases.",
-      "category": "NEWS",
-      "source": "CBS World",
-      "sourceName": "CBS World",
-      "officialSource": false,
-      "url": "https://www.cbsnews.com/news/congo-ebola-outbreak-dead-usaid-response/",
-      "sources": 1,
-      "ts": 1778948023000,
-      "relevanceScore": 4
-    },
-    {
       "id": "rss-al-jazeera-1nvpzcj",
       "lat": 31.1705,
       "lon": 34.8559,
@@ -6374,23 +6408,6 @@
       "url": "https://www.aljazeera.com/news/2026/5/16/hamas-confirms-killing-of-top-hamas-leader-in-israeli-attack?traffic_source=rss",
       "sources": 1,
       "ts": 1778947353000,
-      "relevanceScore": 4
-    },
-    {
-      "id": "rss-al-jazeera-n8d85m",
-      "lat": 31.2035,
-      "lon": 34.9681,
-      "city": "Israel",
-      "country": "ISR",
-      "title": "Israeli army kills Palestinian man, raids homes in occupied West Bank",
-      "description": "Israeli forces killed a 34-year-old man in Jenin Camp, the Palestinian health ministry said.",
-      "category": "NEWS",
-      "source": "Al Jazeera",
-      "sourceName": "Al Jazeera",
-      "officialSource": false,
-      "url": "https://www.aljazeera.com/news/2026/5/16/israeli-army-kills-palestinian-man-raids-homes-in-occupied-west-bank?traffic_source=rss",
-      "sources": 1,
-      "ts": 1778944574000,
       "relevanceScore": 4
     },
     {
@@ -6762,22 +6779,6 @@
       "url": "https://en.wikipedia.org/wiki/Portal%3ACurrent_events%2F2026_May_10",
       "sources": 1,
       "ts": 1778414400000,
-      "relevanceScore": 1
-    },
-    {
-      "id": "wiki-current-156up67",
-      "lat": 19.95875,
-      "lon": 0.27335000000000004,
-      "city": "Global",
-      "country": "GLOBAL",
-      "title": "U.S. president Donald Trump says that the ceasefire is still in effect despite the recent strikes on the U.S. destroyers . (ABC News) (Reuters)",
-      "category": "NEWS",
-      "source": "wikipedia.org",
-      "sourceName": "Wikipedia Current Events",
-      "officialSource": true,
-      "url": "https://en.wikipedia.org/wiki/Portal%3ACurrent_events%2F2026_May_7",
-      "sources": 1,
-      "ts": 1778155200000,
       "relevanceScore": 1
     },
     {
@@ -147630,6 +147631,18 @@
       "level": 0.38
     },
     {
+      "id": "conflict-rss-guardian-world-p1p202",
+      "lat": 31.01705,
+      "lon": 35.25245,
+      "title": "Israeli strikes kill six in southern Lebanon hours after extension of ceasefire",
+      "country": "Israel",
+      "source": "Guardian World",
+      "url": "https://www.theguardian.com/world/2026/may/16/israeli-strikes-southern-lebanon-hours-after-extension-of-ceasefire",
+      "ts": 1778980187000,
+      "fatalities": 0,
+      "level": 0.62
+    },
+    {
       "id": "conflict-rss-deutsche-welle-jo0e9c",
       "lat": 49.26565,
       "lon": 31.430249999999997,
@@ -147637,7 +147650,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/the-country-that-s-turning-to-solar-during-war/a-76907346?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778967603278,
+      "ts": 1778975745087,
       "fatalities": 0,
       "level": 0.38
     },
@@ -147650,30 +147663,6 @@
       "source": "Times of Israel",
       "url": "https://www.timesofisrael.com/idf-infantry-platoon-commander-killed-by-hezbollah-drone-in-southern-lebanon/",
       "ts": 1778962276000,
-      "fatalities": 0,
-      "level": 0.62
-    },
-    {
-      "id": "conflict-rss-al-jazeera-r176fv",
-      "lat": 17.7409,
-      "lon": 7.8963,
-      "title": "Abu-Bilal al-Minuki: ISIL’s shadow commander in West Africa",
-      "country": "Niger",
-      "source": "Al Jazeera",
-      "url": "https://www.aljazeera.com/news/2026/5/16/abu-bilal-al-minuki-isils-shadow-commander-in-west-africa?traffic_source=rss",
-      "ts": 1778947095000,
-      "fatalities": 0,
-      "level": 0.62
-    },
-    {
-      "id": "conflict-rss-guardian-world-p1p202",
-      "lat": 31.01705,
-      "lon": 35.25245,
-      "title": "Israeli strikes kill six in southern Lebanon hours after extension of ceasefire",
-      "country": "Israel",
-      "source": "Guardian World",
-      "url": "https://www.theguardian.com/world/2026/may/16/israeli-strikes-southern-lebanon-hours-after-extension-of-ceasefire",
-      "ts": 1778947064000,
       "fatalities": 0,
       "level": 0.62
     },
@@ -147858,18 +147847,6 @@
       "level": 0.62
     },
     {
-      "id": "conflict-rss-gcaptain-187ulrn",
-      "lat": 61.5902,
-      "lon": 105.1548,
-      "title": "US Allows Russia Oil Sales Waiver To Expire Despite Tight Market",
-      "country": "Russia",
-      "source": "gCaptain",
-      "url": "https://gcaptain.com/us-allows-russia-oil-sales-waiver-to-expire-despite-tight-market/",
-      "ts": 1778973127000,
-      "fatalities": 0,
-      "level": 0.38
-    },
-    {
       "id": "conflict-rss-deutsche-welle-pto11f",
       "lat": 50.2674,
       "lon": 30.5728,
@@ -147877,7 +147854,7 @@
       "country": "Kyiv",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/greek-minister-says-mystery-drone-from-a-foreign-state/a-77107116?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778970723276,
+      "ts": 1778978805085,
       "fatalities": 0,
       "level": 0.38
     },
@@ -147889,7 +147866,19 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/will-the-iran-war-end-strait-of-hormuz-oil-supremacy/a-76893004?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778967963277,
+      "ts": 1778976105087,
+      "fatalities": 0,
+      "level": 0.38
+    },
+    {
+      "id": "conflict-rss-gcaptain-187ulrn",
+      "lat": 61.5902,
+      "lon": 105.1548,
+      "title": "US Allows Russia Oil Sales Waiver To Expire Despite Tight Market",
+      "country": "Russia",
+      "source": "gCaptain",
+      "url": "https://gcaptain.com/us-allows-russia-oil-sales-waiver-to-expire-despite-tight-market/",
+      "ts": 1778973127000,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148237,7 +148226,7 @@
       "country": "Germany",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/germany-gets-ahead-in-the-new-space-race/a-77177359?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778974683273,
+      "ts": 1778982765082,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148249,7 +148238,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/middle-east-updates-big-crowds-at-nakba-day-rally-in-london/live-77179563?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778974383273,
+      "ts": 1778982465082,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148261,7 +148250,7 @@
       "country": "Israel",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/china-us-israel-compete-in-fast-growing-laser-weapons-race/a-77174766?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778974083273,
+      "ts": 1778982165082,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148273,9 +148262,21 @@
       "country": "Israel",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/middle-east-israel-lebanon-agree-to-extend-truce-us-says/live-77167235?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778973723274,
+      "ts": 1778981805082,
       "fatalities": 0,
       "level": 0.62
+    },
+    {
+      "id": "conflict-rss-times-of-israel-qnn6xj",
+      "lat": 30.9021,
+      "lon": 35.1375,
+      "title": "Amid reports Iran war could resume, Trump posts image warning of &#8216;calm before the storm&#8217;",
+      "country": "Israel",
+      "source": "Times of Israel",
+      "url": "https://www.timesofisrael.com/liveblog-may-17-2026/",
+      "ts": 1778981734000,
+      "fatalities": 0,
+      "level": 0.38
     },
     {
       "id": "conflict-rss-deutsche-welle-mvo33a",
@@ -148285,7 +148286,7 @@
       "country": "Russia",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/latvia-prime-minister-evika-silina-resigns-over-handling-of-drone-incidents-after-coalition-ally-s-withdrawal/a-77159518?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778972883274,
+      "ts": 1778980965083,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148297,7 +148298,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/ceasefire-in-sight-what-s-next-for-russia-s-war-in-ukraine/a-77138367?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778972463274,
+      "ts": 1778980545083,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148309,7 +148310,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/could-german-ex-leader-really-negotiate-ukraine-peace/a-77111372?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778971083275,
+      "ts": 1778979165084,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148321,7 +148322,7 @@
       "country": "Germany",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/berlin-fighting-the-city-s-young-far-right-scene/a-77098275?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778970903275,
+      "ts": 1778978985084,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148333,9 +148334,21 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/data-centers-critical-tech-infrastructure-under-threat/a-77106191?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778970843275,
+      "ts": 1778978925084,
       "fatalities": 0,
       "level": 0.38
+    },
+    {
+      "id": "conflict-rss-cbs-world-1jkp18g",
+      "lat": 20.01375,
+      "lon": 0.24915,
+      "title": "Largest aircraft carrier in the world returns to the U.S., bringing thousands of sailors home",
+      "country": "Global",
+      "source": "CBS World",
+      "url": "https://www.cbsnews.com/video/largest-aircraft-carrier-world-returns-us-bringing-thousands-sailors-home/",
+      "ts": 1778978749000,
+      "fatalities": 0,
+      "level": 0.62
     },
     {
       "id": "conflict-rss-deutsche-welle-1h7k4df",
@@ -148345,7 +148358,7 @@
       "country": "Ukraine",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/putin-says-he-thinks-ukraine-war-is-coming-to-an-end/a-77106772?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778970663276,
+      "ts": 1778978745085,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148357,7 +148370,7 @@
       "country": "Global",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/new-film-portrays-thomas-and-erika-mann-with-an-oddly-twisted-premise/a-76970827?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778970603276,
+      "ts": 1778978685085,
       "fatalities": 0,
       "level": 0.62
     },
@@ -148369,7 +148382,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/what-the-strait-of-hormuz-fuel-crisis-means-for-air-travel/a-77047977?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778969763276,
+      "ts": 1778977845085,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148381,7 +148394,7 @@
       "country": "Strait of Hormuz",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/germany-prepares-for-mission-in-the-strait-of-hormuz/a-77054325?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778969583276,
+      "ts": 1778977665085,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148393,9 +148406,21 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/dubai-s-image-as-a-financial-hub-faces-its-biggest-test-yet/a-76959753?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778969283276,
+      "ts": 1778977425086,
       "fatalities": 0,
       "level": 0.62
+    },
+    {
+      "id": "conflict-rss-al-jazeera-1qs2y4h",
+      "lat": 31.1661,
+      "lon": 34.9307,
+      "title": "Iran war live: Tehran plans tolls in Hormuz; Trump warns of ‘very bad time’",
+      "country": "Israel",
+      "source": "Al Jazeera",
+      "url": "https://www.aljazeera.com/news/liveblog/2026/5/17/iran-war-live-tehran-eyes-tolls-in-hormuz-trump-warns-of-very-bad-time?traffic_source=rss",
+      "ts": 1778976000000,
+      "fatalities": 0,
+      "level": 0.38
     },
     {
       "id": "conflict-rss-deutsche-welle-1hvtd13",
@@ -148405,7 +148430,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/could-iran-war-trigger-bigger-trade-crisis-than-covid/a-76804278?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778967363278,
+      "ts": 1778975505087,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148417,7 +148442,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/iran-war-jet-fuel-crisis-deepens-as-lufthansa-cuts-flights/a-76889141?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778967303278,
+      "ts": 1778975445087,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148429,7 +148454,7 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/mines-in-the-strait-of-hormuz-how-dangerous-are-they/a-76847658?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778966823278,
+      "ts": 1778974965088,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148441,9 +148466,21 @@
       "country": "Iran",
       "source": "Deutsche Welle",
       "url": "https://www.dw.com/en/hannover-messe-2026-brazilian-flair-awaits-visitors/a-76810602?maca=en-rss-en-all-1573-rdf",
-      "ts": 1778966703278,
+      "ts": 1778974845088,
       "fatalities": 0,
       "level": 0.38
+    },
+    {
+      "id": "conflict-rss-bbc-world-ycs5hk",
+      "lat": 31.22275,
+      "lon": 34.90815,
+      "title": "Hezbollah drone strike videos show evolving tactics against Israel",
+      "country": "Israel",
+      "source": "BBC World",
+      "url": "https://www.bbc.com/news/articles/c1j2zwe9g5no?at_medium=RSS&at_campaign=rss",
+      "ts": 1778973019000,
+      "fatalities": 0,
+      "level": 0.62
     },
     {
       "id": "conflict-rss-npr-world-101bz4e",
@@ -148514,18 +148551,6 @@
       "source": "Al Jazeera",
       "url": "https://www.aljazeera.com/video/newsfeed/2026/5/16/al-jazeeras-exclusive-report-from-the-strait-of-hormuz?traffic_source=rss",
       "ts": 1778950766000,
-      "fatalities": 0,
-      "level": 0.38
-    },
-    {
-      "id": "conflict-rss-al-jazeera-3npkns",
-      "lat": 32.34995,
-      "lon": 53.96455,
-      "title": "Iran warns of readiness for war and economic costs as US talks falter",
-      "country": "Iran",
-      "source": "Al Jazeera",
-      "url": "https://www.aljazeera.com/news/2026/5/16/iran_warns_of_readiness_for_war_and_economic_costs_as_us_talks_falter?traffic_source=rss",
-      "ts": 1778945593000,
       "fatalities": 0,
       "level": 0.38
     },
@@ -148890,18 +148915,6 @@
       "level": 0.38
     },
     {
-      "id": "conflict-rss-bbc-world-1h4n620",
-      "lat": 31.16225,
-      "lon": 34.92685,
-      "title": "Why is Ireland not taking part in this year's Eurovision?",
-      "country": "Israel",
-      "source": "BBC World",
-      "url": "https://www.bbc.com/news/articles/c0e2g5y9wyeo?at_medium=RSS&at_campaign=rss",
-      "ts": 1778845301000,
-      "fatalities": 0,
-      "level": 0.62
-    },
-    {
       "id": "conflict-rss-marinelink-23pk8g",
       "lat": 20.08855,
       "lon": -0.14685,
@@ -148929,7 +148942,7 @@
       "id": "conflict-rss-sky-news-world-ips0gx",
       "lat": 19.81465,
       "lon": 0.12925,
-      "title": "Maldives suspends search for bodies of Italian divers",
+      "title": "Maldives suspends search for four Italians in underwater cave after military diver dies",
       "country": "Global",
       "source": "Sky News World",
       "url": "https://news.sky.com/story/maldives-suspends-search-for-bodies-of-italian-divers-who-had-been-exploring-underwater-caves-13544212",
@@ -149634,6 +149647,18 @@
       "level": 0.62
     },
     {
+      "id": "conflict-rss-the-aviationist-1q2jut9",
+      "lat": 20.03355,
+      "lon": 0.26895,
+      "title": "APKWS Rockets Deployed Operationally on RAF Typhoons Just Two Months After First Test Firing",
+      "country": "Global",
+      "source": "The Aviationist",
+      "url": "https://theaviationist.com/2026/05/17/apkws-deployed-operationally-on-raf-typhoons/",
+      "ts": 1778982747000,
+      "fatalities": 0,
+      "level": 0.38
+    },
+    {
       "id": "conflict-wikinews-3057533",
       "lat": 19.7965,
       "lon": 0.11109999999999999,
@@ -149660,6 +149685,71 @@
   ],
   "aisstream": [],
   "earthquakes": [
+    {
+      "id": "us6000syb1",
+      "type": "earthquake",
+      "lat": -23.6354,
+      "lon": -67.7526,
+      "depth": 144.148,
+      "mag": 4.5,
+      "place": "92 km SSE of San Pedro de Atacama, Chile",
+      "title": "M 4.5 - 92 km SSE of San Pedro de Atacama, Chile",
+      "ts": 1778981732854,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000syb1",
+      "severity": "yellow"
+    },
+    {
+      "id": "us6000syax",
+      "type": "earthquake",
+      "lat": 37.0509,
+      "lon": -104.9722,
+      "depth": 3.489,
+      "mag": 3.1,
+      "place": "12 km SSE of Stonewall Gap, Colorado",
+      "title": "M 3.1 - 12 km SSE of Stonewall Gap, Colorado",
+      "ts": 1778979862027,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000syax",
+      "severity": "green"
+    },
+    {
+      "id": "us6000syaw",
+      "type": "earthquake",
+      "lat": 24.0222,
+      "lon": 120.9539,
+      "depth": 10,
+      "mag": 4.4,
+      "place": "6 km NNW of Puli, Taiwan",
+      "title": "M 4.4 - 6 km NNW of Puli, Taiwan",
+      "ts": 1778978773678,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000syaw",
+      "severity": "yellow"
+    },
+    {
+      "id": "aka2026jrgeyv",
+      "type": "earthquake",
+      "lat": 61.666,
+      "lon": -150.8,
+      "depth": 78.7,
+      "mag": 3.4,
+      "place": "20 km NW of Susitna, Alaska",
+      "title": "M 3.4 - 20 km NW of Susitna, Alaska",
+      "ts": 1778978191019,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026jrgeyv",
+      "severity": "green"
+    },
+    {
+      "id": "us6000syak",
+      "type": "earthquake",
+      "lat": 39.9621,
+      "lon": 142.9476,
+      "depth": 35,
+      "mag": 4.7,
+      "place": "93 km ENE of Miyako, Japan",
+      "title": "M 4.7 - 93 km ENE of Miyako, Japan",
+      "ts": 1778976448770,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000syak",
+      "severity": "yellow"
+    },
     {
       "id": "pr71516823",
       "type": "earthquake",
@@ -149947,6 +150037,19 @@
       "severity": "green"
     },
     {
+      "id": "aka2026jqejkz",
+      "type": "earthquake",
+      "lat": 51.889,
+      "lon": 176.108,
+      "depth": 20,
+      "mag": 4.3,
+      "place": "225 km ESE of Attu Station, Alaska",
+      "title": "M 4.3 - 225 km ESE of Attu Station, Alaska",
+      "ts": 1778928120686,
+      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/aka2026jqejkz",
+      "severity": "yellow"
+    },
+    {
       "id": "ci41468456",
       "type": "earthquake",
       "lat": 33.0278333333333,
@@ -150087,71 +150190,6 @@
       "title": "M 4.8 - 71 km SSW of Ollagüe, Chile",
       "ts": 1778896783392,
       "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy50",
-      "severity": "yellow"
-    },
-    {
-      "id": "us6000sy4y",
-      "type": "earthquake",
-      "lat": 79.7331,
-      "lon": 4.088,
-      "depth": 10,
-      "mag": 4.3,
-      "place": "298 km WNW of Longyearbyen, Svalbard and Jan Mayen",
-      "title": "M 4.3 - 298 km WNW of Longyearbyen, Svalbard and Jan Mayen",
-      "ts": 1778895280031,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy4y",
-      "severity": "yellow"
-    },
-    {
-      "id": "us6000sy4v",
-      "type": "earthquake",
-      "lat": -32.555,
-      "lon": -178.5946,
-      "depth": 35,
-      "mag": 4.6,
-      "place": "south of the Kermadec Islands",
-      "title": "M 4.6 - south of the Kermadec Islands",
-      "ts": 1778894536192,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy4v",
-      "severity": "yellow"
-    },
-    {
-      "id": "us6000sy5a",
-      "type": "earthquake",
-      "lat": 51.5099,
-      "lon": -176.7351,
-      "depth": 35,
-      "mag": 3.8,
-      "place": "41 km S of Adak, Alaska",
-      "title": "M 3.8 - 41 km S of Adak, Alaska",
-      "ts": 1778892124430,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy5a",
-      "severity": "green"
-    },
-    {
-      "id": "us6000sy4q",
-      "type": "earthquake",
-      "lat": -21.5312,
-      "lon": -67.0192,
-      "depth": 243.727,
-      "mag": 4.4,
-      "place": "105 km SW of Atocha, Bolivia",
-      "title": "M 4.4 - 105 km SW of Atocha, Bolivia",
-      "ts": 1778891758488,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy4q",
-      "severity": "yellow"
-    },
-    {
-      "id": "us6000sy4p",
-      "type": "earthquake",
-      "lat": 38.5186,
-      "lon": 89.3531,
-      "depth": 10,
-      "mag": 4.3,
-      "place": "89 km SSE of Bingtuan Sanshiliu Tuan, China",
-      "title": "M 4.3 - 89 km SSE of Bingtuan Sanshiliu Tuan, China",
-      "ts": 1778888833113,
-      "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000sy4p",
       "severity": "yellow"
     }
   ],
