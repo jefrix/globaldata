@@ -443,7 +443,7 @@
 
     const view = SOLAR_VIEWS[currentView] || SOLAR_VIEWS.composite;
     const stage = overlay.querySelector('.solar-stage');
-    const caption = overlay.querySelector('.solar-caption');
+    const caption = overlay.querySelector('.solar-caption, .solar-data-panel');
     if (!stage || !caption) return;
 
     if (view.kind === 'image') {
