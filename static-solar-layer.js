@@ -109,15 +109,21 @@
   let currentView = 'composite';
   let solarActive = false;
   let dataState = {
-    status: 'idle',
     xray: [],
     flares: [],
     regions: [],
     cmes: [],
+    feedStatus: {
+      xray: 'idle',
+      flares: 'idle',
+      regions: 'idle',
+      cmes: 'idle',
+    },
+    feedErrors: {},
     updatedAt: null,
     error: '',
   };
-  let dataPromise = null;
+  let feedPromises = {};
   let refreshTimer = null;
 
   function injectStyles() {
@@ -262,10 +268,11 @@
 .solar-caption,
 .solar-data-panel {
   position: absolute;
-  right: 26px;
+  left: 34px;
+  right: auto;
   bottom: 24px;
   z-index: 4;
-  width: min(430px, calc(100% - 320px));
+  width: min(430px, calc(100% - 380px));
   border: 1px solid rgba(115, 176, 255, 0.35);
   background: rgba(3, 12, 24, 0.88);
   box-shadow: 0 0 28px rgba(0, 178, 255, 0.12);
@@ -301,9 +308,9 @@
   background: rgba(92, 52, 8, 0.44);
 }
 .solar-data-panel {
-  top: 32px;
-  bottom: auto;
-  max-height: calc(100% - 64px);
+  top: auto;
+  bottom: 24px;
+  max-height: min(42vh, 390px);
   overflow: auto;
 }
 .solar-metric-grid {
@@ -358,7 +365,9 @@
     width: auto;
   }
   .solar-data-panel {
-    top: 250px;
+    top: auto;
+    bottom: 18px;
+    max-height: min(42vh, 340px);
   }
 }
 `;
@@ -409,7 +418,7 @@
     if (overlay) {
       overlay.hidden = !solarActive;
       if (solarActive) {
-        ensureSolarData();
+        ensureSolarData(['xray', 'flares']);
         renderSolarOverlay(overlay);
         startRefresh(overlay);
       } else {
@@ -421,7 +430,8 @@
   function setSolarView(id, overlay) {
     if (!SOLAR_VIEWS[id]) return;
     currentView = id;
-    ensureSolarData();
+    const view = SOLAR_VIEWS[id];
+    ensureSolarData(view.kind === 'data' ? [feedKeyForView(id)] : ['xray', 'flares']);
     renderSolarOverlay(overlay);
   }
 
@@ -478,11 +488,16 @@
   }
 
   function renderDataView(id, view) {
-    if (dataState.status === 'loading') {
+    const feedKey = feedKeyForView(id);
+    const feedStatus = dataState.feedStatus?.[feedKey] || 'idle';
+    if (feedStatus === 'idle') {
       return `<h3>${escapeHtml(view.label)} / LOADING</h3><p>Fetching the latest public solar activity packet.</p>`;
     }
-    if (dataState.status === 'error') {
-      return `<h3>${escapeHtml(view.label)} / UNAVAILABLE</h3><p>${escapeHtml(dataState.error || 'Solar feed did not respond.')}</p>${sourceRow(view)}`;
+    if (feedStatus === 'loading') {
+      return `<h3>${escapeHtml(view.label)} / LOADING</h3><p>Fetching the latest public solar activity packet.</p>`;
+    }
+    if (feedStatus === 'error' && !hasFeedRecords(feedKey)) {
+      return `<h3>${escapeHtml(view.label)} / UNAVAILABLE</h3><p>${escapeHtml(dataState.feedErrors?.[feedKey] || 'Solar feed did not respond.')}</p>${sourceRow(view)}`;
     }
     if (id === 'xray') return renderXrayView(view);
     if (id === 'flares') return renderFlaresView(view);
@@ -563,7 +578,7 @@
     }).join('');
     return `
       <h3>CORONAL MASS EJECTIONS</h3>
-      <p>Recent NASA DONKI CME records from the last 14 days.</p>
+      <p>Recent NASA DONKI CME records from the last 7 days.</p>
       ${cards || '<div class="solar-card"><strong>NO RECENT CME RECORDS</strong><p>NASA DONKI did not return a CME event in the current window.</p></div>'}
       ${sourceRow(view)}
     `;
@@ -577,65 +592,115 @@
     `;
   }
 
-  function ensureSolarData() {
-    if (dataPromise || dataState.status === 'loaded') return dataPromise;
-    dataState.status = 'loading';
-    dataPromise = fetchSolarData()
-      .then(next => {
-        dataState = { ...dataState, ...next, status: 'loaded', updatedAt: new Date() };
-      })
-      .catch(error => {
-        dataState = { ...dataState, status: 'error', error: error && error.message ? error.message : String(error) };
-      })
-      .finally(() => {
-        dataPromise = null;
-        renderActiveOverlay();
-      });
-    renderActiveOverlay();
-    return dataPromise;
+  function ensureSolarData(feedKeys) {
+    const keys = Array.from(new Set((feedKeys || ['xray', 'flares']).filter(Boolean)));
+    const started = [];
+    keys.forEach(key => {
+      if (!solarFeedUrl(key)) return;
+      if (feedPromises[key] || dataState.feedStatus?.[key] === 'loaded') return;
+      dataState = {
+        ...dataState,
+        feedStatus: { ...dataState.feedStatus, [key]: 'loading' },
+        feedErrors: { ...dataState.feedErrors, [key]: '' },
+      };
+      feedPromises[key] = fetchSolarFeed(key)
+        .then(value => {
+          dataState = {
+            ...dataState,
+            [key]: Array.isArray(value) ? value : [],
+            feedStatus: { ...dataState.feedStatus, [key]: 'loaded' },
+            feedErrors: { ...dataState.feedErrors, [key]: '' },
+            updatedAt: new Date(),
+          };
+        })
+        .catch(error => {
+          dataState = {
+            ...dataState,
+            feedStatus: { ...dataState.feedStatus, [key]: 'error' },
+            feedErrors: {
+              ...dataState.feedErrors,
+              [key]: error && error.message ? error.message : String(error),
+            },
+          };
+        })
+        .finally(() => {
+          delete feedPromises[key];
+          renderActiveOverlay();
+        });
+      started.push(feedPromises[key]);
+    });
+    if (started.length) renderActiveOverlay();
+    return Promise.allSettled(keys.map(key => feedPromises[key]).filter(Boolean));
   }
 
-  async function fetchSolarData() {
-    const feeds = [
-      ['xray', 'https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json'],
-      ['flares', 'https://services.swpc.noaa.gov/json/goes/primary/xray-flares-latest.json'],
-      ['regions', 'https://services.swpc.noaa.gov/json/solar_regions.json'],
-      ['cmes', donkiCmeUrl()],
-    ];
-    const results = await Promise.allSettled(feeds.map(([, url]) => fetchJson(url)));
-    const next = { xray: [], flares: [], regions: [], cmes: [], error: '' };
-    const errors = [];
-    results.forEach((result, index) => {
-      const [key, url] = feeds[index];
-      if (result.status === 'fulfilled') {
-        next[key] = result.value;
-      } else {
-        errors.push(`${key}: ${result.reason && result.reason.message ? result.reason.message : url}`);
-      }
+  function fetchSolarFeed(key) {
+    return fetchJson(solarFeedUrl(key)).then(value => {
+      if (Array.isArray(value)) return value;
+      if (value && Array.isArray(value.data)) return value.data;
+      if (value && Array.isArray(value.value)) return value.value;
+      return [];
     });
-    if (errors.length === feeds.length) throw new Error(errors.join(' / '));
-    next.error = errors.join(' / ');
-    return next;
+  }
+
+  function solarFeedUrl(key) {
+    const urls = {
+      xray: 'https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json',
+      flares: 'https://services.swpc.noaa.gov/json/goes/primary/xray-flares-latest.json',
+      regions: 'https://services.swpc.noaa.gov/json/solar_regions.json',
+      cmes: donkiCmeUrl(),
+    };
+    return urls[key] || '';
+  }
+
+  function feedKeyForView(id) {
+    if (id === 'xray') return 'xray';
+    if (id === 'flares') return 'flares';
+    if (id === 'regions') return 'regions';
+    if (id === 'cmes') return 'cmes';
+    return 'xray';
+  }
+
+  function hasFeedRecords(key) {
+    return Array.isArray(dataState[key]) && dataState[key].length > 0;
+  }
+
+  function refreshFeeds(keys) {
+    keys.forEach(key => {
+      if (feedPromises[key]) return;
+      dataState = {
+        ...dataState,
+        [key]: [],
+        feedStatus: { ...dataState.feedStatus, [key]: 'idle' },
+        feedErrors: { ...dataState.feedErrors, [key]: '' },
+      };
+    });
+    return ensureSolarData(keys);
   }
 
   function fetchJson(url) {
-    return fetch(url, { cache: 'no-store' }).then(response => {
-      if (!response.ok) throw new Error(`Feed ${response.status}: ${url}`);
-      return response.json();
-    });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), 18000);
+    return fetch(url, { cache: 'no-store', signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error(`Feed ${response.status}: ${url}`);
+        return response.json();
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
+      });
   }
 
   function donkiCmeUrl() {
     const end = new Date();
-    const start = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+    const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     return `https://kauai.ccmc.gsfc.nasa.gov/DONKI/WS/get/CME?startDate=${dateOnly(start)}&endDate=${dateOnly(end)}`;
   }
 
   function startRefresh(overlay) {
     if (refreshTimer) return;
     refreshTimer = window.setInterval(() => {
-      dataState.status = 'idle';
-      ensureSolarData();
+      refreshFeeds(['xray', 'flares']);
+      if (SOLAR_VIEWS[currentView]?.kind === 'data') refreshFeeds([feedKeyForView(currentView)]);
       renderSolarOverlay(overlay);
     }, DATA_REFRESH_MS);
   }
@@ -742,11 +807,12 @@
   patchGlobeEngine();
   window.GlobalDataSolarLayer = {
     refresh: () => {
-      dataState.status = 'idle';
-      return ensureSolarData();
+      return refreshFeeds(['xray', 'flares', 'regions', 'cmes']);
     },
     setView: id => {
       currentView = SOLAR_VIEWS[id] ? id : currentView;
+      const view = SOLAR_VIEWS[currentView];
+      ensureSolarData(view?.kind === 'data' ? [feedKeyForView(currentView)] : ['xray', 'flares']);
       renderActiveOverlay();
     },
   };
