@@ -150,6 +150,7 @@ const LAYERS = [
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
   { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD · COLO · CABLES', hotkey: '0' },
   { id: 'markets',    label: 'MARKETS',     sub: 'INDICES · METALS · CRYPTO',     hotkey: 'M' },
+  { id: 'radio',      label: 'RADIO',       sub: 'LIVE STATIONS · STREAMS',       hotkey: 'R' },
   { id: 'sun',        label: 'SUN',         sub: 'SOLAR ACTIVITY · NOAA/NASA',     hotkey: 'S' },
 ];
 
@@ -995,6 +996,7 @@ function Inspector({ pick, onClose, theme }) {
         {kind === 'infrastructure' && <InfrastructureDetail d={data} />}
         {kind === 'powerPlant' && <PowerPlantDetail d={data} />}
         {kind === 'market' && <MarketDetail d={data} />}
+        {kind === 'radio' && <RadioDetail d={data} />}
         {kind === 'news' && <NewsDetail d={data} />}
         {kind === 'dataCenter' && <DataCenterDetail d={data} />}
         {kind === 'cyber' && <CyberDetail d={data} />}
@@ -1091,6 +1093,29 @@ function MarketDetail({ d }) {
     {d.sourceUrl && <div className="news-actions">
       <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">OPEN SOURCE</a>
     </div>}
+  </>);
+}
+function RadioDetail({ d }) {
+  const bitrate = Number.isFinite(Number(d.bitrate)) && Number(d.bitrate) > 0 ? `${Math.round(Number(d.bitrate))} kbps` : '--';
+  const tags = String(d.tags || '').split(',').map(tag => tag.trim()).filter(Boolean).slice(0, 4).join(', ') || '--';
+  const streamHost = d.streamHost || (() => {
+    try { return new URL(d.url_resolved || d.url || '').hostname; } catch { return '--'; }
+  })();
+  return (<>
+    <div className="insp-title" style={{ color: '#ffcf47' }}>{d.name || 'Radio station'}</div>
+    <Row k="COUNTRY" v={[d.countrycode, d.country].filter(Boolean).join(' / ') || '--'} />
+    <Row k="STATE" v={d.state || '--'} />
+    <Row k="LANGUAGE" v={d.language || '--'} />
+    <Row k="CODEC" v={[d.codec || '--', bitrate].join(' / ')} color="#ffcf47" />
+    <Row k="TAGS" v={tags} />
+    <Row k="VOTES" v={Number.isFinite(Number(d.votes)) ? Number(d.votes).toLocaleString() : '--'} />
+    <Row k="STREAM" v={streamHost} />
+    <Row k="SOURCE" v="Radio Browser API" />
+    <div className="news-actions">
+      <button className="news-link" onClick={() => window.GlobalDataRadioLayer?.play?.(d)}>PLAY STREAM</button>
+      {d.homepage && <a className="news-link" href={d.homepage} target="_blank" rel="noreferrer">STATION SITE</a>}
+      {d.sourceUrl && <a className="news-link" href={d.sourceUrl} target="_blank" rel="noreferrer">API SOURCE</a>}
+    </div>
   </>);
 }
 function FlightDetail({ d }) {
@@ -1399,6 +1424,7 @@ function selectionColorForEvent(pick) {
   }
   if (pick?.kind === 'infrastructure') return '#5bd7ff';
   if (pick?.kind === 'dataCenter') return '#5bd7ff';
+  if (pick?.kind === 'radio') return '#ffcf47';
   return '#73ff9a';
 }
 
@@ -1678,7 +1704,7 @@ useEffect(() => {
     const m = {
       diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
-      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a', sun: '#ffcf47',
+      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a', radio: '#ffcf47', sun: '#ffcf47',
     };
     return m[id] || theme.accent;
   };
