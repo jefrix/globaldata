@@ -6,6 +6,8 @@ const USER_AGENT = 'globaldata-live-cache/1.0 (+https://jefrix.github.io/globald
 const TIMEOUT_MS = 14000;
 const MAX_NEWS = 1600;
 const MAX_CONFLICTS = 600;
+const POCKETWORLD_FLIGHTS_URL = 'https://pocketworld.org/api/flights';
+const ADSB_LOL_MILITARY_URL = 'https://api.adsb.lol/v2/mil';
 
 const locations = [
   ['ukraine', 49.0, 31.4, 'Ukraine', 'UKR'], ['kyiv', 50.45, 30.52, 'Kyiv', 'UKR'],
@@ -386,25 +388,75 @@ async function loadWikinews() {
   }).filter(item => item.title);
 }
 
+function mapPocketWorldFlight(plane) {
+  const lastSeen = Number(plane.last_seen ?? plane.last_contact);
+  return {
+    id: plane.icao24 || plane.hex || plane.callsign || plane.registration,
+    callsign: String(plane.callsign || plane.flight || plane.icao24 || '').trim(),
+    country: plane.country || plane.operator || plane.airline || 'PocketWorld',
+    lon: Number(plane.lng ?? plane.lon),
+    lat: Number(plane.lat),
+    alt: Number(plane.alt ?? plane.baro_alt ?? plane.geo_alt),
+    velocity: Number(plane.velocity ?? plane.gs),
+    heading: Number(plane.heading ?? plane.track),
+    verticalRate: Number(plane.vertical_rate ?? plane.geom_rate),
+    updated: Number.isFinite(lastSeen) ? Date.now() - lastSeen * 1000 : Date.now(),
+    source: plane.source ? `PocketWorld / ${plane.source}` : 'PocketWorld',
+    sourceName: 'PocketWorld flights',
+    sourceQuality: plane.source_quality,
+    sourceType: plane.source_type,
+    registration: plane.registration,
+    manufacturer: plane.manufacturer,
+    model: plane.model,
+    typecode: plane.typecode,
+    operator: plane.operator,
+    aircraftType: plane.aircraft_type,
+    origin: plane.origin,
+    destination: plane.destination,
+    airline: plane.airline,
+    live: true,
+  };
+}
+
+function mapMilitaryFlight(plane) {
+  const seen = Number(plane.seen);
+  return {
+    id: `MIL-AIR-${plane.hex || plane.flight || plane.r || Math.random().toString(36).slice(2)}`,
+    callsign: String(plane.flight || plane.callsign || plane.r || plane.hex || '').trim(),
+    country: plane.country || plane.t || 'Military ADS-B',
+    lon: Number(plane.lon),
+    lat: Number(plane.lat),
+    alt: Number(plane.alt_baro === 'ground' ? 0 : plane.alt_baro ?? plane.alt_geom),
+    velocity: Number(plane.gs),
+    heading: Number(plane.track ?? plane.true_heading ?? plane.mag_heading),
+    updated: Number.isFinite(seen) ? Date.now() - seen * 1000 : Date.now(),
+    registration: plane.r,
+    typecode: plane.t,
+    model: plane.desc,
+    operator: plane.ownOp || plane.operator,
+    function: 'Military Flight',
+    source: 'ADSB.lol military',
+    sourceName: 'ADSB.lol military',
+    live: true,
+  };
+}
+
 async function loadFlights() {
-  const data = await getJson('https://api.airplanes.live/v2/point/0/0/10000');
-  return (data.ac || data.aircraft || [])
-    .map(plane => ({
-      id: plane.hex || plane.icao || plane.flight || plane.r,
-      callsign: String(plane.flight || plane.callsign || plane.r || plane.hex || '').trim(),
-      country: plane.t || 'airplanes.live',
-      lon: Number(plane.lon),
-      lat: Number(plane.lat),
-      alt: Number(plane.alt_baro === 'ground' ? 0 : plane.alt_baro || plane.alt_geom),
-      velocity: Number(plane.gs),
-      heading: Number(plane.track || plane.true_heading || plane.mag_heading),
-      updated: Date.now() - Number(plane.seen || 0) * 1000,
-      source: 'airplanes.live',
-      live: true,
-    }))
+  const data = await getJson(POCKETWORLD_FLIGHTS_URL);
+  return (data.flights || data.ac || data.aircraft || [])
+    .map(mapPocketWorldFlight)
     .filter(plane => Number.isFinite(plane.lat) && Number.isFinite(plane.lon))
     .sort((a, b) => (b.updated || 0) - (a.updated || 0))
     .slice(0, 5000);
+}
+
+async function loadMilitaryFlights() {
+  const data = await getJson(ADSB_LOL_MILITARY_URL);
+  return (data.ac || data.aircraft || [])
+    .map(mapMilitaryFlight)
+    .filter(plane => Number.isFinite(plane.lat) && Number.isFinite(plane.lon))
+    .sort((a, b) => (b.updated || 0) - (a.updated || 0))
+    .slice(0, 1000);
 }
 
 function normalizeLines(geometry) {
@@ -566,6 +618,7 @@ async function main() {
     settle('wikipedia-current', loadWikipediaCurrentEvents),
     settle('wikinews', loadWikinews),
     settle('flights', loadFlights),
+    settle('militaryFlights', loadMilitaryFlights),
     settle('shippingLanes', loadShippingLanes),
     settle('ports', loadPorts),
     settle('earthquakes', loadEarthquakes),
@@ -595,6 +648,7 @@ async function main() {
     ],
     news,
     flights: get('flights'),
+    militaryFlights: get('militaryFlights'),
     shippingLanes,
     ports: get('ports'),
     vessels,

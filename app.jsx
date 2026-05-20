@@ -145,7 +145,7 @@ const LAYERS = [
   { id: 'infrastructure', label: 'INFRASTRUCTURE', sub: 'POWER GENERATION', hotkey: 'I' },
   { id: 'conflicts',  label: 'CONFLICTS',   sub: 'KINETIC · GRAY ZONE',           hotkey: '5' },
   { id: 'military',   label: 'MILITARY',    sub: 'BASES · NAVAL ASSETS',          hotkey: '6' },
-  { id: 'logistics',  label: 'LOGISTICS',   sub: 'CONTAINER · OIL · LNG · TRUCK', hotkey: '7' },
+  { id: 'logistics',  label: 'LOGISTICS',   sub: 'SHIPS · PORTS',                 hotkey: '7' },
   { id: 'flights',    label: 'FLIGHTS',     sub: 'ADS-B · ROUTES',                hotkey: '8' },
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
   { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD · COLO · CABLES', hotkey: '0' },
@@ -174,6 +174,11 @@ const FALLBACK_POWER_TYPES = {
 const POWER_TYPE_META = window.GLOBALDATA_POWER_TYPES || FALLBACK_POWER_TYPES;
 const POWER_SUBLAYERS = Object.entries(POWER_TYPE_META).map(([id, meta]) => ({ id, ...meta }));
 const DEFAULT_POWER_FILTERS = Object.fromEntries(POWER_SUBLAYERS.map(type => [type.id, true]));
+const LOGISTICS_SUBLAYERS = [
+  { id: 'ships', label: 'Ships', tag: 'SHP', color: '#7bd6a8' },
+  { id: 'ports', label: 'Ports', tag: 'PRT', color: '#3fb8ff' },
+];
+const DEFAULT_LOGISTICS_FILTERS = Object.fromEntries(LOGISTICS_SUBLAYERS.map(type => [type.id, true]));
 
 function powerTypeKey(type) {
   const key = String(type || '').trim().toLowerCase().replace(/[\s_-]+/g, '-');
@@ -390,6 +395,35 @@ function PowerSublayerControls({ filters, active, onToggle }) {
             onClick={() => onToggle(type.id)}
             aria-pressed={on}
             title={`${type.label} generation`}
+          >
+            <span>{type.tag}</span>
+            <b>{type.label.toUpperCase()}</b>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function LogisticsSublayerControls({ filters, active, onToggle }) {
+  return (
+    <div className="infra-subcontrols" aria-label="Logistics sublayers">
+      {LOGISTICS_SUBLAYERS.map(type => {
+        const on = filters[type.id] !== false;
+        return (
+          <button
+            key={type.id}
+            type="button"
+            className={`infra-subtoggle ${on ? 'on' : ''}`}
+            style={{
+              color: on ? type.color : 'var(--text-dim)',
+              borderColor: on ? type.color : 'var(--edge)',
+              opacity: active ? 1 : 0.55,
+              background: on ? `${type.color}18` : 'transparent',
+            }}
+            onClick={() => onToggle(type.id)}
+            aria-pressed={on}
+            title={`${type.label} logistics`}
           >
             <span>{type.tag}</span>
             <b>{type.label.toUpperCase()}</b>
@@ -637,7 +671,17 @@ function dataCenterCableRecord(cable) {
   };
 }
 
-function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAULT_POWER_FILTERS, marketItems = [], onSelect, selectedId }) {
+function EventFeed({
+  active,
+  theme,
+  data,
+  densityValue,
+  infraPowerTypes = DEFAULT_POWER_FILTERS,
+  logisticsTypes = DEFAULT_LOGISTICS_FILTERS,
+  marketItems = [],
+  onSelect,
+  selectedId,
+}) {
   const items = useMemo(() => {
     const D = data || window.MOCK_DATA;
     const feed = [];
@@ -826,9 +870,22 @@ function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAUL
         inspectorKind: 'military',
         data: s,
       }));
+      (D.militaryFlights || []).slice(0, 20).forEach(f => feed.push({
+        id: f.id || f.callsign,
+        t: f.updated || Date.now() - Math.random() * 600000,
+        kind: 'MAIR',
+        cat: f.typecode || 'ADS-B',
+        city: f.operator || f.country || 'Military ADS-B',
+        country: f.country || '--',
+        title: f.callsign || f.registration || f.id,
+        meta: f.alt ? `FL${Math.floor(Number(f.alt) / 100)}` : f.sourceName || 'MIL FLIGHT',
+        color: '#9ad4ff',
+        inspectorKind: 'flight',
+        data: f,
+      }));
     }
     if (active.logistics) {
-      (D.vessels || []).filter(v => !isMilitaryVesselRecord(v)).slice(0, 18).forEach(v => feed.push({
+      if (logisticsTypes.ships !== false) (D.vessels || []).filter(v => !isMilitaryVesselRecord(v)).slice(0, 18).forEach(v => feed.push({
         id: v.id || v.name,
         t: Date.now() - Math.random() * 1800000, kind: 'SHP', cat: v.type || 'VESSEL',
         city: v.laneName || v.region || 'SEA LANE', country: v.country || '--',
@@ -837,12 +894,12 @@ function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAUL
         inspectorKind: 'vessel',
         data: v,
       }));
-      (D.ports || []).slice(0, 16).forEach(p => feed.push({
+      if (logisticsTypes.ports !== false) (D.ports || []).slice(0, 16).forEach(p => feed.push({
         id: p.id || `${p.name}-${p.country}`,
         t: Date.now() - Math.random() * 3600000, kind: 'PRT', cat: p.traffic || 'PORT',
         city: p.name || p.city || 'Port', country: p.country || '--',
         title: p.name || p.city || 'Port', meta: p.status || p.traffic || 'OPEN',
-        color: '#7bd6a8',
+        color: '#3fb8ff',
         inspectorKind: 'port',
         data: p,
       }));
@@ -860,7 +917,7 @@ function EventFeed({ active, theme, data, densityValue, infraPowerTypes = DEFAUL
     }
     feed.sort((a, b) => b.t - a.t);
     return feed.slice(0, 60);
-  }, [active, theme, data, densityValue, infraPowerTypes, marketItems]);
+  }, [active, theme, data, densityValue, infraPowerTypes, logisticsTypes, marketItems]);
 
   const fmtT = (t) => {
     const diff = Math.floor((Date.now() - t) / 60000);
@@ -1316,6 +1373,7 @@ function mergeLiveData(live) {
     diplomacy: window.DIPLOMACY_DATA || [],
     militaryBases: live.militaryBases?.length ? live.militaryBases : D.militaryBases,
     militaryShips: live.militaryShips?.length ? live.militaryShips : D.militaryShips,
+    militaryFlights: live.militaryFlights?.length ? live.militaryFlights : D.militaryFlights || [],
     conflictEvents: live.conflictEvents || [],
     aisstream: live.aisstream || [],
     kasperskyCyber: live.kasperskyCyber || [],
@@ -1395,33 +1453,45 @@ function filterForViewArea(data, view) {
   if (!view) return data;
   const D = data || window.MOCK_DATA || {};
   const filterPoints = values => (values || []).filter(item => pointInView(item, view));
-  const vessels = (D.vessels || []).filter(vessel => pointInView(vesselPoint(vessel, D), view));
   const militaryShips = (D.militaryShips || []).filter(ship => pointInView(vesselPoint(ship, D), view));
-  const shippingLanes = (D.shippingLanes || []).filter(lane => infrastructureCableInView(lane, view));
 
   return {
     ...D,
     CITIES: filterPoints(D.CITIES),
-    ports: filterPoints(D.ports),
+    ports: D.ports || [],
     news: filterPoints(D.news),
     flights: filterPoints(D.flights),
     dataCenters: filterPoints(D.dataCenters),
     earthquakes: filterPoints(D.earthquakes),
     weather: filterPoints(D.weather),
     storms: filterPoints(D.storms),
-    vessels,
+    vessels: D.vessels || [],
     militaryBases: filterPoints(D.militaryBases),
     militaryShips,
+    militaryFlights: filterPoints(D.militaryFlights),
     cyber: (D.cyber || []).filter(item => cyberInView(item, view)),
     kasperskyCyber: (D.kasperskyCyber || []).filter(item => cyberInView(item, view)),
     conflicts: (D.conflicts || []).filter(conflict => conflictInView(conflict, view)),
     conflictEvents: filterPoints(D.conflictEvents),
-    shippingLanes,
+    shippingLanes: D.shippingLanes || [],
     SHIPPING: D.SHIPPING,
     infrastructureCables: (D.infrastructureCables || []).filter(cable => infrastructureCableInView(cable, view)),
     infrastructureNodes: filterPoints(D.infrastructureNodes),
     infrastructurePowerPlants: filterPoints(D.infrastructurePowerPlants),
     powerPlants: filterPoints(D.powerPlants),
+  };
+}
+
+function applyLogisticsFilters(data, filters = DEFAULT_LOGISTICS_FILTERS) {
+  const D = data || window.MOCK_DATA || {};
+  return {
+    ...D,
+    ports: filters.ports === false ? [] : D.ports || [],
+    vessels: filters.ships === false
+      ? (D.vessels || []).filter(isMilitaryVesselRecord)
+      : D.vessels || [],
+    shippingLanes: D.shippingLanes || [],
+    SHIPPING: D.SHIPPING,
   };
 }
 
@@ -1643,6 +1713,13 @@ function App() {
       return { ...DEFAULT_POWER_FILTERS };
     }
   });
+  const [logisticsTypes, setLogisticsTypes] = useState(() => {
+    try {
+      return { ...DEFAULT_LOGISTICS_FILTERS, ...(JSON.parse(localStorage.getItem('gd_logistics_types')) || {}) };
+    } catch {
+      return { ...DEFAULT_LOGISTICS_FILTERS };
+    }
+  });
   const [densityValue, setDensityValue] = useState(() => {
     const saved = Number(localStorage.getItem('gd_density_limit'));
     return Number.isFinite(saved) ? saved : 0.5;
@@ -1666,8 +1743,13 @@ function App() {
     () => filterForViewArea(data, viewArea),
     [data, viewArea]
   );
+  const renderData = useMemo(
+    () => applyLogisticsFilters(displayData, logisticsTypes),
+    [displayData, logisticsTypes]
+  );
   useEffect(() => { localStorage.setItem('gd_tweaks', JSON.stringify(tweaks)); }, [tweaks]);
   useEffect(() => { localStorage.setItem('gd_infra_power_types', JSON.stringify(infraPowerTypes)); }, [infraPowerTypes]);
+  useEffect(() => { localStorage.setItem('gd_logistics_types', JSON.stringify(logisticsTypes)); }, [logisticsTypes]);
   useEffect(() => { localStorage.setItem('gd_density_limit', String(densityValue)); }, [densityValue]);
 
 useEffect(() => {
@@ -1710,9 +1792,9 @@ useEffect(() => {
     const objectLimit = objectLimitFromDensity(densityValue);
     engineRef.current.maxTrackedObjects = objectLimit;
     engineRef.current.maxFlightMarkers = Math.min(objectLimit, LIVE_FLIGHT_LIMITS[tweaks.density] || LIVE_FLIGHT_LIMITS.normal);
-    engineRef.current.updateLiveData?.(displayData);
-    engineRef.current.updateFlights?.(displayData.flights || []);
-  }, [displayData, tweaks.density, densityValue]);
+    engineRef.current.updateLiveData?.(renderData);
+    engineRef.current.updateFlights?.(renderData.flights || []);
+  }, [renderData, tweaks.density, densityValue]);
   // Apply layer visibility / opacity
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
@@ -1781,14 +1863,14 @@ useEffect(() => {
 
   // Stats
   const stats = useMemo(() => {
-    const D = displayData || window.MOCK_DATA;
+    const D = renderData || window.MOCK_DATA;
     const infra = infrastructurePayload(D);
     return {
       activeLayers: Object.values(active).filter(Boolean).length,
       flights: active.flights ? D.flights.length : 0,
       vessels: active.logistics ? (D.vessels || []).filter(v => !isMilitaryVesselRecord(v)).length : 0,
       military: active.military
-        ? (D.militaryBases?.length || 0) + (D.militaryShips?.length || 0) + (D.vessels || []).filter(isMilitaryVesselRecord).length
+        ? (D.militaryBases?.length || 0) + (D.militaryShips?.length || 0) + (D.militaryFlights?.length || 0) + (D.vessels || []).filter(isMilitaryVesselRecord).length
         : 0,
       news: active.news ? D.news.length : 0,
       cyber: active.cyber ? (D.kasperskyCyber?.length || D.cyber.length) : 0,
@@ -1799,7 +1881,7 @@ useEffect(() => {
         .length : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
     };
-  }, [active, displayData, infraPowerTypes, marketItems.length]);
+  }, [active, renderData, infraPowerTypes, marketItems.length]);
 
   const colorFor = (id) => {
     const m = {
@@ -1813,11 +1895,11 @@ useEffect(() => {
   const selectFeedEvent = React.useCallback((eventPick) => {
     setRailPick(eventPick);
     setPick(null);
-    const point = focusPointForEvent(eventPick, displayData);
+    const point = focusPointForEvent(eventPick, renderData);
     if (point && engineRef.current?.highlightPoint) {
       engineRef.current.highlightPoint(point.lat, point.lon, selectionColorForEvent(eventPick));
     }
-  }, [displayData]);
+  }, [renderData]);
 
   useEffect(() => {
     const onRailPick = event => {
@@ -1842,6 +1924,10 @@ useEffect(() => {
 
   const toggleInfraPowerType = React.useCallback(typeId => {
     setInfraPowerTypes(current => ({ ...current, [typeId]: current[typeId] === false }));
+  }, []);
+
+  const toggleLogisticsType = React.useCallback(typeId => {
+    setLogisticsTypes(current => ({ ...current, [typeId]: current[typeId] === false }));
   }, []);
 
   // Theme CSS vars
@@ -1929,6 +2015,12 @@ useEffect(() => {
                     active={active.infrastructure}
                     onToggle={toggleInfraPowerType}
                   />
+                ) : l.id === 'logistics' ? (
+                  <LogisticsSublayerControls
+                    filters={logisticsTypes}
+                    active={active.logistics}
+                    onToggle={toggleLogisticsType}
+                  />
                 ) : null}
               />
             ))}
@@ -2010,9 +2102,10 @@ useEffect(() => {
           <EventFeed
             active={active}
             theme={theme}
-            data={displayData}
+            data={renderData}
             densityValue={densityValue}
             infraPowerTypes={infraPowerTypes}
+            logisticsTypes={logisticsTypes}
             marketItems={marketItems}
             selectedId={railPick?.eventId || null}
             onSelect={selectFeedEvent}

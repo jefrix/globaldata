@@ -91,7 +91,7 @@ All feeds are **simulated** out of the box. To plug in live sources, replace the
 
 | Layer      | Suggested free sources                                            |
 |-----------|--------------------------------------------------------------------|
-| Flights    | OpenSky Network API, ADSB.lol                                      |
+| Flights    | PocketWorld flight feed, ADSB.lol military aircraft feed           |
 | Logistics  | MarineTraffic (limited), AIS Hub, GlobalFishingWatch               |
 | Climate    | NOAA GFS, Windy API, Open-Meteo, USGS earthquake feed              |
 | News       | GDELT, NewsAPI, Common Crawl                                       |

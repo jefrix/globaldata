@@ -1135,7 +1135,7 @@ window.GlobeEngine = (function () {
 
     (data.ports || []).forEach((p, i) => {
       const major = i < 240;
-      this._addPoint('logistics', p.lat, p.lon, major ? (this.theme.lng || '#9ad4ff') : (this.theme.lane || '#7bd6a8'), major ? 0.42 : 0.36, 'port', p);
+      this._addPoint('logistics', p.lat, p.lon, major ? '#3fb8ff' : '#168cff', major ? 0.14 : 0.12, 'port', p);
     });
 
     (data.news || []).slice(0, 120).forEach(n => {
@@ -1222,6 +1222,17 @@ window.GlobeEngine = (function () {
       const material = this._getMarkerMaterial('militaryBase', '#7bd6a8', this.layerOpacity.military ?? 1);
       this._addSpritePoint('military', base.lat, base.lon, material, 0.58, 0.58, 'military', base);
       this._addTextLabel('military', base.lat, base.lon, [base.country, base.function], '#7bd6a8', 13.5, 5);
+    });
+
+    (data.militaryFlights || []).slice(0, Math.min(this.maxTrackedObjects, 1000)).forEach(f => {
+      const initial = routePosition(f);
+      if (!initial) return;
+      const heading = Number.isFinite(Number(initial.heading)) ? Number(initial.heading)
+        : Number.isFinite(Number(f.heading)) ? Number(f.heading)
+        : 0;
+      const material = this._makeFlightMaterial('#9ad4ff', this.layerOpacity.military ?? 1, heading);
+      const marker = this._addSpritePoint('military', initial.lat, initial.lon, material, 0.46, 0.46, 'flight', f);
+      if (marker) marker.userData.militaryFlight = true;
     });
 
     const militaryShips = [

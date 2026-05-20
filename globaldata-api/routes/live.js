@@ -6,7 +6,8 @@ const router = express.Router();
 const CACHE_TTL_MS = Number(process.env.LIVE_CACHE_TTL_MS || 30000);
 const SHIPPING_LANES_URL = 'https://raw.githubusercontent.com/newzealandpaul/Shipping-Lanes/main/data/Shipping_Lanes_v1.geojson';
 const PORTS_URL = 'https://raw.githubusercontent.com/tayljordan/ports/main/ports.json';
-const ADSB_LOL_URL = 'https://api.adsb.lol/v2/lat/0/lon/0/dist/10000';
+const POCKETWORLD_FLIGHTS_URL = 'https://pocketworld.org/api/flights';
+const ADSB_LOL_MILITARY_URL = 'https://api.adsb.lol/v2/mil';
 const KASPERSKY_COUNTRIES_URL = 'https://cybermap.kaspersky.com/map/data/countries.json';
 const KASPERSKY_EVENTS_BASE = 'https://sm-cybermap-mediaprod.smweb.tech/data/events/default';
 const MAX_FLIGHTS = Number(process.env.MAX_LIVE_FLIGHTS || 5000);
@@ -458,48 +459,74 @@ function centroidFromGeometry(geometry) {
   };
 }
 
-async function getFlights(limit = MAX_FLIGHTS) {
-  try {
-    const data = await fetchJson(ADSB_LOL_URL);
-    const aircraft = data.ac || data.aircraft || [];
-    const flights = aircraft
-      .map(a => ({
-        id: a.hex || a.icao || a.flight || a.r,
-        callsign: (a.flight || a.callsign || a.r || a.hex || '').trim(),
-        country: a.dbFlags ? 'ADSB.lol' : a.t || 'ADSB.lol',
-        lon: finiteNumber(a.lon),
-        lat: finiteNumber(a.lat),
-        alt: finiteNumber(a.alt_baro === 'ground' ? 0 : a.alt_baro || a.alt_geom),
-        velocity: finiteNumber(a.gs),
-        heading: finiteNumber(a.track || a.true_heading || a.mag_heading),
-        updated: Date.now() - Number(a.seen || 0) * 1000,
-        source: 'ADSB.lol',
-      }))
-      .filter(f => f.lat !== null && f.lon !== null);
-    if (flights.length) {
-      const sampledFlights = sampleEvenly(flights, limit);
-      sampledFlights.sort((a, b) => (b.updated || 0) - (a.updated || 0));
-      return sampledFlights;
-    }
-  } catch (error) {
-    // OpenSky remains the secondary source because anonymous ADS-B feeds can be rate limited.
-  }
+function mapPocketWorldFlight(plane) {
+  const lastSeen = Number(plane.last_seen ?? plane.last_contact);
+  return {
+    id: plane.icao24 || plane.hex || plane.callsign || plane.registration,
+    callsign: String(plane.callsign || plane.flight || plane.icao24 || '').trim(),
+    country: plane.country || plane.operator || plane.airline || 'PocketWorld',
+    lon: finiteNumber(plane.lng ?? plane.lon),
+    lat: finiteNumber(plane.lat),
+    alt: finiteNumber(plane.alt ?? plane.baro_alt ?? plane.geo_alt),
+    velocity: finiteNumber(plane.velocity ?? plane.gs),
+    heading: finiteNumber(plane.heading ?? plane.track),
+    verticalRate: finiteNumber(plane.vertical_rate ?? plane.geom_rate),
+    updated: Number.isFinite(lastSeen) ? Date.now() - lastSeen * 1000 : Date.now(),
+    source: plane.source ? `PocketWorld / ${plane.source}` : 'PocketWorld',
+    sourceName: 'PocketWorld flights',
+    sourceQuality: plane.source_quality,
+    sourceType: plane.source_type,
+    registration: plane.registration,
+    manufacturer: plane.manufacturer,
+    model: plane.model,
+    typecode: plane.typecode,
+    operator: plane.operator,
+    aircraftType: plane.aircraft_type,
+    origin: plane.origin,
+    destination: plane.destination,
+    airline: plane.airline,
+    live: true,
+  };
+}
 
-  const data = await fetchJson('https://opensky-network.org/api/states/all');
-  const flights = (data.states || [])
-    .map(row => ({
-      id: row[0],
-      callsign: (row[1] || '').trim() || row[0],
-      country: row[2],
-      lon: finiteNumber(row[5]),
-      lat: finiteNumber(row[6]),
-      alt: finiteNumber(row[7]),
-      velocity: finiteNumber(row[9]),
-      heading: finiteNumber(row[10]),
-      updated: row[4] ? row[4] * 1000 : Date.now(),
-      source: 'OpenSky',
-    }))
-    .filter(f => f.lat !== null && f.lon !== null);
+function mapMilitaryFlight(plane) {
+  const seen = Number(plane.seen);
+  return {
+    id: `MIL-AIR-${plane.hex || plane.flight || plane.r || Math.random().toString(36).slice(2)}`,
+    callsign: String(plane.flight || plane.callsign || plane.r || plane.hex || '').trim(),
+    country: plane.country || plane.t || 'Military ADS-B',
+    lon: finiteNumber(plane.lon),
+    lat: finiteNumber(plane.lat),
+    alt: finiteNumber(plane.alt_baro === 'ground' ? 0 : plane.alt_baro ?? plane.alt_geom),
+    velocity: finiteNumber(plane.gs),
+    heading: finiteNumber(plane.track ?? plane.true_heading ?? plane.mag_heading),
+    updated: Number.isFinite(seen) ? Date.now() - seen * 1000 : Date.now(),
+    registration: plane.r,
+    typecode: plane.t,
+    model: plane.desc,
+    operator: plane.ownOp || plane.operator,
+    function: 'Military Flight',
+    source: 'ADSB.lol military',
+    sourceName: 'ADSB.lol military',
+    live: true,
+  };
+}
+
+async function getFlights(limit = MAX_FLIGHTS) {
+  const data = await fetchJson(POCKETWORLD_FLIGHTS_URL);
+  const flights = (data.flights || data.ac || data.aircraft || [])
+    .map(mapPocketWorldFlight)
+    .filter(f => f.lat !== null && f.lon !== null)
+    .sort((a, b) => (b.updated || 0) - (a.updated || 0));
+  return sampleEvenly(flights, limit);
+}
+
+async function getMilitaryFlights(limit = 1000) {
+  const data = await fetchJson(ADSB_LOL_MILITARY_URL);
+  const flights = (data.ac || data.aircraft || [])
+    .map(mapMilitaryFlight)
+    .filter(f => f.lat !== null && f.lon !== null)
+    .sort((a, b) => (b.updated || 0) - (a.updated || 0));
   return sampleEvenly(flights, limit);
 }
 
@@ -787,6 +814,7 @@ router.get('/', async (req, res) => {
 
   const results = await Promise.all([
     settle('flights', () => getFlights(flightLimit)),
+    settle('militaryFlights', () => getMilitaryFlights(Math.min(objectLimit, 1000))),
     settle('shippingLanes', getShippingLanes),
     settle('ports', getPorts),
     settle('military', async () => MILITARY_BASES),
@@ -809,6 +837,7 @@ router.get('/', async (req, res) => {
       error,
     })),
     flights: results.find(r => r.name === 'flights').data,
+    militaryFlights: results.find(r => r.name === 'militaryFlights').data,
     shippingLanes,
     ports: results.find(r => r.name === 'ports').data,
     militaryBases: results.find(r => r.name === 'military').data,

@@ -1,5 +1,6 @@
 (function () {
-  if (window.location.hostname !== 'jefrix.github.io') return;
+  const STATIC_CACHE_HOSTS = ['jefrix.github.io', 'localhost', '127.0.0.1'];
+  if (!STATIC_CACHE_HOSTS.includes(window.location.hostname)) return;
 
   const fallbackFetch = window.fetch.bind(window);
 
@@ -109,6 +110,7 @@
         { name: 'static-cache', ok: true, count: cache.news?.length || 0 },
       ],
       flights: (cache.flights || []).slice(0, flightLimit),
+      militaryFlights: (cache.militaryFlights || []).slice(0, Math.min(objectLimit, 1000)),
       news: (cache.news || []).slice(0, objectLimit),
       shippingLanes,
       ports: (cache.ports || []).slice(0, Math.min(objectLimit, 1600)).map(enrichPort),
