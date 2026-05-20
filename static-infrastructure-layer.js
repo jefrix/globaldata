@@ -5,6 +5,12 @@
   const DEG = Math.PI / 180;
   const originalCreate = window.GlobeEngine.create;
   const textures = new Map();
+  const RADIO_STYLE_ZOOM = {
+    minFactor: 0.62,
+    maxFactor: 3.35,
+    farShrink: 0.22,
+    closeBoost: 2.35,
+  };
 
   function latLonToVec3(lat, lon, radius = R) {
     const phi = (90 - lat) * DEG;
@@ -432,10 +438,10 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      sprite.scale.set(1.35, 1.35, 1);
+      sprite.scale.set(0.42, 0.42, 1);
       sprite.renderOrder = 9;
       sprite.position.copy(pointOnPath(points, i / packetCount) || points[0]);
-      sprite.userData = { layer: 'dataCenters', kind: 'dataCenterPacket', data: cable, baseScale: 1.35, dataCenterNetwork: true };
+      sprite.userData = { layer: 'dataCenters', kind: 'dataCenterPacket', data: cable, baseScale: 0.42, dataCenterNetwork: true };
       group.add(sprite);
       engine.dataCenterPackets.push({
         sprite,
@@ -443,7 +449,7 @@
         progress: i / packetCount + Math.random() * 0.05,
         speed: 0.045 + Math.random() * 0.035,
         phase: Math.random() * Math.PI * 2,
-        baseScale: 1.35,
+        baseScale: 0.42,
       });
     }
   }
@@ -452,7 +458,7 @@
     if (!Number.isFinite(Number(node.lat)) || !Number.isFinite(Number(node.lon))) return;
     const group = ensureDataCenterNetworkGroup(engine);
     const color = node.color || colorForType(node.type);
-    const size = 1.1 + Math.min(3, Number(node.tier || 1)) * 0.42;
+    const size = Math.max(0.36, Math.min(0.71, 0.36 + Math.min(3, Number(node.tier || 1)) * 0.085));
     const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: textureFor(node.type, color),
       color: 0xffffff,
@@ -483,14 +489,14 @@
       },
     };
     group.add(sprite);
-    registerZoomSprite(engine, sprite, size, { minFactor: 0.45, maxFactor: 1.9, farShrink: 0.5, closeBoost: 0.82 });
+    registerZoomSprite(engine, sprite, size, RADIO_STYLE_ZOOM);
     engine.pickables?.push?.(sprite);
   }
 
   function capacityToSize(capacityMw) {
     const mw = Number(capacityMw);
-    if (!Number.isFinite(mw) || mw <= 0) return 1.55;
-    return Math.max(1.35, Math.min(3.85, 0.75 + Math.log10(mw + 10) * 0.78));
+    if (!Number.isFinite(mw) || mw <= 0) return 0.5;
+    return Math.max(0.36, Math.min(0.71, 0.36 + Math.log10(mw + 10) * 0.065));
   }
 
   function addPowerPlant(engine, plant) {
@@ -527,7 +533,7 @@
       },
     };
     group.add(sprite);
-    registerZoomSprite(engine, sprite, size, { minFactor: 0.38, maxFactor: 2.05, farShrink: 0.62, closeBoost: 1.05 });
+    registerZoomSprite(engine, sprite, size, RADIO_STYLE_ZOOM);
     engine.pickables?.push?.(sprite);
   }
 
@@ -556,7 +562,7 @@
       depthWrite: false,
     }));
     sprite.position.copy(latLonToVec3(Number(event.lat), Number(event.lon), R + 2.05));
-    sprite.scale.set(1.85, 1.85, 1);
+    sprite.scale.set(0.5, 0.5, 1);
     sprite.renderOrder = 10;
     sprite.userData = {
       layer: 'dataCenters',
@@ -574,17 +580,17 @@
       },
     };
     group.add(sprite);
-    registerZoomSprite(engine, sprite, 1.85, { minFactor: 0.45, maxFactor: 1.85, farShrink: 0.5, closeBoost: 0.75 });
+    registerZoomSprite(engine, sprite, 0.5, RADIO_STYLE_ZOOM);
     engine.pickables?.push?.(sprite);
   }
 
-  function combinedPayload(data) {
-    const fallback = window.GLOBALDATA_INFRASTRUCTURE || {};
-    return {
-      cables: data?.infrastructureCables?.length ? data.infrastructureCables : fallback.cables || [],
-      nodes: data?.infrastructureNodes?.length ? data.infrastructureNodes : fallback.nodes || [],
-      powerPlants: data?.powerPlants?.length ? data.powerPlants
-        : data?.infrastructurePowerPlants?.length ? data.infrastructurePowerPlants
+function combinedPayload(data) {
+  const fallback = window.GLOBALDATA_INFRASTRUCTURE || {};
+  return {
+      cables: Array.isArray(data?.infrastructureCables) ? data.infrastructureCables : fallback.cables || [],
+      nodes: Array.isArray(data?.infrastructureNodes) ? data.infrastructureNodes : fallback.nodes || [],
+      powerPlants: Array.isArray(data?.powerPlants) ? data.powerPlants
+        : Array.isArray(data?.infrastructurePowerPlants) ? data.infrastructurePowerPlants
           : fallback.powerPlants || [],
       events: [
         ...(fallback.events || []),
@@ -628,8 +634,8 @@
         const point = pointOnPath(packet.points, packet.progress);
         if (point) packet.sprite.position.copy(point);
         const pulse = 1 + Math.sin(now * 0.009 + packet.phase) * 0.18;
-        const base = packet.baseScale || packet.sprite.userData?.baseScale || 1.35;
-        const scale = base * pulse * zoomFactor(engine, { minFactor: 0.52, maxFactor: 1.8, farShrink: 0.42, closeBoost: 0.7 });
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 0.42;
+        const scale = base * pulse * zoomFactor(engine, RADIO_STYLE_ZOOM);
         packet.sprite.scale.set(scale, scale, 1);
         if (packet.sprite.material) {
           const layer = packet.sprite.userData?.layer || 'infrastructure';

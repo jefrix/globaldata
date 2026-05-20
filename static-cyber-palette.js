@@ -107,10 +107,10 @@
         depthWrite: false,
         blending: THREE.AdditiveBlending,
       }));
-      sprite.scale.set(1.9, 1.9, 1);
+      sprite.scale.set(0.5, 0.5, 1);
       sprite.renderOrder = 8;
       sprite.position.copy(pointOnPath(points, i / 2) || points[0]);
-      sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 1.9 };
+      sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 0.5 };
       engine.layerGroups.cyber.add(sprite);
       engine.cyberPackets.push({
         sprite,
@@ -118,7 +118,7 @@
         progress: i / 2 + Math.random() * 0.08,
         speed: 0.12 + Math.random() * 0.08,
         phase: Math.random() * Math.PI * 2,
-        baseScale: 1.9,
+        baseScale: 0.5,
       });
     }
   }
@@ -135,8 +135,8 @@
         packet.progress = (packet.progress + packet.speed * dt) % 1;
         packet.sprite.position.copy(pointOnPath(packet.points, packet.progress));
         const pulse = 1 + Math.sin(now * 0.009 + packet.phase) * 0.2;
-        const zoomScale = engine.visualScaleForZoom?.({ minFactor: 0.48, maxFactor: 1.75, farShrink: 0.45, closeBoost: 0.7 }) || 1;
-        const base = packet.baseScale || packet.sprite.userData?.baseScale || 1.9;
+        const zoomScale = engine.visualScaleForZoom?.({ minFactor: 0.62, maxFactor: 3.35, farShrink: 0.22, closeBoost: 2.35 }) || 1;
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 0.5;
         packet.sprite.scale.set(base * zoomScale * pulse, base * zoomScale * pulse, 1);
         if (packet.sprite.material) packet.sprite.material.opacity = 0.42 + Math.max(0, pulse - 1) * 0.3;
       });
@@ -166,7 +166,7 @@
     engine._addPoint = function cyberPaletteAddPoint(layer, lat, lon, color, size, kind, data) {
       if (layer !== 'cyber') return originalAddPoint?.(layer, lat, lon, color, size, kind, data);
       const cyberColor = kind === 'cyber' ? (Number(size) > 0.5 ? '#ff2d55' : '#9b5cff') : color;
-      return originalAddPoint?.(layer, lat, lon, cyberColor, Math.min(Number(size) || 0.26, 0.32), kind, data);
+      return originalAddPoint?.(layer, lat, lon, cyberColor, Math.max(0.36, Math.min(Number(size) || 0.36, 0.42)), kind, data);
     };
 
     return engine;

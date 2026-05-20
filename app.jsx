@@ -153,6 +153,8 @@ const LAYERS = [
   { id: 'radio',      label: 'RADIO',       sub: 'LIVE STATIONS · STREAMS',       hotkey: 'R' },
   { id: 'sun',        label: 'SUN',         sub: 'SOLAR ACTIVITY · NOAA/NASA',     hotkey: 'S' },
 ];
+const NON_GLOBE_LAYER_IDS = new Set(['markets', 'sun']);
+const ALL_LAYERS_IDS = LAYERS.filter(layer => !NON_GLOBE_LAYER_IDS.has(layer.id)).map(layer => layer.id);
 
 const FALLBACK_POWER_TYPES = {
   nuclear: { label: 'Nuclear', tag: 'NUC', color: '#ff4f76' },
@@ -419,14 +421,14 @@ function LayerRow({ layer, active, opacity, onToggle, onOpacity, color, sublayer
   );
 }
 
-function DensityControl({ value, onChange, color }) {
+function DensityControl({ value, onChange, color, scoped }) {
   return (
     <div className="layer-row active">
       <div className="layer-head">
         <div className="layer-idx">D</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="layer-label">DENSITY</div>
-          <div className="layer-sub">TRACKED OBJECT LIMIT</div>
+          <div className="layer-sub">{scoped ? 'VIEW AREA OBJECT LIMIT' : 'TRACKED OBJECT LIMIT'}</div>
         </div>
         <span className="sl-val">{String(Math.round(value * 100)).padStart(3, '0')}</span>
       </div>
@@ -588,10 +590,10 @@ function BottomBar({ theme, stats, lat, lon, zoom, dataStatus }) {
 function infrastructurePayload(data) {
   const fallback = window.GLOBALDATA_INFRASTRUCTURE || {};
   return {
-    cables: data?.infrastructureCables?.length ? data.infrastructureCables : fallback.cables || [],
-    nodes: data?.infrastructureNodes?.length ? data.infrastructureNodes : fallback.nodes || [],
-    powerPlants: data?.powerPlants?.length ? data.powerPlants
-      : data?.infrastructurePowerPlants?.length ? data.infrastructurePowerPlants
+    cables: Array.isArray(data?.infrastructureCables) ? data.infrastructureCables : fallback.cables || [],
+    nodes: Array.isArray(data?.infrastructureNodes) ? data.infrastructureNodes : fallback.nodes || [],
+    powerPlants: Array.isArray(data?.powerPlants) ? data.powerPlants
+      : Array.isArray(data?.infrastructurePowerPlants) ? data.infrastructurePowerPlants
         : fallback.powerPlants || [],
     events: [
       ...(fallback.events || []),
@@ -1333,6 +1335,96 @@ function newsFeedLimitFromDensity(value) {
   return Math.round(30 + t * 170);
 }
 
+function normalizeLon(lon) {
+  return ((Number(lon) + 540) % 360) - 180;
+}
+
+function lonDistance(a, b) {
+  return Math.abs(((normalizeLon(a) - normalizeLon(b) + 540) % 360) - 180);
+}
+
+function viewWindowFromCamera(camInfo, scoped) {
+  const zoom = Number(camInfo?.zoom);
+  const lat = Number(camInfo?.lat);
+  const lon = Number(camInfo?.lon);
+  if (!scoped || !Number.isFinite(zoom) || zoom < 1.08 || !Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  const latRadius = Math.max(7, Math.min(82, 76 / zoom));
+  const lonRadius = Math.max(10, Math.min(118, latRadius * 1.45));
+  return { lat, lon: normalizeLon(lon), latRadius, lonRadius };
+}
+
+function pointInView(point, view) {
+  if (!view) return true;
+  const lat = Number(point?.lat);
+  const lon = Number(point?.lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return false;
+  return Math.abs(lat - view.lat) <= view.latRadius && lonDistance(lon, view.lon) <= view.lonRadius;
+}
+
+function anyPathPointInView(path, view) {
+  if (!view || !Array.isArray(path)) return true;
+  return path.some(point => pointInView(Array.isArray(point) ? { lat: point[0], lon: point[1] } : point, view));
+}
+
+function vesselPoint(vessel, data) {
+  if (Number.isFinite(Number(vessel?.lat)) && Number.isFinite(Number(vessel?.lon))) {
+    return { lat: Number(vessel.lat), lon: Number(vessel.lon) };
+  }
+  return interpolateFeedPath((data?.SHIPPING || [])[vessel?.lane], vessel?.progress);
+}
+
+function cyberInView(item, view) {
+  return pointInView(item?.origin || item?.source, view)
+    || pointInView(item?.target || item?.destination || item, view);
+}
+
+function infrastructureCableInView(cable, view) {
+  return anyPathPointInView(cable?.pts || cable?.path || [], view)
+    || pointInView(cable, view);
+}
+
+function conflictInView(conflict, view) {
+  if (pointInView(conflict, view)) return true;
+  if (!Array.isArray(conflict?.bbox) || conflict.bbox.length < 4) return false;
+  const [south, west, north, east] = conflict.bbox.map(Number);
+  if (![south, west, north, east].every(Number.isFinite)) return false;
+  return pointInView({ lat: (south + north) / 2, lon: (west + east) / 2 }, view);
+}
+
+function filterForViewArea(data, view) {
+  if (!view) return data;
+  const D = data || window.MOCK_DATA || {};
+  const filterPoints = values => (values || []).filter(item => pointInView(item, view));
+  const vessels = (D.vessels || []).filter(vessel => pointInView(vesselPoint(vessel, D), view));
+  const militaryShips = (D.militaryShips || []).filter(ship => pointInView(vesselPoint(ship, D), view));
+  const shippingLanes = (D.shippingLanes || []).filter(lane => infrastructureCableInView(lane, view));
+
+  return {
+    ...D,
+    CITIES: filterPoints(D.CITIES),
+    ports: filterPoints(D.ports),
+    news: filterPoints(D.news),
+    flights: filterPoints(D.flights),
+    dataCenters: filterPoints(D.dataCenters),
+    earthquakes: filterPoints(D.earthquakes),
+    weather: filterPoints(D.weather),
+    storms: filterPoints(D.storms),
+    vessels,
+    militaryBases: filterPoints(D.militaryBases),
+    militaryShips,
+    cyber: (D.cyber || []).filter(item => cyberInView(item, view)),
+    kasperskyCyber: (D.kasperskyCyber || []).filter(item => cyberInView(item, view)),
+    conflicts: (D.conflicts || []).filter(conflict => conflictInView(conflict, view)),
+    conflictEvents: filterPoints(D.conflictEvents),
+    shippingLanes,
+    SHIPPING: D.SHIPPING,
+    infrastructureCables: (D.infrastructureCables || []).filter(cable => infrastructureCableInView(cable, view)),
+    infrastructureNodes: filterPoints(D.infrastructureNodes),
+    infrastructurePowerPlants: filterPoints(D.infrastructurePowerPlants),
+    powerPlants: filterPoints(D.powerPlants),
+  };
+}
+
 function interpolateFeedPath(path, progress = 0) {
   if (!Array.isArray(path) || path.length < 2) return null;
   const t = ((Number(progress) || 0) % 1 + 1) % 1;
@@ -1565,6 +1657,15 @@ function App() {
   const { data, status: dataStatus } = useLiveData(tweaks.density, densityValue);
   const marketState = useMarketData(active.markets);
   const marketItems = useMemo(() => marketRowsFromQuotes(marketState.quotes), [marketState.quotes]);
+  const densityScoped = !rotating && Number(camInfo.zoom) > 1.08;
+  const viewArea = useMemo(
+    () => viewWindowFromCamera(camInfo, densityScoped),
+    [camInfo.lat, camInfo.lon, camInfo.zoom, densityScoped]
+  );
+  const displayData = useMemo(
+    () => filterForViewArea(data, viewArea),
+    [data, viewArea]
+  );
   useEffect(() => { localStorage.setItem('gd_tweaks', JSON.stringify(tweaks)); }, [tweaks]);
   useEffect(() => { localStorage.setItem('gd_infra_power_types', JSON.stringify(infraPowerTypes)); }, [infraPowerTypes]);
   useEffect(() => { localStorage.setItem('gd_density_limit', String(densityValue)); }, [densityValue]);
@@ -1609,9 +1710,9 @@ useEffect(() => {
     const objectLimit = objectLimitFromDensity(densityValue);
     engineRef.current.maxTrackedObjects = objectLimit;
     engineRef.current.maxFlightMarkers = Math.min(objectLimit, LIVE_FLIGHT_LIMITS[tweaks.density] || LIVE_FLIGHT_LIMITS.normal);
-    engineRef.current.updateLiveData?.(data);
-    engineRef.current.updateFlights?.(data.flights || []);
-  }, [data, tweaks.density, densityValue]);
+    engineRef.current.updateLiveData?.(displayData);
+    engineRef.current.updateFlights?.(displayData.flights || []);
+  }, [displayData, tweaks.density, densityValue]);
   // Apply layer visibility / opacity
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
@@ -1680,7 +1781,7 @@ useEffect(() => {
 
   // Stats
   const stats = useMemo(() => {
-    const D = data || window.MOCK_DATA;
+    const D = displayData || window.MOCK_DATA;
     const infra = infrastructurePayload(D);
     return {
       activeLayers: Object.values(active).filter(Boolean).length,
@@ -1698,7 +1799,7 @@ useEffect(() => {
         .length : 0,
       conflicts: active.conflicts ? D.conflicts.length + (D.conflictEvents?.length || 0) : 0,
     };
-  }, [active, data, infraPowerTypes, marketItems.length]);
+  }, [active, displayData, infraPowerTypes, marketItems.length]);
 
   const colorFor = (id) => {
     const m = {
@@ -1712,11 +1813,11 @@ useEffect(() => {
   const selectFeedEvent = React.useCallback((eventPick) => {
     setRailPick(eventPick);
     setPick(null);
-    const point = focusPointForEvent(eventPick, data);
+    const point = focusPointForEvent(eventPick, displayData);
     if (point && engineRef.current?.highlightPoint) {
       engineRef.current.highlightPoint(point.lat, point.lon, selectionColorForEvent(eventPick));
     }
-  }, [data]);
+  }, [displayData]);
 
   useEffect(() => {
     const onRailPick = event => {
@@ -1811,6 +1912,7 @@ useEffect(() => {
               value={densityValue}
               onChange={setDensityValue}
               color={theme.accent}
+              scoped={densityScoped}
             />
             {LAYERS.map(l => (
               <LayerRow
@@ -1833,11 +1935,15 @@ useEffect(() => {
           </div>
           <div className="rail-ft">
             <button className="rail-btn" onClick={() => {
-              const allOn = LAYERS.every(l => active[l.id]);
-              const next = {}; LAYERS.forEach(l => next[l.id] = !allOn);
+              const allOn = ALL_LAYERS_IDS.every(id => active[id]);
+              const next = {};
+              LAYERS.forEach(l => {
+                next[l.id] = !allOn && ALL_LAYERS_IDS.includes(l.id);
+              });
+              window.GlobalDataLocalLayer?.setActive?.(false);
               setActive(next);
             }}>
-              {LAYERS.every(l => active[l.id]) ? 'CLEAR ALL' : 'ALL LAYERS'}
+              {ALL_LAYERS_IDS.every(id => active[id]) ? 'CLEAR ALL' : 'ALL LAYERS'}
             </button>
             <div className="legend">
               <div className="legend-hd">HEAT SCALE · NEWS SOURCES</div>
@@ -1904,7 +2010,7 @@ useEffect(() => {
           <EventFeed
             active={active}
             theme={theme}
-            data={data}
+            data={displayData}
             densityValue={densityValue}
             infraPowerTypes={infraPowerTypes}
             marketItems={marketItems}

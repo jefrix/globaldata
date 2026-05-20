@@ -21,6 +21,23 @@ window.GlobeEngine = (function () {
     return clamp(1 + close * closeBoost - far * farShrink, minFactor, maxFactor);
   }
 
+  const COMPACT_MARKER_ZOOM = {
+    minFactor: 0.62,
+    maxFactor: 3.35,
+    farShrink: 0.22,
+    closeBoost: 2.35,
+  };
+
+  function compactMarkerSize(value = 0.5) {
+    return clamp(Number(value) || 0.5, 0.36, 0.71);
+  }
+
+  function compactLogMarkerSize(value, fallback = 0.5) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric) || numeric <= 0) return compactMarkerSize(fallback);
+    return compactMarkerSize(0.36 + Math.log10(numeric + 10) * 0.065);
+  }
+
   function isTodayUtc(ts) {
     const d = new Date(Number(ts) || Date.now());
     const now = new Date();
@@ -860,16 +877,11 @@ window.GlobeEngine = (function () {
     mesh.userData = { layer, kind, data, preserveResources: true };
     this.layerGroups[layer].add(mesh);
     this.pickables.push(mesh);
-    if (layer === 'dataCenters') {
-      this.registerZoomAdaptiveObject?.(mesh, {
-        baseX: width,
-        baseY: height,
-        minFactor: 0.55,
-        maxFactor: 1.6,
-        farShrink: 0.32,
-        closeBoost: 0.65,
-      });
-    }
+    this.registerZoomAdaptiveObject?.(mesh, {
+      baseX: width,
+      baseY: height,
+      ...COMPACT_MARKER_ZOOM,
+    });
     return mesh;
   };
 
@@ -904,17 +916,12 @@ window.GlobeEngine = (function () {
     mesh.userData = { layer, kind, data };
     this.layerGroups[layer].add(mesh);
     this.pickables.push(mesh);
-    if (layer === 'cyber') {
-      this.registerZoomAdaptiveObject?.(mesh, {
-        baseX: 1,
-        baseY: 1,
-        baseZ: 1,
-        minFactor: 0.45,
-        maxFactor: 1.7,
-        farShrink: 0.5,
-        closeBoost: 0.75,
-      });
-    }
+    this.registerZoomAdaptiveObject?.(mesh, {
+      baseX: 1,
+      baseY: 1,
+      baseZ: 1,
+      ...COMPACT_MARKER_ZOOM,
+    });
     return mesh;
   };
 
@@ -973,10 +980,10 @@ window.GlobeEngine = (function () {
           depthWrite: false,
           blending: THREE.AdditiveBlending,
         }));
-        sprite.scale.set(2.25, 2.25, 1);
+        sprite.scale.set(0.5, 0.5, 1);
         sprite.renderOrder = 12;
         sprite.position.copy(pointOnVectorPath(pts, i / 2) || pts[0]);
-        sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 2.25 };
+        sprite.userData = { layer: 'cyber', kind: 'cyber-packet', baseScale: 0.5 };
         this.layerGroups.cyber.add(sprite);
         this.cyberPackets.push({
           sprite,
@@ -984,7 +991,7 @@ window.GlobeEngine = (function () {
           progress: i / 2 + Math.random() * 0.08,
           speed: 0.14 + Math.random() * 0.08,
           phase: Math.random() * Math.PI * 2,
-          baseScale: 2.25,
+          baseScale: 0.5,
         });
       }
     }
@@ -1030,27 +1037,27 @@ window.GlobeEngine = (function () {
 
       let color = '#7a94b8';
       let fillColor = null;
-      let size = 0.55;
+      let size = 0.5;
       if (country.code === selected?.code) {
         color = '#7bd6a8';
         fillColor = '#1fbf75';
-        size = 1.05;
+        size = 0.71;
       } else if (allies.has(country.code)) {
         color = '#7bd6a8';
         fillColor = '#1fbf75';
-        size = 0.85;
+        size = 0.62;
       } else if (adversaries.has(country.code)) {
         color = '#ff3040';
         fillColor = '#ff3040';
-        size = 0.85;
+        size = 0.62;
       } else if (!selected && (country.blocs || []).includes('NATO')) {
         color = '#5aa8ff';
         fillColor = '#1f74bf';
-        size = 0.72;
+        size = 0.56;
       } else if (!selected && (country.blocs || []).includes('BRICS')) {
         color = '#f5b142';
         fillColor = '#b36b18';
-        size = 0.72;
+        size = 0.56;
       }
 
       if (fillColor) {
@@ -1061,7 +1068,7 @@ window.GlobeEngine = (function () {
       }
 
       const material = this._getMarkerMaterial('diplomacy', color, this.layerOpacity.diplomacy ?? 1);
-      const point = this._addSpritePoint('diplomacy', country.lat, country.lon, material, size * 2.2, size * 2.2, 'diplomacy', country);
+      const point = this._addSpritePoint('diplomacy', country.lat, country.lon, material, size, size, 'diplomacy', country);
       if (point && selected && (allies.has(country.code) || adversaries.has(country.code))) {
         this._addArc('diplomacy', selected, country, color, 0.3);
       }
@@ -1122,19 +1129,19 @@ window.GlobeEngine = (function () {
     this._renderDiplomacy(data.diplomacy || window.DIPLOMACY_DATA || []);
 
     (data.CITIES || []).forEach(c => {
-      const size = Math.max(0.45, Math.min(1.6, Number(c.pop || 1) / 18));
+      const size = compactLogMarkerSize(Number(c.pop || 1), 0.42);
       this._addPoint('geographic', c.lat, c.lon, this.theme.city || '#ffffff', size, 'city', c);
     });
 
     (data.ports || []).forEach((p, i) => {
       const major = i < 240;
-      this._addPoint('logistics', p.lat, p.lon, major ? (this.theme.lng || '#9ad4ff') : (this.theme.lane || '#7bd6a8'), major ? 0.42 : 0.26, 'port', p);
+      this._addPoint('logistics', p.lat, p.lon, major ? (this.theme.lng || '#9ad4ff') : (this.theme.lane || '#7bd6a8'), major ? 0.42 : 0.36, 'port', p);
     });
 
     (data.news || []).slice(0, 120).forEach(n => {
       const color = isTodayUtc(n.ts) ? '#e03535' : '#f5d142';
       const material = this._getMarkerMaterial('news', color, this.layerOpacity.news ?? 1);
-      const marker = this._addSpritePoint('news', n.lat, n.lon, material, 3.2, 3.2, 'news', n);
+      const marker = this._addSpritePoint('news', n.lat, n.lon, material, 0.58, 0.58, 'news', n);
       if (marker) marker.userData.pulse = 0.18 + Math.random() * Math.PI * 2;
     });
 
@@ -1142,8 +1149,8 @@ window.GlobeEngine = (function () {
       const power = Number(dc.powerMw);
       const color = Number.isFinite(power) && power >= 200 ? '#5bd7ff' : Number.isFinite(power) ? '#73ff9a' : '#d9e4ef';
       const size = Number.isFinite(power)
-        ? Math.max(2.3, Math.min(5.6, 2.25 + Math.log10(power + 1) * 1.15))
-        : 2.4;
+        ? compactLogMarkerSize(power, 0.5)
+        : 0.5;
       const material = this._getMarkerMaterial('dataCenter', color, this.layerOpacity.dataCenters ?? 1);
       const marker = this._addSpritePoint('dataCenters', dc.lat, dc.lon, material, size, size, 'dataCenter', dc);
       if (marker && Number.isFinite(power) && power >= 100) marker.userData.pulse = Math.random() * Math.PI * 2;
@@ -1155,19 +1162,19 @@ window.GlobeEngine = (function () {
     (data.earthquakes || []).forEach(q => {
       const mag = Number(q.mag || 1);
       const rings = Math.max(1, Math.min(8, Math.floor(mag)));
-      const size = Math.max(2.2, Math.min(6.2, rings * 0.9));
+      const size = compactMarkerSize(0.36 + rings * 0.045);
       const color = Number(q.mag || 0) >= 5 ? '#ff7050' : '#f5b142';
       const material = this._getQuakeMaterial(color, rings, this.layerOpacity.climate ?? 1);
       this._addSpritePoint('climate', q.lat, q.lon, material, size, size, 'earthquake', q);
     });
 
     (data.weather || []).forEach(w => {
-      this._addPoint('climate', w.lat, w.lon, this.theme.storm || '#a38bff', 1.0, 'weather', w);
+      this._addPoint('climate', w.lat, w.lon, this.theme.storm || '#a38bff', 0.46, 'weather', w);
     });
 
     (data.storms || []).forEach(s => {
       const material = this._getMarkerMaterial('spiral', this.theme.stormHi || '#d85cff', this.layerOpacity.climate ?? 1);
-      this._addSpritePoint('climate', s.lat, s.lon, material, 3.2, 3.2, 'storm', s);
+      this._addSpritePoint('climate', s.lat, s.lon, material, 0.58, 0.58, 'storm', s);
     });
 
     (data.vessels || []).filter(v => !isMilitaryVessel(v)).slice(0, this.maxTrackedObjects).forEach(v => {
@@ -1177,11 +1184,16 @@ window.GlobeEngine = (function () {
       const color = v.type === 'oil' ? (this.theme.oil || '#f5a742') : v.type === 'lng' ? (this.theme.lng || '#9ad4ff') : (this.theme.container || '#7bd6a8');
       const mesh = new THREE.Sprite(this._getMarkerMaterial('vessel', color, this.layerOpacity.logistics ?? 1));
       mesh.position.copy(latLonToVec3(Number(pos.lat), Number(pos.lon), R + 1.35));
-      mesh.scale.set(1.45, 2.55, 1);
+      mesh.scale.set(0.46, 0.78, 1);
       mesh.renderOrder = 2;
       mesh.userData = { layer: 'logistics', kind: 'vessel', data: v, preserveResources: true };
       this.layerGroups.logistics.add(mesh);
       this.pickables.push(mesh);
+      this.registerZoomAdaptiveObject?.(mesh, {
+        baseX: 0.46,
+        baseY: 0.78,
+        ...COMPACT_MARKER_ZOOM,
+      });
       this.vesselObjects.push({
         mesh,
         data: v,
@@ -1202,13 +1214,13 @@ window.GlobeEngine = (function () {
       const target = c.target || c;
       if (!origin || !target) return;
       this._addArc('cyber', origin, target, c.color || '#ff5c2e', 0.3);
-      this._addPoint('cyber', origin.lat, origin.lon, c.color || '#ff5c2e', 0.2, 'cyber', c);
-      this._addPoint('cyber', target.lat, target.lon, c.color || '#ff5c2e', 0.28, 'cyber', c);
+      this._addPoint('cyber', origin.lat, origin.lon, c.color || '#ff5c2e', 0.36, 'cyber', c);
+      this._addPoint('cyber', target.lat, target.lon, c.color || '#ff5c2e', 0.42, 'cyber', c);
     });
 
     (data.militaryBases || []).slice(0, this.maxTrackedObjects).forEach(base => {
       const material = this._getMarkerMaterial('militaryBase', '#7bd6a8', this.layerOpacity.military ?? 1);
-      this._addSpritePoint('military', base.lat, base.lon, material, 3.0, 3.0, 'military', base);
+      this._addSpritePoint('military', base.lat, base.lon, material, 0.58, 0.58, 'military', base);
       this._addTextLabel('military', base.lat, base.lon, [base.country, base.function], '#7bd6a8', 13.5, 5);
     });
 
@@ -1226,7 +1238,7 @@ window.GlobeEngine = (function () {
         lon = pos.lon;
       }
       const material = this._getMarkerMaterial('militaryShip', '#9ad4ff', this.layerOpacity.military ?? 1);
-      this._addSpritePoint('military', lat, lon, material, 2.25, 2.25, 'military', ship);
+      this._addSpritePoint('military', lat, lon, material, 0.5, 0.5, 'military', ship);
       this._addTextLabel('military', lat, lon, [ship.country, ship.function || ship.type], '#9ad4ff', 11, 4.2);
     });
 
@@ -1263,7 +1275,7 @@ window.GlobeEngine = (function () {
     (flights || []).slice(0, Math.min(this.maxFlightMarkers, this.maxTrackedObjects)).forEach(f => {
       const initial = routePosition(f);
       if (!initial) return;
-      const size = initial.live ? 1.35 : 1.15;
+      const size = initial.live ? 0.5 : 0.42;
       const heading = Number.isFinite(Number(initial.heading)) ? Number(initial.heading)
         : Number.isFinite(Number(f.heading)) ? Number(f.heading)
         : Math.random() * 360;
@@ -1274,6 +1286,11 @@ window.GlobeEngine = (function () {
       mesh.renderOrder = 2;
       mesh.userData = { layer: 'flights', kind: 'flight-marker', data: f };
       this.layerGroups.flights.add(mesh);
+      this.registerZoomAdaptiveObject?.(mesh, {
+        baseX: size,
+        baseY: size,
+        ...COMPACT_MARKER_ZOOM,
+      });
       const head = offsetLatLonByHeading(initial.lat, initial.lon, heading, initial.live ? 0.40 : 0.34);
       const pickHead = new THREE.Mesh(this._getFlightPickGeometry(), this._getFlightPickMaterial());
       pickHead.position.copy(latLonToVec3(head.lat, head.lon, R + 1.72));
@@ -1346,7 +1363,8 @@ window.GlobeEngine = (function () {
     this.zoomAdaptiveObjects = this.zoomAdaptiveObjects.filter(object => object?.parent && object.userData?.zoomAdaptive);
     this.zoomAdaptiveObjects.forEach(object => {
       const options = object.userData.zoomScaleOptions || {};
-      const factor = this.visualScaleForZoom(options);
+      const pulse = Number.isFinite(Number(object.userData.zoomPulse)) ? Number(object.userData.zoomPulse) : 1;
+      const factor = this.visualScaleForZoom(options) * pulse;
       object.scale.set(
         (object.userData.zoomBaseX || 1) * factor,
         (object.userData.zoomBaseY || object.userData.zoomBaseX || 1) * factor,
@@ -1492,8 +1510,8 @@ window.GlobeEngine = (function () {
         const point = pointOnVectorPath(packet.points, packet.progress);
         if (point) packet.sprite.position.copy(point);
         const pulse = 1 + Math.sin(performance.now() * 0.01 + packet.phase) * 0.24;
-        const base = packet.baseScale || packet.sprite.userData?.baseScale || 2.25;
-        const zoomScale = this.visualScaleForZoom({ minFactor: 0.48, maxFactor: 1.8, farShrink: 0.45, closeBoost: 0.72 });
+        const base = packet.baseScale || packet.sprite.userData?.baseScale || 0.5;
+        const zoomScale = this.visualScaleForZoom(COMPACT_MARKER_ZOOM);
         packet.sprite.scale.set(base * zoomScale * pulse, base * zoomScale * pulse, 1);
         if (packet.sprite.material) packet.sprite.material.opacity = 0.42 + Math.max(0, pulse - 1) * 0.32;
       });
@@ -1512,8 +1530,7 @@ window.GlobeEngine = (function () {
         this.layerGroups.news.children.forEach(marker => {
           if (marker.userData?.kind !== 'news') return;
           marker.userData.pulse = (marker.userData.pulse || 0) + dt * 3.4;
-          const scale = 1 + Math.sin(marker.userData.pulse) * 0.16;
-          marker.scale.set(3.2 * scale, 3.2 * scale, 1);
+          marker.userData.zoomPulse = 1 + Math.sin(marker.userData.pulse) * 0.12;
         });
       }
 

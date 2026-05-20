@@ -80,6 +80,7 @@
       label: 'X-RAY',
       sub: 'GOES flux',
       kind: 'data',
+      imageView: 'euv131',
       source: 'NOAA SWPC',
       sourceUrl: 'https://www.swpc.noaa.gov/products/goes-x-ray-flux',
     },
@@ -87,6 +88,7 @@
       label: 'FLARES',
       sub: 'latest',
       kind: 'data',
+      imageView: 'euv131',
       source: 'NOAA SWPC',
       sourceUrl: 'https://services.swpc.noaa.gov/json/goes/primary/xray-flares-latest.json',
     },
@@ -94,6 +96,7 @@
       label: 'REGIONS',
       sub: 'sunspots',
       kind: 'data',
+      imageView: 'sunspots',
       source: 'NOAA SWPC',
       sourceUrl: 'https://services.swpc.noaa.gov/json/solar_regions.json',
     },
@@ -101,6 +104,7 @@
       label: 'CMEs',
       sub: 'DONKI',
       kind: 'data',
+      imageView: 'euv304',
       source: 'NASA DONKI',
       sourceUrl: 'https://kauai.ccmc.gsfc.nasa.gov/DONKI/',
     },
@@ -465,13 +469,18 @@
       return;
     }
 
+    const diskView = dataDiskView(view);
     stage.innerHTML = `
       <div class="solar-disk-shell" aria-hidden="true">
-        <img class="solar-disk" alt="" src="${cacheBust(SOLAR_VIEWS.composite.url)}" />
+        <img class="solar-disk" alt="" src="${cacheBust(diskView.url)}" />
       </div>
     `;
     caption.className = 'solar-data-panel';
     caption.innerHTML = renderDataView(currentView, view);
+  }
+
+  function dataDiskView(view) {
+    return SOLAR_VIEWS[view?.imageView] || SOLAR_VIEWS.composite;
   }
 
   function renderSolarSummary() {

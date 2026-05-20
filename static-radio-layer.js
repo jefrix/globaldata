@@ -123,11 +123,11 @@
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.shadowColor = color;
-    ctx.shadowBlur = 9;
+    ctx.shadowBlur = 5;
 
-    ctx.globalAlpha = 0.22;
+    ctx.globalAlpha = 0.12;
     ctx.beginPath();
-    ctx.arc(32, 32, 26, 0, Math.PI * 2);
+    ctx.arc(32, 32, 21, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = 1;
     ctx.lineWidth = 4;
@@ -154,10 +154,10 @@
     ctx.arc(32, 36, 4, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
-    ctx.strokeStyle = 'rgba(255,255,255,0.72)';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.58)';
+    ctx.lineWidth = 1.6;
     ctx.beginPath();
-    ctx.arc(32, 32, 25, 0, Math.PI * 2);
+    ctx.arc(32, 32, 22, 0, Math.PI * 2);
     ctx.stroke();
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -272,7 +272,7 @@
     const material = radioMaterial(engine);
     stations.forEach((station, index) => {
       const votes = Number(station.votes) || 0;
-      const size = Math.max(2.2, Math.min(4.6, 2.4 + Math.log10(votes + 10) * 0.34));
+      const size = Math.max(0.36, Math.min(0.71, 0.36 + Math.log10(votes + 10) * 0.065));
       const marker = engine._addSpritePoint?.(RADIO_LAYER_ID, station.lat, station.lon, material, size, size, 'radio', station, 102.6);
       if (marker) {
         marker.userData.baseScale = size;
@@ -280,10 +280,10 @@
         engine.registerZoomAdaptiveObject?.(marker, {
           baseX: size,
           baseY: size,
-          minFactor: 0.5,
-          maxFactor: 1.9,
-          farShrink: 0.35,
-          closeBoost: 0.75,
+          minFactor: 0.62,
+          maxFactor: 3.35,
+          farShrink: 0.22,
+          closeBoost: 2.35,
         });
       }
     });
