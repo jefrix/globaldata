@@ -524,6 +524,7 @@ function TopBar({ theme, classification, layerCount, onResetView, rotating, onTo
               <a data-fieldnotes-timeline-link="1" href="https://jefrix.github.io/History-Timeline/HistoryTimeline.html">TIMELINE</a>
               <a data-collapse-signature-link="1" href="https://jefrix.github.io/collapse-signature-research/">CSR</a>
               <a href="https://jefrix.github.io/HQR/">HQR</a>
+              <a href="https://jefrix.github.io/learnflags/">FLAGS</a>
             </nav>
           </div>
         </div>
