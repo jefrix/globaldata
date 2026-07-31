@@ -25,7 +25,7 @@ if (!box) {
   process.exit(1);
 }
 
-const LISTEN_MS = 30_000;
+const LISTEN_MS = 600_000;
 const OUT_PATH = path.join(__dirname, '..', 'data', 'hormuz-vessels.json');
 
 const vessels = new Map();
