@@ -1190,18 +1190,25 @@ function FlightDetail({ d }) {
   </>);
 }
 function VesselDetail({ d }) {
+  const flagInfo = window.flagFromMMSI?.(d.mmsi);
+  const flagLabel = d.flag || (flagInfo ? `${flagInfo.name} (${flagInfo.code})` : null);
+  const aisDest = d.aisDestination || d.destination || null;
+  const color = d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8';
   return (<>
-    <div className="insp-title" style={{ color: d.type === 'oil' ? '#f5a742' : d.type === 'lng' ? '#9ad4ff' : '#7bd6a8' }}>{d.name || d.id}</div>
-    <Row k="TYPE" v={d.type?.toUpperCase()} />
+    <div className="insp-title" style={{ color }}>{d.name || d.id}</div>
+    <Row k="TYPE" v={d.type?.toUpperCase() || '--'} />
     <Row k="STATUS" v={d.status || 'Underway'} />
-    {d.flag && <Row k="FLAG" v={d.flag} />}
-    {d.originCountry && <Row k="ORIGIN" v={d.originCountry} />}
-    {d.destinationCountry && <Row k="DEST" v={d.destinationCountry} />}
-    <Row k="LANE" v={`#${d.lane}`} />
+    {d.mmsi && <Row k="MMSI" v={d.mmsi} />}
+    {flagLabel && <Row k="FLAG" v={flagLabel} color="#9ad4ff" />}
+    {aisDest && <Row k="AIS DEST" v={aisDest} color="#f5b142" />}
+    {aisDest && <Row k="DEST NOTE" v="crew-entered, unverified" />}
+    {!aisDest && d.mmsi && <Row k="AIS DEST" v="not reported" />}
+    <Row k="LANE" v={d.lane !== undefined ? `#${d.lane}` : '--'} />
     <Row k="SPD" v={`${Math.round((d.speed || 0) * 100000)} kt`} />
     <Row k="PROG" v={`${Math.round((d.progress || 0) * 100)}%`} />
     <Row k="SOURCE" v={d.source || 'Estimated from public shipping lanes'} />
   </>);
+
 }
 function NewsDetail({ d }) {
   const hot = isTodayUtc(d.ts);
