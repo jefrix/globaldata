@@ -150,10 +150,11 @@ const LAYERS = [
   { id: 'cyber',      label: 'CYBER',       sub: 'ATTACK VECTORS · ORIGINS',      hotkey: '9' },
   { id: 'dataCenters', label: 'DATA CENTERS', sub: 'CLOUD · COLO · CABLES', hotkey: '0' },
   { id: 'markets',    label: 'MARKETS',     sub: 'INDICES · METALS · CRYPTO',     hotkey: 'M' },
+  { id: 'economy',    label: 'ECONOMY',     sub: 'MACRO · CREDIT · GAUGES',       hotkey: 'E' },
   { id: 'radio',      label: 'RADIO',       sub: 'LIVE STATIONS · STREAMS',       hotkey: 'R' },
   { id: 'sun',        label: 'SUN',         sub: 'SOLAR ACTIVITY · NOAA/NASA',     hotkey: 'S' },
 ];
-const NON_GLOBE_LAYER_IDS = new Set(['markets', 'sun']);
+const NON_GLOBE_LAYER_IDS = new Set(['markets', 'sun', 'economy']);
 const ALL_LAYERS_IDS = LAYERS.filter(layer => !NON_GLOBE_LAYER_IDS.has(layer.id)).map(layer => layer.id);
 
 const FALLBACK_POWER_TYPES = {
@@ -1734,7 +1735,6 @@ function App() {
   });
   const [pick, setPick] = useState(null);
   const [railPick, setRailPick] = useState(null);
-  const [economyOpen, setEconomyOpen] = useState(false);
   const [rotating, setRotating] = useState(() => Boolean(tweaks.spin));
   const [camInfo, setCamInfo] = useState({ lat: 0, lon: 0, zoom: '1.0' });
   const globeRef = useRef(null);
@@ -1808,6 +1808,7 @@ useEffect(() => {
   useEffect(() => {
     const e = engineRef.current; if (!e) return;
     LAYERS.forEach(l => {
+  if (l.id === 'economy') return;
   if (e.setLayerVisible) {
     e.setLayerVisible(l.id, active[l.id]);
   }
@@ -1896,7 +1897,7 @@ useEffect(() => {
     const m = {
       diplomacy: '#7bd6a8', geographic: theme.city, climate: theme.storm,
       news: '#f58a42', logistics: theme.lane, flights: theme.flight,
-      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a', radio: '#ffcf47', sun: '#ffcf47',
+      cyber: '#ff5c2e', military: '#7bd6a8', conflicts: '#ff3040', dataCenters: '#5bd7ff', infrastructure: '#ffd84d', markets: '#73ff9a', economy: '#f5b142', radio: '#ffcf47', sun: '#ffcf47',
     };
     return m[id] || theme.accent;
   };
@@ -2057,12 +2058,8 @@ useEffect(() => {
                 <span>1</span><span>15</span><span>30</span><span>50+</span>
               </div>
             </div>
-            <button
-              className={'rail-btn rail-btn-economy' + (economyOpen ? ' on' : '')}
-              onClick={() => setEconomyOpen(v => !v)}
-            >
-              Economy
-            </button>
+            
+
           </div>
         </aside>
 
@@ -2107,11 +2104,11 @@ useEffect(() => {
           {/* Scanline overlay */}
           <div className="scanlines" />
 
-          {economyOpen && (
+          {active.economy && (
             <div className="economy-panel" role="dialog" aria-label="Economy">
               <div className="economy-panel-hd">
                 <span>ECONOMY</span>
-                <button type="button" className="economy-close" onClick={() => setEconomyOpen(false)}>CLOSE</button>
+                <button type="button" className="economy-close" onClick={() => setActive(a => ({ ...a, economy: false }))}>CLOSE</button>
               </div>
               <iframe className="economy-frame" src="Economy.html" title="Economy" />
             </div>
