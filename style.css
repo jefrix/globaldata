@@ -222,6 +222,8 @@ html, body {
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; cursor: pointer; border-radius: 1px;
 }
 .rail-btn:hover { color: var(--accent); border-color: var(--accent); }
+.rail-btn-economy { margin-top: 8px; }
+.rail-btn.on, .rail-btn-economy.on { color: var(--accent-warm); border-color: var(--accent-warm); background: rgba(245,177,66,0.08); }
 
 .legend { margin-top: 12px; }
 .legend-hd { font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.15em; color: var(--text-dim); margin-bottom: 6px; }
@@ -664,3 +666,43 @@ html, body {
 .tw-row { display: flex; gap: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--text); }
 .tw-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
 .tw-row input { accent-color: var(--accent); }
+
+/* Economy center info panel */
+.economy-panel {
+  position: absolute;
+  z-index: 16;
+  inset: 28px 36px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.55);
+}
+.economy-panel-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--edge);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--accent-warm);
+}
+.economy-close {
+  background: transparent;
+  border: 1px solid var(--edge);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.economy-close:hover { color: var(--accent); border-color: var(--accent); }
+.economy-frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #050607;
+}

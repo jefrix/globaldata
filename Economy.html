@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="ecr-page">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>ECONOMY // GLOBAL DATA</title>
+  <base href="economy/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/panel.css?v=11">
+</head>
+<body class="ecr-page">
+  <div id="econ-panel" data-ecr-root>
+    <div class="ecr-scan" aria-hidden="true"></div>
+    <div class="ecr-gridbg" aria-hidden="true"></div>
+    <header class="ecr-mast">
+      <div class="ecr-mast-left">
+        <div class="ecr-lamps" aria-hidden="true">
+          <span class="ecr-lamp ok" id="ecr-lamp-ok"></span>
+          <span class="ecr-lamp watch" id="ecr-lamp-watch"></span>
+          <span class="ecr-lamp alarm" id="ecr-lamp-alarm"></span>
+        </div>
+        <div class="ecr-titleblock">
+          <div class="ecr-kicker">STATION 04 // OPEN FEED</div>
+          <h1 class="ecr-title">ECONOMIC ENGINE <span>//</span> CONTROL ROOM</h1>
+        </div>
+      </div>
+      <div class="ecr-mast-mid">
+        <div class="ecr-regime-wrap">
+          <div class="ecr-racklbl">REGIME</div>
+          <div class="ecr-regime" id="ecr-regime">ACQUIRING…</div>
+          <div class="ecr-regime-sub" id="ecr-regime-sub">awaiting telemetry</div>
+        </div>
+      </div>
+      <div class="ecr-mast-right">
+        <div class="ecr-clockbox">
+          <div class="ecr-racklbl">NEW YORK</div>
+          <div class="ecr-clock" id="ecr-clock">--:--:--</div>
+          <div class="ecr-date" id="ecr-date">---- -- --</div>
+        </div>
+        <div class="ecr-updbox">
+          <div class="ecr-racklbl">LAST PRINT</div>
+          <div class="ecr-updated" id="ecr-updated">—</div>
+          <div class="ecr-stale" id="ecr-stale">STANDBY</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="ecr-ops" id="ecr-ops" aria-label="Engine status">
+      <div class="ecr-status is-go" id="ecr-status">
+        <div class="ecr-status-tag">ENGINE STATUS</div>
+        <div class="ecr-status-copy">
+          <div class="ecr-status-msg" id="ecr-status-msg">ACQUIRING…</div>
+          <div class="ecr-status-sub" id="ecr-status-sub">awaiting telemetry</div>
+        </div>
+      </div>
+      <div class="ecr-alert is-empty" id="ecr-alert" hidden>
+        <div class="ecr-alert-hd">ALERT</div>
+        <ul class="ecr-alert-list" id="ecr-alert-list"></ul>
+      </div>
+    </section>
+    <div class="ecr-ticker-wrap">
+      <div class="ecr-ticker-tag">WIRE</div>
+      <div class="ecr-ticker" id="ecr-ticker"><div class="ecr-ticker-track" id="ecr-ticker-track"></div></div>
+    </div>
+    <section class="ecr-hero" aria-label="Headline macros">
+      <div class="ecr-rack">MACRO HEADLINES</div>
+      <div class="ecr-gauges" id="ecr-gauges"></div>
+    </section>
+    <main class="ecr-boards" id="ecr-boards"></main>
+    <footer class="ecr-foot">
+      <span>NO FABRICATED PRINTS</span>
+      <span class="ecr-sep">/</span>
+      <span id="ecr-src">SOURCES —</span>
+      <span class="ecr-sep">/</span>
+      <span>NOT INVESTMENT ADVICE</span>
+    </footer>
+  </div>
+  <script src="data/latest.js"></script>
+  <script src="js/gauges.js?v=11"></script>
+  <script src="js/explain.js?v=11"></script>
+  <script src="js/panel.js?v=11"></script>
+</body>
+</html>

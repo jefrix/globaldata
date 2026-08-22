@@ -1734,6 +1734,7 @@ function App() {
   });
   const [pick, setPick] = useState(null);
   const [railPick, setRailPick] = useState(null);
+  const [economyOpen, setEconomyOpen] = useState(false);
   const [rotating, setRotating] = useState(() => Boolean(tweaks.spin));
   const [camInfo, setCamInfo] = useState({ lat: 0, lon: 0, zoom: '1.0' });
   const globeRef = useRef(null);
@@ -2056,6 +2057,12 @@ useEffect(() => {
                 <span>1</span><span>15</span><span>30</span><span>50+</span>
               </div>
             </div>
+            <button
+              className={'rail-btn rail-btn-economy' + (economyOpen ? ' on' : '')}
+              onClick={() => setEconomyOpen(v => !v)}
+            >
+              Economy
+            </button>
           </div>
         </aside>
 
@@ -2099,6 +2106,16 @@ useEffect(() => {
 
           {/* Scanline overlay */}
           <div className="scanlines" />
+
+          {economyOpen && (
+            <div className="economy-panel" role="dialog" aria-label="Economy">
+              <div className="economy-panel-hd">
+                <span>ECONOMY</span>
+                <button type="button" className="economy-close" onClick={() => setEconomyOpen(false)}>CLOSE</button>
+              </div>
+              <iframe className="economy-frame" src="Economy.html" title="Economy" />
+            </div>
+          )}
 
           {/* Inspector (only when something picked) */}
           {pick && !active.markets && <div className="picked-wrap"><Inspector pick={pick} onClose={() => setPick(null)} theme={theme} /></div>}
