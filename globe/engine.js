@@ -46,6 +46,20 @@ window.GlobeEngine = (function () {
       && d.getUTCDate() === now.getUTCDate();
   }
 
+
+  function wrapLon(lon) {
+    return ((lon + 540) % 360) - 180;
+  }
+
+  function offsetLatLon(lat, lon, distDeg, angle) {
+    const dlat = distDeg * Math.cos(angle);
+    const dlon = distDeg * Math.sin(angle) / Math.max(0.2, Math.cos(lat * DEG));
+    return {
+      lat: clamp(lat + dlat, -85, 85),
+      lon: wrapLon(lon + dlon),
+    };
+  }
+
   function latLonToVec3(lat, lon, r = R) {
     const phi = (90 - lat) * DEG;
     const theta = (lon + 180) * DEG;
@@ -772,6 +786,7 @@ window.GlobeEngine = (function () {
     }
     this.pickables = this.pickables.filter(p => p.userData.layer !== id);
     this.zoomAdaptiveObjects = (this.zoomAdaptiveObjects || []).filter(p => p.userData?.layer !== id);
+    if (this._pointSlots) this._resetPointSlots(id);
   };
 
   GlobeEngine.prototype._getMarkerMaterial = function (kind, color, opacity = 1) {
@@ -868,13 +883,49 @@ window.GlobeEngine = (function () {
     return this.markerMaterials[key];
   };
 
+
+  GlobeEngine.prototype._resetPointSlots = function (layer) {
+    if (!this._pointSlots) this._pointSlots = Object.create(null);
+    this._pointSlots[layer] = new Set();
+  };
+
+  GlobeEngine.prototype._deconflictLatLon = function (layer, lat, lon, minSepDeg) {
+    const sep = Number.isFinite(minSepDeg) && minSepDeg > 0 ? minSepDeg : 0.62;
+    if (!this._pointSlots) this._pointSlots = Object.create(null);
+    if (!this._pointSlots[layer]) this._pointSlots[layer] = new Set();
+    const slots = this._pointSlots[layer];
+    const slotKey = (la, lo) => `${Math.round(la / sep)}:${Math.round(lo / sep)}`;
+    const la0 = Number(lat);
+    const lo0 = Number(lon);
+    let key = slotKey(la0, lo0);
+    if (!slots.has(key)) {
+      slots.add(key);
+      return { lat: la0, lon: lo0 };
+    }
+    for (let i = 1; i <= 96; i++) {
+      const ang = i * 2.399963229728653;
+      const rad = sep * Math.sqrt(i);
+      const p = offsetLatLon(la0, lo0, rad, ang);
+      key = slotKey(p.lat, p.lon);
+      if (!slots.has(key)) {
+        slots.add(key);
+        return p;
+      }
+    }
+    slots.add(key);
+    return { lat: la0, lon: lo0 };
+  };
+
   GlobeEngine.prototype._addSpritePoint = function (layer, lat, lon, material, width, height, kind, data, radius = R + 1.4) {
     if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return null;
+    const size = Math.max(Number(width) || 0.5, Number(height) || 0.5);
+    const minSep = Math.max(0.62, (size * 1.45 / R) * (180 / Math.PI));
+    const placed = this._deconflictLatLon(layer, Number(lat), Number(lon), minSep);
     const mesh = new THREE.Sprite(material);
-    mesh.position.copy(latLonToVec3(Number(lat), Number(lon), radius));
+    mesh.position.copy(latLonToVec3(placed.lat, placed.lon, radius));
     mesh.scale.set(width, height, 1);
     mesh.renderOrder = 2;
-    mesh.userData = { layer, kind, data, preserveResources: true };
+    mesh.userData = { layer, kind, data, preserveResources: true, trueLat: Number(lat), trueLon: Number(lon) };
     this.layerGroups[layer].add(mesh);
     this.pickables.push(mesh);
     this.registerZoomAdaptiveObject?.(mesh, {
@@ -907,11 +958,14 @@ window.GlobeEngine = (function () {
 
   GlobeEngine.prototype._addPoint = function (layer, lat, lon, color, size, kind, data) {
     if (!Number.isFinite(Number(lat)) || !Number.isFinite(Number(lon))) return null;
+    const markerSize = Number(size) || 0.4;
+    const minSep = Math.max(0.45, (markerSize * 2.6 / R) * (180 / Math.PI));
+    const placed = this._deconflictLatLon(layer, Number(lat), Number(lon), minSep);
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(size, 10, 10),
       makeMaterial(color, this.layerOpacity[layer] ?? 1)
     );
-    mesh.position.copy(latLonToVec3(Number(lat), Number(lon), R + 1.4));
+    mesh.position.copy(latLonToVec3(placed.lat, placed.lon, R + 1.4));
     mesh.renderOrder = 2;
     mesh.userData = { layer, kind, data };
     this.layerGroups[layer].add(mesh);
