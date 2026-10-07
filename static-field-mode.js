@@ -131,6 +131,19 @@
           font-size: 16px;
         }
         .local-zoom-label { font-size: 7px; }
+
+        .phone-globe-toggle { display: inline-flex; align-items: center; justify-content: center; }
+        body.phone-globe-full .main {
+          grid-template-columns: minmax(0, 1fr) !important;
+          grid-template-rows: minmax(0, 1fr) !important;
+        }
+        body.phone-globe-full .globe-wrap {
+          grid-column: 1 / -1 !important;
+          grid-row: 1 !important;
+        }
+        body.phone-globe-full .rail-left,
+        body.phone-globe-full .rail-right,
+        body.phone-globe-full .bottom-bar { display: none !important; }
       }
 
       @media (max-width: 620px) {
@@ -150,6 +163,27 @@
         .local-map-overlay { padding: 8px; }
         .local-map-foot { display: none; }
       }
+
+
+      .phone-globe-toggle {
+        display: none;
+        position: fixed;
+        right: 12px;
+        bottom: 40px;
+        z-index: 40;
+        min-width: 92px;
+        min-height: 44px;
+        padding: 0 14px;
+        border: 1px solid var(--accent, #3b8df5);
+        background: rgba(5, 11, 23, 0.88);
+        color: var(--accent, #3b8df5);
+        font-family: var(--mono, ui-monospace, monospace);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      body.phone-globe-full .phone-globe-toggle { bottom: 16px; }
 
       @media (pointer: coarse) {
         button, .feed-item, .layer-row { min-height: 44px; }
@@ -293,11 +327,36 @@
     if (event.key === 'ArrowRight') panBy(-step, 0);
   }, true);
 
+
+  function syncGlobeToggle() {
+    let button = document.querySelector('[data-phone-globe-toggle]');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'phone-globe-toggle';
+      button.dataset.phoneGlobeToggle = '1';
+      button.addEventListener('click', () => {
+        document.body.classList.toggle('phone-globe-full');
+        syncGlobeToggle();
+        const kick = () => window.dispatchEvent(new Event('resize'));
+        kick();
+        setTimeout(kick, 60);
+      });
+      document.body.appendChild(button);
+    }
+    const full = document.body.classList.contains('phone-globe-full');
+    button.textContent = full ? 'MENU' : 'FULL GLOBE';
+    button.setAttribute('aria-pressed', String(full));
+    button.title = full ? 'Show the layer menu' : 'Expand the globe';
+  }
+
   window.addEventListener('resize', applyPan);
   ensureStyles();
+  syncGlobeToggle();
   setInterval(() => {
     extendLocalApi();
     wireStage();
     applyPan();
+    syncGlobeToggle();
   }, 350);
 })();
