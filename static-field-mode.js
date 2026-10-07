@@ -22,6 +22,7 @@
       .local-map-svg {
         will-change: transform, translate;
       }
+      .layer-head[role="button"] { cursor: pointer; }
 
       @media (max-width: 1200px) {
         .main { grid-template-columns: 238px minmax(0, 1fr) 278px; }
@@ -42,23 +43,31 @@
           padding: 5px 8px;
           gap: 8px;
         }
-        .tb-left { flex: 1 1 auto; }
+        .tb-left { flex: 1 1 auto; min-width: 0; }
         .tb-center, .dtg, .op-badge { display: none; }
         .tb-right { flex: 0 0 auto; gap: 5px; }
-        .logo { gap: 7px; }
+        .logo { gap: 7px; min-width: 0; }
         .logo svg { width: 23px; height: 23px; }
         .logo-t { font-size: 9.5px; line-height: 1.1; }
         .logo-st, .repo-links { display: none; }
-        .iconbtn {
-          min-width: 34px;
+        .top-links { flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .top-links a {
+          height: auto;
           min-height: 32px;
+          padding: 6px 8px;
+          font-size: 9px;
+          letter-spacing: 0.08em;
+        }
+        .iconbtn {
+          min-width: 44px;
+          min-height: 36px;
           padding: 0 7px;
           font-size: 0;
         }
         .iconbtn svg { margin: 0; }
         .main {
           grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-          grid-template-rows: minmax(0, 1fr) minmax(172px, 34vh);
+          grid-template-rows: minmax(0, 1fr) minmax(220px, 40vh);
           gap: 1px;
         }
         .globe-wrap {
@@ -77,14 +86,14 @@
           min-height: 0;
         }
         .rail-hd { padding: 7px 10px; font-size: 9px; }
-        .layers { padding: 3px 0; }
-        .layer-row { padding: 7px 9px; }
-        .layer-head { gap: 7px; }
+        .layers { padding: 3px 0; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+        .layer-row { padding: 7px 18px 7px 9px; }
+        .layer-head { gap: 7px; touch-action: manipulation; }
         .layer-idx { width: 17px; height: 17px; font-size: 9px; }
         .layer-label { font-size: 9px; }
         .layer-sub { font-size: 7.2px; line-height: 1.25; }
         .layer-slider { margin-top: 5px; padding-left: 0; gap: 5px; }
-        .rail-ft { display: none; }
+        .rail-ft { display: block; padding: 8px 10px; }
         .inspector { max-height: 50%; }
         .insp-hd, .feed-head { padding: 7px 10px; }
         .insp-body { padding: 8px 10px; }
@@ -129,11 +138,13 @@
         .tb-right .iconbtn:nth-of-type(2) { display: none; }
         .main {
           grid-template-columns: minmax(0, 1fr);
-          grid-template-rows: minmax(0, 1fr) minmax(150px, 25vh) minmax(150px, 28vh);
+          grid-template-rows: minmax(180px, 1fr) minmax(240px, 42vh) minmax(132px, 24vh);
         }
         .globe-wrap { grid-column: 1; grid-row: 1; }
         .rail-left { grid-column: 1; grid-row: 2; }
         .rail-right { grid-column: 1; grid-row: 3; }
+        .layer-row { padding-right: 28px; }
+        .rail-ft { display: block; }
         .inspector { max-height: 46%; }
         .xh, .bearing { display: none; }
         .local-map-overlay { padding: 8px; }
@@ -141,9 +152,11 @@
       }
 
       @media (pointer: coarse) {
-        button, .feed-item, .layer-row { min-height: 34px; }
-        .opSlider::-webkit-slider-thumb { width: 16px; height: 16px; }
-        .opSlider::-moz-range-thumb { width: 16px; height: 16px; }
+        button, .feed-item, .layer-row { min-height: 44px; }
+        .layer-head > button { margin-right: 8px; }
+        .opSlider::-webkit-slider-thumb { width: 22px; height: 22px; }
+        .opSlider::-moz-range-thumb { width: 22px; height: 22px; }
+        .top-links a { min-height: 36px; }
         .local-county, .local-road, .local-lake, .local-water-line,
         .local-park-zone, .local-city-dot, .local-power-line { touch-action: manipulation; }
       }

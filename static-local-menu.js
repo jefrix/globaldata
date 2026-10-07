@@ -86,7 +86,16 @@
       '</button>',
       '</div>',
     ].join('');
-    row.querySelector('[data-local-menu-toggle]').addEventListener('click', onToggle);
+    const head = row.querySelector('.layer-head');
+    head.style.cursor = 'pointer';
+    head.addEventListener('click', event => {
+      if (event.target.closest('[data-local-menu-toggle]')) return;
+      onToggle();
+    });
+    row.querySelector('[data-local-menu-toggle]').addEventListener('click', event => {
+      event.stopPropagation();
+      onToggle();
+    });
     setToggle(row, active, color);
     return row;
   }

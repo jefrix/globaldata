@@ -438,13 +438,24 @@ function LogisticsSublayerControls({ filters, active, onToggle }) {
 function LayerRow({ layer, active, opacity, onToggle, onOpacity, color, sublayerContent }) {
   return (
     <div className={`layer-row ${active ? 'active' : ''}`} data-layer-id={layer.id}>
-      <div className="layer-head">
+      <div
+        className="layer-head"
+        role="button"
+        tabIndex={0}
+        onClick={onToggle}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+      >
         <div className="layer-idx">{layer.hotkey}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="layer-label">{layer.label}</div>
           <div className="layer-sub">{layer.sub}</div>
         </div>
-        <Toggle on={active} onClick={onToggle} color={color} />
+        <Toggle on={active} onClick={e => { e.stopPropagation(); onToggle(); }} color={color} />
       </div>
       <div className="layer-slider">
         <span className="sl-lbl">OPA</span>
