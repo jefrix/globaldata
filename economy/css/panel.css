@@ -797,6 +797,60 @@ body.ecr-page {
 
 
 /* ---- engine status + hidden alert ---- */
+
+#econ-panel .ecr-outlook {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  margin: 10px 0 0;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--ecr-line);
+  background:
+    linear-gradient(180deg, rgba(230, 192, 74, 0.08) 0%, #10141a 42%, #0c0f13 100%);
+  box-shadow: inset 0 1px 0 rgba(230, 192, 74, 0.18);
+}
+#econ-panel .ecr-outlook.is-ok {
+  background: linear-gradient(180deg, rgba(61, 204, 111, 0.08) 0%, #10141a 42%, #0c0f13 100%);
+  box-shadow: inset 0 1px 0 rgba(61, 204, 111, 0.18);
+}
+#econ-panel .ecr-outlook.is-alarm {
+  background: linear-gradient(180deg, rgba(226, 59, 47, 0.12) 0%, #10141a 42%, #0c0f13 100%);
+  box-shadow: inset 0 1px 0 rgba(226, 59, 47, 0.24);
+}
+#econ-panel .ecr-outlook-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  padding: 4px 2px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #ffe14a;
+  border-right: 1px solid var(--ecr-line);
+}
+#econ-panel .ecr-outlook.is-ok .ecr-outlook-tag { color: #3dcc6f; }
+#econ-panel .ecr-outlook.is-alarm .ecr-outlook-tag { color: #e23b2f; }
+#econ-panel .ecr-outlook-body { min-width: 0; flex: 1; }
+#econ-panel .ecr-outlook-title {
+  font-family: var(--ecr-display);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+  color: #ffe14a;
+}
+#econ-panel .ecr-outlook.is-ok .ecr-outlook-title { color: #3dcc6f; }
+#econ-panel .ecr-outlook.is-alarm .ecr-outlook-title { color: #e23b2f; }
+#econ-panel .ecr-outlook-copy {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ecr-text-2);
+  max-width: 92ch;
+}
+
 #econ-panel .ecr-ops {
   display: flex;
   flex-direction: column;

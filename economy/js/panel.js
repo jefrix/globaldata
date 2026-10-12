@@ -1028,10 +1028,43 @@
     }
   }
 
+
+  function renderOutlook(data, map) {
+    const title = $("ecr-outlook-title");
+    const copy = $("ecr-outlook-copy");
+    const box = $("ecr-outlook");
+    if (!title || !copy) return;
+    const o = data && data.outlook;
+    let label = "READING";
+    let text = "awaiting telemetry";
+    let tone = "watch";
+    if (o && o.title && o.summary) {
+      label = o.title;
+      text = o.summary;
+      tone = o.tone || "watch";
+    } else if (map) {
+      const n = id => map[id] && Number.isFinite(map[id].value) ? map[id].value : null;
+      const bits = [];
+      if (n("cpi") != null) bits.push("CPI " + n("cpi").toFixed(1) + "%");
+      if (n("unrate") != null) bits.push("unemployment " + n("unrate").toFixed(1) + "%");
+      if (n("fedfunds") != null) bits.push("fed funds " + n("fedfunds").toFixed(2) + "%");
+      if (n("tnx") != null) bits.push("10-year " + n("tnx").toFixed(2) + "%");
+      label = "CURRENT READ";
+      text = bits.join(" · ") || text;
+    }
+    title.textContent = label;
+    copy.textContent = text;
+    if (box) {
+      box.classList.remove("is-ok", "is-watch", "is-alarm");
+      box.classList.add(tone === "alarm" ? "is-alarm" : tone === "ok" ? "is-ok" : "is-watch");
+    }
+  }
+
   function paint(data) {
     const series = (data && data.series) || [];
     const map = byId(series);
     renderMast(data, map);
+    renderOutlook(data, map);
     ensureOpsHosts();
     ensurePressureHosts();
     renderStatus(map);
