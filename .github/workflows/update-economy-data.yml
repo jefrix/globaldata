@@ -1,0 +1,43 @@
+name: Update economy data
+
+on:
+  schedule:
+    # After the U.S. cash close, and again the next UTC morning so a late FRED
+    # file can land. GitHub may delay or skip scheduled runs.
+    - cron: "30 22 * * 1-5"
+    - cron: "30 12 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-economy-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch economy snapshot
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: node scripts/fetch-economy-data.mjs
+
+      - name: Validate economy snapshot
+        run: node scripts/economy-data.test.mjs
+
+      - name: Commit updated snapshot
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update economy snapshot
+          file_pattern: economy/data/latest.json economy/data/latest.js economy/data/meta.json

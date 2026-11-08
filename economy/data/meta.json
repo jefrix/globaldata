@@ -1,0 +1,178 @@
+{
+  "fetchedAt": "2026-11-08T18:12:03.169Z",
+  "sources": [
+    "yahoo",
+    "worldbank",
+    "coingecko",
+    "treasury",
+    "bls",
+    "nyfed",
+    "derived"
+  ],
+  "seriesCount": 85,
+  "held": [
+    "hy_oas",
+    "nfci",
+    "m2",
+    "icsa",
+    "gdpc1",
+    "gdppot",
+    "t5yifr",
+    "gdp_us_q",
+    "base",
+    "m2v",
+    "totll",
+    "busloans",
+    "tdsp",
+    "houst",
+    "indpro",
+    "ipcongd",
+    "ipmat",
+    "nrou",
+    "gdp_nom",
+    "walcl",
+    "tcmdo",
+    "output_gap",
+    "taylor_implied",
+    "taylor_gap",
+    "real_m2",
+    "m2_yoy",
+    "base_yoy",
+    "loans_yoy",
+    "money_multiplier",
+    "excess_money",
+    "higher_order_ratio",
+    "credit_gdp",
+    "u_gap_nrou",
+    "walcl_t"
+  ],
+  "errors": [
+    {
+      "id": "hy_oas",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "nfci",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "m2",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "icsa",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "dgs10",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "t10y2y",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "gdpc1",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "gdppot",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "t5yifr",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "gdp_us_q",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "base",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "m2v",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "totll",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "busloans",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "tdsp",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "houst",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "indpro",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "ipcongd",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "ipmat",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "nrou",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "gdp_nom",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "walcl",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    },
+    {
+      "id": "tcmdo",
+      "source": "fred",
+      "error": "FRED CSV unreachable and FRED_API_KEY is not set"
+    }
+  ],
+  "notes": [
+    "Values are copied from public sources. None are invented.",
+    "fetchedAt is when this snapshot was assembled. Each series asOf is that series' observation date, which can be older.",
+    "retained true means the previous dated print was kept because this run did not get a new observation.",
+    "twoy is the 2-year constant-maturity yield, symbol DGS2. Yahoo ^UST2Y is not used.",
+    "Yahoo yield indexes are scaled to percent only when the sample median is in the legacy yield×10 range (above 20 and below 200). A median already between 0 and 20 is kept as percent.",
+    "spread_2s10s is 10-year minus 2-year on the same calendar date after both yields are in percent. It is not the latest 10-year print minus an older 2-year print.",
+    "FRED fredgraph.csv is tried first. Treasury, BLS, and NY Fed are used only for series FRED did not return, and those rows name the agency that answered.",
+    "World Bank GDP, unemployment, and inflation are annual and lag the monthly BLS and BEA prints.",
+    "NROU and GDPPOT are clipped to dates <= today when they come from FRED.",
+    "The browser freshness check reads the committed JSON snapshot. It cannot publish a new snapshot. GitHub Actions (or a manual run of this script) does the provider pull."
+  ]
+}

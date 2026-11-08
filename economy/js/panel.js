@@ -593,6 +593,13 @@
     return { label, klass, sub };
   }
 
+  function tileSource(s) {
+    if (s.retained) return (s.source || "prior") + " · last known";
+    if (s.overlay) return (s.source || "") + " · " + s.overlay;
+    if (s.constructed) return "derived · constructed";
+    return s.source || "";
+  }
+
   function tileHTML(s) {
     const st = statusOf(s);
     const d = fmtDelta(s);
@@ -608,11 +615,11 @@
       <div class="ecr-tile-val">${fmtValue(s)}<span class="ecr-tile-unit">${escapeHtml(s.unit || "")}</span></div>
       <div class="ecr-tile-row">
         <span class="ecr-delta ${d.dir}">${escapeHtml(d.text)}</span>
-        <span class="ecr-asof">${escapeHtml(asof)}</span>
+        <span class="ecr-asof">${escapeHtml(asof)}${s.retained ? " · LAST KNOWN" : ""}</span>
       </div>
       ${sparkline(s.history, d.dir)}
       ${note}
-      <div class="ecr-tile-src">${escapeHtml(s.constructed ? "derived · constructed" : (s.source || ""))}</div>
+      <div class="ecr-tile-src">${escapeHtml(tileSource(s))}</div>
       ${tipHTML(s.id)}
     </article>`;
   }
@@ -975,21 +982,24 @@
     if (sub) sub.textContent = r.sub;
 
     const fetched = data.fetchedAt;
-    if ($("ecr-updated")) $("ecr-updated").textContent = fmtAsOfLong(fetched);
+    if ($("ecr-updated")) {
+      $("ecr-updated").textContent = fmtAsOfLong(fetched);
+      $("ecr-updated").title = "When this published snapshot was assembled. Dates on the tiles are observation dates.";
+    }
 
+    const fresh = globalThis.ECRFreshness
+      ? ECRFreshness.describeFreshness(data, Date.now())
+      : { badge: "PUBLISHED SNAPSHOT", klass: "is-stale", line: "PUBLISHED JSON" };
     const stale = $("ecr-stale");
-    if (stale && fetched) {
-      const ageH = (Date.now() - new Date(fetched).getTime()) / 36e5;
-      if (ageH < 2) {
-        stale.textContent = "LIVE FEED";
-        stale.className = "ecr-stale is-live";
-      } else if (ageH < 36) {
-        stale.textContent = "HOLDING LAST PRINT";
-        stale.className = "ecr-stale is-stale";
-      } else {
-        stale.textContent = "STALE";
-        stale.className = "ecr-stale is-dead";
-      }
+    if (stale) {
+      stale.textContent = fresh.badge;
+      stale.className = "ecr-stale " + fresh.klass;
+      stale.title = "This page reads the committed economy snapshot. It does not pull Yahoo or FRED.";
+    }
+    const freshEl = $("ecr-freshness");
+    if (freshEl) {
+      freshEl.textContent = fresh.line;
+      freshEl.className = "ecr-freshness " + fresh.klass;
     }
 
     const alarms = Object.values(map).filter((s) => statusOf(s) === "alarm").length;
@@ -1074,18 +1084,17 @@
     renderTicker(map);
   }
 
-  async function loadJson() {
-    try {
-      const res = await fetch("data/latest.json", { cache: "no-store" });
-      if (res.ok) return await res.json();
-    } catch (e) {
-      /* file:// or offline — fall through */
-    }
-    if (globalThis.ECR_DATA) return globalThis.ECR_DATA;
-    throw new Error("no telemetry");
-  }
+  let cryptoFlight = null;
 
   async function refreshCrypto(data) {
+    if (cryptoFlight) return cryptoFlight;
+    cryptoFlight = refreshCryptoOnce(data).finally(() => {
+      cryptoFlight = null;
+    });
+    return cryptoFlight;
+  }
+
+  async function refreshCryptoOnce(data) {
     try {
       const res = await fetch(
         "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true"
@@ -1097,6 +1106,7 @@
         map.btc.value = json.bitcoin.usd;
         map.btc.change = null;
         map.btc.changePct = json.bitcoin.usd_24h_change;
+        map.btc.overlay = "coingecko";
         map.btc.asOf = json.bitcoin.last_updated_at
           ? new Date(json.bitcoin.last_updated_at * 1000).toISOString()
           : new Date().toISOString();
@@ -1105,6 +1115,7 @@
         map.eth.value = json.ethereum.usd;
         map.eth.change = null;
         map.eth.changePct = json.ethereum.usd_24h_change;
+        map.eth.overlay = "coingecko";
         map.eth.asOf = json.ethereum.last_updated_at
           ? new Date(json.ethereum.last_updated_at * 1000).toISOString()
           : new Date().toISOString();
@@ -1118,14 +1129,24 @@
   async function boot() {
     tickClock();
     setInterval(tickClock, 1000);
+    const embedded = globalThis.ECR_DATA || null;
+    if (embedded) paint(embedded);
     try {
-      const data = await loadJson();
+      if (!globalThis.ECRFreshness) {
+        if (!embedded) throw new Error("no telemetry");
+        refreshCrypto(embedded);
+        return;
+      }
+      ECRFreshness.init(embedded, (next) => paint(next));
+      const result = await ECRFreshness.requestCheck();
+      const data = (result && result.data) || embedded;
+      if (!data) throw new Error((result && result.error) || "no telemetry");
       paint(data);
       refreshCrypto(data);
     } catch (err) {
       if ($("ecr-regime")) $("ecr-regime").textContent = "NO TELEMETRY";
       if ($("ecr-regime-sub")) $("ecr-regime-sub").textContent = String(err.message || err);
-      if ($("ecr-boards")) $("ecr-boards").innerHTML = `<div class="ecr-empty">Could not read data/latest.json</div>`;
+      if ($("ecr-boards") && !embedded) $("ecr-boards").innerHTML = `<div class="ecr-empty">Could not read data/latest.json</div>`;
     }
   }
 

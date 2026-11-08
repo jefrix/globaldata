@@ -700,6 +700,7 @@ html, body {
   cursor: pointer;
 }
 .economy-close:hover { color: var(--accent); border-color: var(--accent); }
+.economy-panel.is-parked { display: none; }
 .economy-frame {
   flex: 1;
   width: 100%;

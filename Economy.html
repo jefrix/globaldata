@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/panel.css?v=12">
+  <link rel="stylesheet" href="css/panel.css?v=13">
 </head>
 <body class="ecr-page">
   <div id="econ-panel" data-ecr-root>
@@ -44,6 +44,7 @@
           <div class="ecr-racklbl">LAST PRINT</div>
           <div class="ecr-updated" id="ecr-updated">—</div>
           <div class="ecr-stale" id="ecr-stale">STANDBY</div>
+          <div class="ecr-freshness" id="ecr-freshness">PUBLISHED JSON</div>
         </div>
       </div>
     </header>
@@ -84,12 +85,15 @@
       <span class="ecr-sep">/</span>
       <span id="ecr-src">SOURCES —</span>
       <span class="ecr-sep">/</span>
+      <span id="ecr-fresh-note">OPEN CHECKS PUBLISHED JSON · PROVIDERS PULL IN THE DATA WORKFLOW</span>
+      <span class="ecr-sep">/</span>
       <span>NOT INVESTMENT ADVICE</span>
     </footer>
   </div>
-  <script src="data/latest.js?v=20261101"></script>
-  <script src="js/gauges.js?v=11"></script>
-  <script src="js/explain.js?v=11"></script>
-  <script src="js/panel.js?v=12"></script>
+  <script src="data/latest.js?v=20261108"></script>
+  <script src="js/freshness.js?v=1"></script>
+  <script src="js/gauges.js?v=12"></script>
+  <script src="js/explain.js?v=12"></script>
+  <script src="js/panel.js?v=13"></script>
 </body>
 </html>
