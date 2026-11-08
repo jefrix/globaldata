@@ -1704,6 +1704,17 @@ function useLiveData(density = 'normal', densityValue = 0.5) {
   return state;
 }
 // ============ MAIN APP ============
+function postEconomyFreshnessCheck(frame) {
+  if (!frame || !frame.contentWindow) return;
+  const origin = window.location.origin;
+  const target = origin && origin !== "null" ? origin : "*";
+  try {
+    frame.contentWindow.postMessage({ type: "ecr-check-freshness", v: 1 }, target);
+  } catch (err) {
+    /* The frame is still on its initial blank document. The load handler retries. */
+  }
+}
+
 function App() {
   const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "theme": "tactical",
@@ -1750,6 +1761,8 @@ function App() {
   const [camInfo, setCamInfo] = useState({ lat: 0, lon: 0, zoom: '1.0' });
   const globeRef = useRef(null);
   const engineRef = useRef(null);
+  const economyFrameRef = useRef(null);
+  const [economyMounted, setEconomyMounted] = useState(false);
   const theme = window.THEMES[tweaks.theme];
   const { data, status: dataStatus } = useLiveData(tweaks.density, densityValue);
   const marketState = useMarketData(active.markets);
@@ -1848,6 +1861,21 @@ useEffect(() => {
     if (e.landmasses) e.landmasses.visible = tweaks.projection !== 'wireframe';
     e.autoSpin = rotating;
   }, [tweaks, rotating]);
+
+  useEffect(() => {
+    if (active.economy) setEconomyMounted(true);
+  }, [active.economy]);
+
+  useEffect(() => {
+    if (!active.economy || !economyMounted) return undefined;
+    const send = () => postEconomyFreshnessCheck(economyFrameRef.current);
+    send();
+    const node = economyFrameRef.current;
+    if (node) node.addEventListener("load", send);
+    return () => {
+      if (node) node.removeEventListener("load", send);
+    };
+  }, [active.economy, economyMounted]);
 
   // Hotkeys
   useEffect(() => {
@@ -2115,13 +2143,13 @@ useEffect(() => {
           {/* Scanline overlay */}
           <div className="scanlines" />
 
-          {active.economy && (
-            <div className="economy-panel" role="dialog" aria-label="Economy">
+          {economyMounted && (
+            <div className={`economy-panel${active.economy ? "" : " is-parked"}`} role="dialog" aria-label="Economy" aria-hidden={active.economy ? "false" : "true"}>
               <div className="economy-panel-hd">
                 <span>ECONOMY</span>
                 <button type="button" className="economy-close" onClick={() => setActive(a => ({ ...a, economy: false }))}>CLOSE</button>
               </div>
-              <iframe className="economy-frame" src="Economy.html" title="Economy" />
+              <iframe ref={economyFrameRef} className="economy-frame" src="Economy.html?v=20261108" title="Economy" />
             </div>
           )}
 
