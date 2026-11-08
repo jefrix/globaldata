@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import vm from "node:vm";
 import {
   alignSpreadExact,
@@ -333,6 +336,95 @@ await testAsync("offline and timeout keep the previous snapshot", async () => {
   });
   assert.equal(timed.state, "timeout");
   assert.equal(timed.data.series[0].value, 1);
+});
+
+test("economy publish is tested before commit and does not touch live-cache", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/update-economy-data.yml", import.meta.url), "utf8");
+  const validateAt = workflow.indexOf("node scripts/economy-data.test.mjs");
+  const publishAt = workflow.indexOf("bash scripts/publish-economy-snapshot.sh");
+  assert.ok(validateAt > 0 && publishAt > validateAt);
+  assert.equal(workflow.includes("--force"), false);
+  assert.equal(workflow.includes("data/live-cache.json"), false);
+  assert.match(workflow, /contents:\s*write/);
+  assert.match(workflow, /pages:\s*write/);
+  assert.match(workflow, /REQUEST_PAGES_BUILD:\s*"1"/);
+  const publisher = readFileSync(new URL("./publish-economy-snapshot.sh", import.meta.url), "utf8");
+  assert.match(publisher, /\/repos\/\$\{GITHUB_REPOSITORY\}\/pages\/builds/);
+  assert.equal(publisher.includes("--force"), false);
+  assert.equal(publisher.includes("data/live-cache.json"), false);
+  const liveCache = readFileSync(new URL("../.github/workflows/update-live-cache.yml", import.meta.url), "utf8");
+  assert.match(liveCache, /file_pattern:\s*data\/live-cache\.json/);
+  assert.equal(liveCache.includes("economy/data"), false);
+  assert.equal(liveCache.includes("pages:"), false);
+});
+
+function git(cwd, args, env = {}) {
+  return execFileSync("git", args, {
+    cwd,
+    env: { ...process.env, ...env },
+    stdio: ["ignore", "pipe", "pipe"],
+  }).toString();
+}
+
+function writeSnapshot(dir, marker) {
+  mkdirSync(join(dir, "economy/data"), { recursive: true });
+  mkdirSync(join(dir, "data"), { recursive: true });
+  writeFileSync(join(dir, "economy/data/latest.json"), marker + "\n");
+  writeFileSync(join(dir, "economy/data/latest.js"), "window.ECR_DATA = " + JSON.stringify({ marker }) + ";\n");
+  writeFileSync(join(dir, "economy/data/meta.json"), JSON.stringify({ marker }) + "\n");
+  if (!readFileSync(join(dir, "data/live-cache.json"), "utf8").includes("live")) {
+    writeFileSync(join(dir, "data/live-cache.json"), "live-v1\n");
+  }
+}
+
+test("publish rebases onto a concurrent live-cache commit and keeps that file", () => {
+  const root = mkdtempSync(join(tmpdir(), "econ-publish-"));
+  const bare = join(root, "bare.git");
+  const seed = join(root, "seed");
+  const worker = join(root, "worker");
+  const cacheBot = join(root, "cache-bot");
+  const ident = {
+    GIT_AUTHOR_NAME: "Fixture",
+    GIT_AUTHOR_EMAIL: "fixture@example.com",
+    GIT_COMMITTER_NAME: "Fixture",
+    GIT_COMMITTER_EMAIL: "fixture@example.com",
+  };
+  git(root, ["init", "--bare", "-b", "main", bare]);
+  git(root, ["init", "-b", "main", seed]);
+  git(seed, ["remote", "add", "origin", bare]);
+  mkdirSync(join(seed, "data"), { recursive: true });
+  mkdirSync(join(seed, "economy/data"), { recursive: true });
+  writeFileSync(join(seed, "data/live-cache.json"), "live-v1\n");
+  writeSnapshot(seed, "economy-old");
+  git(seed, ["add", "."], ident);
+  git(seed, ["commit", "-m", "seed"], ident);
+  git(seed, ["push", "origin", "HEAD:main"], ident);
+  git(root, ["clone", "--depth", "1", bare, worker]);
+  git(root, ["clone", bare, cacheBot]);
+  writeFileSync(join(cacheBot, "data/live-cache.json"), "live-v2\n");
+  git(cacheBot, ["add", "data/live-cache.json"], ident);
+  git(cacheBot, ["commit", "-m", "Update live data cache"], ident);
+  git(cacheBot, ["push", "origin", "HEAD:main"], ident);
+  writeSnapshot(worker, "economy-new");
+  writeFileSync(join(worker, "data/live-cache.json"), "live-dirty-local\n");
+  execFileSync("bash", [new URL("./publish-economy-snapshot.sh", import.meta.url).pathname], {
+    cwd: worker,
+    env: {
+      ...process.env,
+      ...ident,
+      PUBLISH_ECONOMY_SNAPSHOT: "1",
+      PUBLISH_REMOTE: "origin",
+      PUBLISH_BRANCH: "main",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const live = git(bare, ["show", "main:data/live-cache.json"]);
+  const economy = git(bare, ["show", "main:economy/data/latest.json"]);
+  assert.equal(live, "live-v2\n");
+  assert.equal(economy, "economy-new\n");
+  const names = git(bare, ["diff", "--name-only", "main~1", "main"]);
+  assert.match(names, /economy\/data\/latest\.json/);
+  assert.equal(names.includes("data/live-cache.json"), false);
 });
 
 await testAsync("parent messages are accepted only from the same frame and origin", async () => {

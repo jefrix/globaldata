@@ -18,9 +18,11 @@ CoinGecko is the one optional browser request, and it only overlays the Bitcoin 
 
 ## What the data workflow does
 
-`scripts/fetch-economy-data.mjs` is the provider pull. GitHub Actions runs it on weekday schedules and on manual `workflow_dispatch` (`.github/workflows/update-economy-data.yml`). The action commits `economy/data/latest.json`, `latest.js`, and `meta.json` only after the checks pass. It needs permission to write repository contents. A scheduled run can be delayed or skipped, and this workflow cannot push if branch protection rejects the Actions token. Until it runs on `main`, the page can only see the snapshot this branch contains.
+`scripts/fetch-economy-data.mjs` is the provider pull. GitHub Actions runs it on weekday schedules and on manual `workflow_dispatch` (`.github/workflows/update-economy-data.yml`). `node scripts/economy-data.test.mjs` runs before any commit. The publish step then commits only `economy/data/latest.json`, `latest.js`, and `meta.json`, rebases onto the latest `main`, and pushes without `--force`. A concurrent live-cache commit stays in the tree because that file is never staged. A scheduled run can be delayed or skipped, and the push still fails if branch protection rejects the Actions token.
 
-There is no browser endpoint that writes to the repository.
+The site is published from the `main` branch root (`build_type: legacy`). GitHub's `pages-build-deployment` workflow deploys that branch. GitHub's own Pages troubleshooting note says a commit pushed with `GITHUB_TOKEN` does not trigger a Pages build. This repository's recent live-cache commits, which are pushed the same way, did get a Pages deployment: commit `0237811628ddbe597435f22d809f680a6dd238ac` was committed by `github-actions[bot]` at 2026-11-08T15:25:29Z, the Pages build for that exact SHA was created at 2026-11-08T15:25:32Z, and `https://jefrix.github.io/globaldata/data/live-cache.json` hashes to that commit. The economy workflow does not rely on that exception alone. After the fast-forward push it calls `POST /repos/{owner}/{repo}/pages/builds` with the workflow's `pages: write` token. That is GitHub's documented request for a build of the default branch, and the token stays in Actions. The browser never receives it.
+
+There is no browser endpoint that writes to the repository. Until this workflow runs on `main`, the live site keeps the snapshot already deployed there.
 
 ## Sources and the 2-year yield
 
