@@ -1,16 +1,19 @@
 {
-  "fetchedAt": "2026-11-27T21:35:24.709Z",
+  "fetchedAt": "2026-11-28T04:02:48.738Z",
   "sources": [
     "yahoo",
     "worldbank",
-    "coingecko",
     "treasury",
     "bls",
     "nyfed",
     "derived"
   ],
-  "seriesCount": 86,
+  "seriesCount": 87,
   "held": [
+    "btc_cg",
+    "eth_cg",
+    "crypto_mcap",
+    "btc_dom",
     "hy_oas",
     "nfci",
     "m2",
@@ -47,6 +50,11 @@
     "walcl_t"
   ],
   "errors": [
+    {
+      "id": "coingecko",
+      "source": "coingecko",
+      "error": "HTTP 429 Too Many Requests https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true {\"status\":{\"error_code\":429,\"error_message\":\"You've exceeded the Rate Limit. Please visit https://www.coingecko.com/en/api/pricing to subscribe to our API plans for higher rate lim"
+    },
     {
       "id": "hy_oas",
       "source": "fred",
